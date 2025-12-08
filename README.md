@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -16,6 +16,45 @@ Yang's Daily Planner is a single-page application that provides:
 - **Calendar View**: Track daily health scores with month and year views
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
+## 📝 Changelog / 版本变更说明
+
+### v1.1.0 (2024-12-08)
+
+**用户需求 / User Request:**
+- Calendar 右侧 activity 的修改按钮去掉
+- 删除按钮放到点击 activity 打开以后的卡片右下角
+- 状态 tag 不要新起一行，而是和标题并排
+- 这样可以尽可能显示多个 activity
+
+**实现变更 / Changes Made:**
+- ✅ 移除了日历活动列表中的编辑/删除按钮，界面更简洁
+- ✅ 点击活动后展开详情卡片，编辑和删除按钮在详情卡片右下角
+- ✅ 状态标签(Status Badge)与活动标题并排显示在同一行
+- ✅ 活动列表更紧凑，单位高度减小，可显示更多活动
+- ✅ 新增点击展开/收起交互，提升用户体验
+
+**技术细节 / Technical Details:**
+- 新增 `.cal-activity` 紧凑样式类
+- 新增 `.cal-detail` 展开详情卡片样式
+- 状态标签使用 `white-space: nowrap` 防止换行
+- 活动列表支持滚动，最大高度 450px
+
+---
+
+### v1.0.0 (2024-12-08)
+
+**Initial Release / 首次发布:**
+- 完整的活动管理功能（增删改查）
+- Dashboard 仪表盘视图
+- Calendar 日历视图（月/年）
+- Statistics 统计分析
+- Settings 设置页面
+- GitHub 数据同步功能
+- 健康评分系统
+- 智能建议功能
+
+---
+
 ## ✨ Features
 
 ### 🗓️ Activity Management
@@ -27,13 +66,14 @@ Yang's Daily Planner is a single-page application that provides:
 ### 📊 Statistics & Analytics
 - **Pie Charts**: Time distribution by category
 - **Bar Charts**: Status distribution and trends
-- **Line Charts**: Activity patterns over time
 - **Period Selection**: Daily, weekly, and monthly views
 - **Completion Rate**: Track task completion percentage
 
 ### 📅 Calendar
 - **Month View**: See all days with health indicators
 - **Year View**: Overview of entire year's progress
+- **Compact Activity List**: Status inline with title for better space efficiency
+- **Expandable Details**: Click to view full details with edit/delete options
 - **Health Indicators**:
   - 🟢 Excellent (80%+ completion)
   - 🔵 Good (60-80% completion)
@@ -51,6 +91,7 @@ Personalized recommendations based on:
 - Add/edit/delete categories with custom colors and icons
 - Add/edit/delete status types
 - Persistent data storage using localStorage
+- GitHub sync for cross-device data
 
 ## 🚀 Getting Started
 
@@ -62,82 +103,33 @@ Personalized recommendations based on:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/yang-daily-planner.git
+   git clone https://github.com/flyzhenghao/yang-daily-planner.git
    cd yang-daily-planner
    ```
 
 2. **Open the application**
    - Simply open `index.html` in your web browser
-   - Or use a local server:
-     ```bash
-     # Using Python
-     python -m http.server 8000
-     
-     # Using Node.js
-     npx serve
-     ```
 
-3. **Access the app**
-   - Direct: Open `index.html`
-   - Server: Navigate to `http://localhost:8000`
-
-### Deployment Options
-
-#### GitHub Pages
-1. Go to repository Settings → Pages
-2. Select "Deploy from a branch"
-3. Choose `main` branch and `/ (root)` folder
-4. Access at `https://YOUR_USERNAME.github.io/yang-daily-planner`
-
-#### Netlify
-1. Connect your GitHub repository
-2. Deploy with default settings
-3. No build command needed
-
-#### Vercel
-1. Import from GitHub
-2. Framework: Other
-3. Deploy
+3. **Configure GitHub Sync (Optional)**
+   - Click "🔑 GitHub Token" in sidebar
+   - Create a Personal Access Token with `repo` scope
+   - Paste token and save
 
 ## 📱 Usage Guide
 
-### Adding an Activity
-1. Click **"+ Add Activity"** button
-2. Fill in the activity details:
-   - Activity name (required)
-   - Date and time range
-   - Category (Study, Entertainment, etc.)
-   - Status (Planning by default)
-   - Notes (optional)
-3. Click **"Add Activity"**
-
-### Editing/Deleting Activities
-- Click ✏️ to edit an activity
-- Click 🗑️ to delete an activity
-
-### Viewing Statistics
-1. Navigate to **Statistics** page
-2. Select period: Daily, Weekly, or Monthly
-3. View charts and insights
-
-### Using the Calendar
-1. Navigate to **Calendar** page
-2. Toggle between Month and Year views
-3. Click on any day to see activities
-4. Health indicators show completion status
-
-### Customizing Settings
-1. Navigate to **Settings** page
-2. Add new categories with custom icons and colors
-3. Add new status types
-4. Reset data if needed
+### Calendar Activity List (v1.1.0)
+1. Click on a date to see activities
+2. Each activity shows: icon, title, status badge, and time
+3. Click on any activity to expand details
+4. Edit or Delete buttons appear in expanded view
+5. Click again to collapse
 
 ## 🛠️ Technical Details
 
 ### Technologies Used
 - **React 18** - UI framework
-- **Recharts** - Data visualization
 - **localStorage** - Data persistence
+- **GitHub API** - Cloud sync
 - **CSS3** - Styling with custom properties
 - **Google Fonts** - Nunito & Quicksand
 
@@ -145,22 +137,11 @@ Personalized recommendations based on:
 ```
 yang-daily-planner/
 ├── index.html          # Main application file
+├── data.json           # Synced data file
 ├── README.md           # Documentation
 ├── LICENSE             # MIT License
 └── .gitignore          # Git ignore file
 ```
-
-### Data Storage
-All data is stored in the browser's localStorage:
-- `activities` - Array of activity objects
-- `categories` - Array of category objects
-- `statuses` - Array of status objects
-
-### Browser Compatibility
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
 
 ## 📐 Design Philosophy
 
@@ -168,46 +149,17 @@ The interface is designed to be:
 - **Engaging**: Colorful but not overwhelming
 - **Intuitive**: Easy navigation for teenagers
 - **Functional**: Focus on productivity
-- **Responsive**: Works on desktop and tablets
-
-### Color Palette
-- Primary: `#6C5CE7` (Purple)
-- Study: `#6C5CE7`
-- Entertainment: `#FD79A8`
-- Exercise: `#00B894`
-- Social: `#FDCB6E`
-- Sleep: `#74B9FF`
+- **Compact**: Maximize information density without clutter
 
 ## 🔒 Privacy
 
 - All data is stored locally in your browser
-- No data is sent to external servers
+- GitHub sync is optional and user-controlled
 - Clear data anytime via Settings
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Icons: Native emojis
-- Fonts: Google Fonts
-- Charts: Recharts library
-- Inspiration: Year 9 student needs
-
-## 📧 Support
-
-For questions or suggestions, please open an issue in the GitHub repository.
 
 ---
 
