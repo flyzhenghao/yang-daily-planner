@@ -1453,6 +1453,8 @@
                                     view={calendarView}
                                     setView={setCalendarView}
                                     onAdd={() => setShowModal(true)}
+                                    onEdit={openEdit}
+                                    onDelete={deleteActivity}
                                 />
                             )}
                             {page === "statistics" && (
@@ -1994,6 +1996,8 @@
                 view,
                 setView,
                 onAdd,
+                onEdit,
+                onDelete,
             }) {
                 const [currentDate, setCurrentDate] = useState(new Date());
                 const months = [
@@ -2318,7 +2322,23 @@
                                                         borderRadius:
                                                             "var(--radius-md)",
                                                         marginBottom: "8px",
+                                                        cursor: "pointer",
+                                                        transition:
+                                                            "all 0.2s ease",
                                                     }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.background =
+                                                            "#F0F1FF";
+                                                        e.currentTarget.style.transform =
+                                                            "translateX(4px)";
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.background =
+                                                            "#FAFBFF";
+                                                        e.currentTarget.style.transform =
+                                                            "translateX(0)";
+                                                    }}
+                                                    onClick={() => onEdit(a)}
                                                 >
                                                     <div
                                                         style={{
@@ -2329,7 +2349,9 @@
                                                                 "flex-start",
                                                         }}
                                                     >
-                                                        <div>
+                                                        <div
+                                                            style={{ flex: 1 }}
+                                                        >
                                                             <div
                                                                 style={{
                                                                     fontWeight: 600,
@@ -2350,15 +2372,29 @@
                                                                 {a.timeTo}
                                                             </div>
                                                         </div>
-                                                        <span
-                                                            className={`category-badge category-${a.category?.toLowerCase()}`}
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                gap: "8px",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
                                                         >
-                                                            {c?.icon}
-                                                        </span>
+                                                            <span
+                                                                className={`category-badge category-${a.category?.toLowerCase()}`}
+                                                            >
+                                                                {c?.icon}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                     <div
                                                         style={{
                                                             marginTop: "8px",
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "space-between",
+                                                            alignItems:
+                                                                "center",
                                                         }}
                                                     >
                                                         <span
@@ -2366,6 +2402,33 @@
                                                         >
                                                             {a.status}
                                                         </span>
+                                                        <div
+                                                            className="action-btns"
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        >
+                                                            <button
+                                                                className="action-btn edit"
+                                                                onClick={() =>
+                                                                    onEdit(a)
+                                                                }
+                                                                title="Edit"
+                                                            >
+                                                                ✏️
+                                                            </button>
+                                                            <button
+                                                                className="action-btn delete"
+                                                                onClick={() =>
+                                                                    onDelete(
+                                                                        a.id,
+                                                                    )
+                                                                }
+                                                                title="Delete"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );
