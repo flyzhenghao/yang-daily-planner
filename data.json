@@ -1,6 +1,6 @@
 {
   "version": "v1.2.0",
-  "lastUpdated": "2025-12-08T18:31:16.566Z",
+  "lastUpdated": "2025-12-08T20:04:04.908Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -61,6 +61,46 @@
       "notes": "",
       "status": "Planning",
       "id": "17651829373920a88h7xz7"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "09:00",
+      "timeTo": "09:30",
+      "category": "Study",
+      "item": "Studying math",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765224089378xhr3fl2lq"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "09:30",
+      "timeTo": "09:50",
+      "category": "Social",
+      "item": "Talking to friends about badminton",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765224153550dihotzjzh"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "09:50",
+      "timeTo": "10:20",
+      "category": "Social",
+      "item": "Study science",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765224163895pvwm8hm7y"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "10:20",
+      "timeTo": "11:20",
+      "category": "Social",
+      "item": "study",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765224178470e3bfph6lh"
     }
   ],
   "categories": [
