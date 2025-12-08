@@ -1,6 +1,6 @@
 {
   "version": "v1.2.0",
-  "lastUpdated": "2025-12-08T22:03:02.316Z",
+  "lastUpdated": "2025-12-08T22:30:16.343Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -95,12 +95,22 @@
     {
       "date": "2025-12-09",
       "timeFrom": "10:20",
-      "timeTo": "11:20",
+      "timeTo": "10:50",
       "category": "Study",
       "item": "study",
       "notes": "",
       "status": "Planning",
       "id": "1765224178470e3bfph6lh"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "10:50",
+      "timeTo": "11:20",
+      "category": "Study",
+      "item": "studying math",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765232003538ds0rhiox9"
     }
   ],
   "categories": [
