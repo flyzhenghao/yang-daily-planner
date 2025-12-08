@@ -1,26 +1,66 @@
 {
   "version": "v1.2.0",
-  "lastUpdated": "2025-12-08T04:53:32.926Z",
+  "lastUpdated": "2025-12-08T08:35:43.695Z",
   "activities": [
     {
       "date": "2025-12-08",
-      "timeFrom": "09:00",
-      "timeTo": "10:00",
-      "category": "Study",
-      "item": "test",
-      "notes": "testss",
-      "status": "Planning",
-      "id": "1765151507989j1dynp3vr"
+      "timeFrom": "15:00",
+      "timeTo": "17:00",
+      "category": "Exercise",
+      "item": "Badminton",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765182699017p5qp5xjum"
     },
     {
       "date": "2025-12-08",
-      "timeFrom": "09:00",
-      "timeTo": "10:00",
-      "category": "Social",
-      "item": "test3",
-      "notes": "test",
+      "timeFrom": "17:20",
+      "timeTo": "17:40",
+      "category": "Other",
+      "item": "Doing personal stuff",
+      "notes": "",
       "status": "Processing",
-      "id": "1765152394603oamqgemit"
+      "id": "17651827385479txgfhjhi"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "17:50",
+      "timeTo": "18:10",
+      "category": "Study",
+      "item": "Studying math",
+      "notes": "",
+      "status": "Processing",
+      "id": "1765182783435dcdewnhmf"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "18:20",
+      "timeTo": "18:30",
+      "category": "Entertainment",
+      "item": "Talking to friends about badminton",
+      "notes": "",
+      "status": "Processing",
+      "id": "1765182899409pbzgesqnv"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "18:30",
+      "timeTo": "18:50",
+      "category": "Other",
+      "item": "Eating",
+      "notes": "",
+      "status": "Processing",
+      "id": "17651829182842tcoqye0l"
+    },
+    {
+      "date": "2025-12-08",
+      "timeFrom": "19:00",
+      "timeTo": "21:00",
+      "category": "Exercise",
+      "item": "badminton",
+      "notes": "",
+      "status": "Planning",
+      "id": "17651829373920a88h7xz7"
     }
   ],
   "categories": [
