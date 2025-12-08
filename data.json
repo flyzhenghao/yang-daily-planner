@@ -1,6 +1,6 @@
 {
   "version": "v1.2.0",
-  "lastUpdated": "2025-12-08T08:37:41.364Z",
+  "lastUpdated": "2025-12-08T18:31:16.566Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -61,16 +61,6 @@
       "notes": "",
       "status": "Planning",
       "id": "17651829373920a88h7xz7"
-    },
-    {
-      "date": "2025-12-08",
-      "timeFrom": "09:00",
-      "timeTo": "10:00",
-      "category": "Study",
-      "item": "aeraf",
-      "notes": "",
-      "status": "Planning",
-      "id": "1765183057895hn2yew8qh"
     }
   ],
   "categories": [
