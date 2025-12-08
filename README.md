@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -17,6 +17,31 @@ Yang's Daily Planner is a single-page application that provides:
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
 ## 📝 Changelog / 版本变更说明
+
+### v1.2.0 (2024-12-08)
+
+**用户需求 / User Request:**
+- 当点击 +Add Activity 按钮，填写完然后点击 Add Activity
+- 新要求自动进入创建下一条，开始时间就是之前的结束时间
+
+**实现变更 / Changes Made:**
+- ✅ 添加活动后弹窗保持打开，自动准备创建下一条
+- ✅ 新活动的开始时间 (Time From) 自动设为上一条的结束时间 (Time To)
+- ✅ 新活动的结束时间自动设为开始时间 +1 小时
+- ✅ 保留日期和分类设置，只清空活动名称和备注
+- ✅ 显示已添加数量计数器 (如 "✓ 3 added")
+- ✅ 提交按钮文字变化: "Add Activity" → "Add Next +"
+- ✅ 取消按钮在添加后变为 "✓ Done"
+- ✅ 光标自动聚焦到活动名称输入框
+
+**交互流程 / Workflow:**
+1. 点击 "+ Add Activity" 打开弹窗
+2. 填写活动信息，点击 "Add Activity"
+3. 活动被添加，弹窗保持打开
+4. 表单重置，Time From = 上一条的 Time To
+5. 继续添加下一条，或点击 "✓ Done" 完成
+
+---
 
 ### v1.1.0 (2024-12-08)
 

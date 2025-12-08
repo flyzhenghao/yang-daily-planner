@@ -185,7 +185,7 @@
         <div id="root"></div>
         <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
-const APP_VERSION = "v1.1.0";
+const APP_VERSION = "v1.2.0";
 const GITHUB_OWNER = "flyzhenghao";
 const GITHUB_REPO = "yang-daily-planner";
 const GITHUB_FILE_PATH = "data.json";
@@ -309,7 +309,7 @@ function App() {
                 {page === "statistics" && <Statistics activities={activities} categories={categories} statuses={statuses} period={period} setPeriod={setPeriod} />}
                 {page === "settings" && <Settings categories={categories} setCategories={setCategories} statuses={statuses} setStatuses={setStatuses} />}
             </main>
-            {showModal && <Modal activity={editingActivity} categories={categories} statuses={statuses} onSave={(a) => { editingActivity ? updateActivity(a) : addActivity(a); closeModal(); }} onClose={closeModal} />}
+            {showModal && <Modal activity={editingActivity} categories={categories} statuses={statuses} onSave={(a, keepOpen) => { editingActivity ? updateActivity(a) : addActivity(a); if (!keepOpen) closeModal(); }} onClose={closeModal} />}
             {showTokenModal && <TokenModal onClose={() => setShowTokenModal(false)} />}
         </div>
     );
@@ -488,19 +488,41 @@ function Settings({ categories, setCategories, statuses, setStatuses }) {
 
 function Modal({ activity, categories, statuses, onSave, onClose }) {
     const today = new Date().toISOString().split("T")[0];
-    const [form, setForm] = useState(activity || { date: today, timeFrom: "09:00", timeTo: "10:00", category: categories[0]?.name || "", item: "", notes: "", status: "Planning" });
-    const submit = (e) => { e.preventDefault(); if (form.item.trim()) onSave(form); };
+    const getDefaultForm = (prevTimeTo) => ({ date: today, timeFrom: prevTimeTo || "09:00", timeTo: addOneHour(prevTimeTo || "09:00"), category: categories[0]?.name || "", item: "", notes: "", status: "Planning" });
+    const addOneHour = (time) => { const [h, m] = time.split(":").map(Number); const newH = (h + 1) % 24; return `${String(newH).padStart(2, "0")}:${String(m).padStart(2, "0")}`; };
+    const [form, setForm] = useState(activity || getDefaultForm());
+    const [addedCount, setAddedCount] = useState(0);
+    const isEditMode = !!activity;
+    const inputRef = React.useRef(null);
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!form.item.trim()) return;
+        onSave(form, !isEditMode); // pass keepOpen flag for add mode
+        if (!isEditMode) {
+            // Continue adding: reset form with new timeFrom = previous timeTo
+            const nextTimeFrom = form.timeTo;
+            setForm({ ...getDefaultForm(nextTimeFrom), date: form.date, category: form.category });
+            setAddedCount(c => c + 1);
+            // Focus back to activity name input
+            setTimeout(() => inputRef.current?.focus(), 50);
+        }
+    };
+    
     return (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
             <div className="modal">
-                <h2 className="modal-title">{activity ? "✏️ Edit Activity" : "➕ New Activity"}</h2>
-                <form onSubmit={submit}>
-                    <div className="form-group"><label className="form-label">Activity Name *</label><input type="text" className="form-input" placeholder="What are you planning?" value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} required autoFocus /></div>
+                <h2 className="modal-title">{isEditMode ? "✏️ Edit Activity" : "➕ New Activity"}{!isEditMode && addedCount > 0 && <span style={{ fontSize: "14px", fontWeight: "normal", color: "var(--accent-green)", marginLeft: "12px" }}>✓ {addedCount} added</span>}</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group"><label className="form-label">Activity Name *</label><input ref={inputRef} type="text" className="form-input" placeholder="What are you planning?" value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} required autoFocus /></div>
                     <div className="form-row"><div className="form-group"><label className="form-label">Date *</label><input type="date" className="form-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></div><div className="form-group"><label className="form-label">Category *</label><select className="form-select" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>{categories.map((c) => <option key={c.id} value={c.name}>{c.icon} {c.name}</option>)}</select></div></div>
                     <div className="form-row"><div className="form-group"><label className="form-label">Time From</label><input type="time" className="form-input" value={form.timeFrom} onChange={(e) => setForm({ ...form, timeFrom: e.target.value })} /></div><div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => setForm({ ...form, timeTo: e.target.value })} /></div></div>
                     <div className="form-group"><label className="form-label">Status</label><select className="form-select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>{statuses.map((s) => <option key={s.id} value={s.name}>{s.name}</option>)}</select></div>
                     <div className="form-group"><label className="form-label">Notes</label><textarea className="form-textarea" placeholder="Additional notes..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-                    <div className="modal-actions"><button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button><button type="submit" className="btn btn-primary">{activity ? "Save Changes" : "Add Activity"}</button></div>
+                    <div className="modal-actions">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>{isEditMode ? "Cancel" : (addedCount > 0 ? "✓ Done" : "Cancel")}</button>
+                        <button type="submit" className="btn btn-primary">{isEditMode ? "Save Changes" : (addedCount > 0 ? "Add Next +" : "Add Activity")}</button>
+                    </div>
                 </form>
             </div>
         </div>
