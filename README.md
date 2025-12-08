@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -12,11 +12,51 @@ Yang's Daily Planner is a single-page application that provides:
 - **Activity Management**: Add, edit, and delete daily activities with detailed time tracking
 - **Smart Categories**: Organize activities by Study, Entertainment, Social, Exercise, Sleep, and custom categories
 - **Status Tracking**: Monitor progress with customizable statuses (Planning, Processing, Finished, etc.)
-- **Visual Statistics**: Daily, weekly, and monthly analysis with interactive charts
+- **Visual Statistics**: Daily, weekly, monthly, and yearly analysis with interactive charts
 - **Calendar View**: Track daily health scores with month and year views
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
 ## 📝 Changelog / 版本变更说明
+
+### v1.3.0 (2024-12-09)
+
+**用户需求 / User Request:**
+1. Dashboard 要加上可以根据日历选择查看任意一天的统计信息，同时也有月度和年度维度的统计，默认为今天的统计数据。现在的数据统计信息不准，Today 板块 activity list 也没有限定在当天的
+2. Activities 增加一个时长自动计算的字段
+
+**实现变更 / Changes Made:**
+
+**Dashboard 增强:**
+- ✅ 新增日期选择器 (Date Picker)，可选择任意日期查看统计
+- ✅ 新增 "Today" 快捷按钮，一键返回今天
+- ✅ 新增 Daily / Weekly / Monthly / Yearly 四个维度切换
+- ✅ 修复统计数据计算错误，现在准确计算选定范围的时长
+- ✅ 修复 Activity List 只显示选定日期/范围的活动
+- ✅ 健康评分根据所选时间维度自动调整目标值
+- ✅ 智能建议根据所选时间维度显示对应提示
+
+**Duration 时长自动计算:**
+- ✅ Activities 列表新增 Duration 列，自动显示每个活动的时长
+- ✅ Activities 页面显示筛选结果的总时长统计
+- ✅ Calendar 活动详情显示时长
+- ✅ 新建/编辑活动弹窗实时显示计算的时长
+- ✅ 支持跨午夜活动的时长计算（如 23:00-01:00 = 2h）
+- ✅ 新增 `calcDuration()` 和 `formatDuration()` 工具函数
+- ✅ 新增 `.duration-badge` 样式，醒目显示时长
+
+**Bug 修复:**
+- ✅ 修复时区问题导致的日期比较错误
+- ✅ 新增 `getLocalDateStr()` 函数确保日期一致性
+- ✅ 修复 Dashboard Today 板块显示所有活动而非当天活动的问题
+
+**技术细节 / Technical Details:**
+- 新增 `getLocalDateStr(date)` - 获取本地日期字符串，避免时区问题
+- 新增 `calcDuration(timeFrom, timeTo)` - 计算两个时间点之间的分钟数
+- 新增 `formatDuration(mins)` - 格式化时长显示 (如 "2h 30m")
+- Dashboard 使用 `useMemo` 优化日期范围和统计计算性能
+- 新增 `.date-picker-row` 和 `.duration-badge` CSS 样式
+
+---
 
 ### v1.2.0 (2024-12-08)
 
@@ -84,11 +124,20 @@ Yang's Daily Planner is a single-page application that provides:
 
 ### 🗓️ Activity Management
 - Create activities with date, time range, category, status, and notes
+- **Auto-calculated duration** showing time spent on each activity
 - Quick edit and delete functionality
 - Filter and search activities
 - Sort by date, category, or status
+- Total duration display for filtered results
 
-### 📊 Statistics & Analytics
+### 📊 Dashboard
+- **Date Picker**: Select any date to view statistics
+- **Multi-dimension Views**: Daily, Weekly, Monthly, Yearly
+- Real-time statistics for selected time range
+- Health score adjusted to time dimension
+- Activity list filtered to selected period
+
+### 📈 Statistics & Analytics
 - **Pie Charts**: Time distribution by category
 - **Bar Charts**: Status distribution and trends
 - **Period Selection**: Daily, weekly, and monthly views
@@ -97,7 +146,7 @@ Yang's Daily Planner is a single-page application that provides:
 ### 📅 Calendar
 - **Month View**: See all days with health indicators
 - **Year View**: Overview of entire year's progress
-- **Compact Activity List**: Status inline with title for better space efficiency
+- **Compact Activity List**: Status inline with title, duration displayed
 - **Expandable Details**: Click to view full details with edit/delete options
 - **Health Indicators**:
   - 🟢 Excellent (80%+ completion)
@@ -142,9 +191,20 @@ Personalized recommendations based on:
 
 ## 📱 Usage Guide
 
+### Dashboard Date Selection (v1.3.0)
+1. Use the date picker to select any date
+2. Click "Today" to return to current date
+3. Switch between Daily/Weekly/Monthly/Yearly views
+4. All stats and activity list update automatically
+
+### Activity Duration (v1.3.0)
+- Duration is automatically calculated from Time From and Time To
+- Displayed in Activities list, Calendar details, and Add/Edit modal
+- Supports overnight activities (e.g., 23:00-01:00 = 2h)
+
 ### Calendar Activity List (v1.1.0)
 1. Click on a date to see activities
-2. Each activity shows: icon, title, status badge, and time
+2. Each activity shows: icon, title, status badge, time, and duration
 3. Click on any activity to expand details
 4. Edit or Delete buttons appear in expanded view
 5. Click again to collapse
