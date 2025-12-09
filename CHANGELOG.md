@@ -5,15 +5,16 @@
 #### 1. Time Validation on Activity Save
 **User Requirement**: 
 - "点击 add activity，要求：Time To 必须大于 Time From"
-- "Time To 如果小于 Time From，要提醒错误，要求修改并且不能保存，直到修改正确"
+- "Time To 如果小于 Time From，点击'add activity' 时候要提示报错，要求修改并且不能保存，直到修改正确"
 
 **Implementation**:
-- Added client-side validation in the Modal's `handleSubmit()` function
-- When user clicks "Add Activity" or "Save Changes", the app checks if `Time To > Time From`
-- If invalid: displays alert "⚠️ 'Time To' must be later than 'Time From'. Please adjust the times."
-- Prevents form submission until times are corrected
-- Also added real-time validation on Time To input: if user tries to set Time To equal to Time From, it auto-adjusts to 1 hour later
-- Used helper function `timeStrToMins()` to convert HH:MM format to minutes for comparison
+- Added validation in Modal's `handleSubmit()` function that runs when user clicks "Add Activity" or "Save Changes"
+- Validation logic: converts both times to minutes using `timeStrToMins()` helper and checks if `Time To > Time From`
+- If `Time To ≤ Time From`: displays error alert with clear message and example
+  - Alert message: "❌ 时间错误！'Time To' 必须晚于 'Time From'。请调整时间后再保存。Example: Time From: 09:00, Time To: 10:00"
+- Form submission is blocked (returns early) - user cannot save until they correct the time values
+- Time To input field allows any value to be entered, validation only happens on submit (not on input change)
+- This ensures clear feedback at the moment user clicks "Add Activity" button
 
 #### 2. Prevent Loss of Recent Local Edits
 - The app now stores a `yang_last_updated` timestamp in `localStorage` whenever activities change

@@ -937,15 +937,17 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!form.item.trim()) return;
-        // Validate time range: Time To must be later than Time From (no overnight allowed)
+        
+        // Validate time range: Time To must be later than Time From
         if (form.timeFrom && form.timeTo) {
             const fromM = timeStrToMins(form.timeFrom);
             const toM = timeStrToMins(form.timeTo);
             if (toM <= fromM) {
-                alert("⚠️ 'Time To' must be later than 'Time From'. Please adjust the times.");
+                alert("❌ 时间错误！'Time To' 必须晚于 'Time From'。请调整时间后再保存。\n\nExample: Time From: 09:00, Time To: 10:00");
                 return;
             }
         }
+        
         onSave(form, !isEditMode);
         if (!isEditMode) {
             const nextTimeFrom = form.timeTo;
@@ -972,26 +974,7 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
                             const newTimeTo = newTimeFrom ? addOneHour(newTimeFrom) : form.timeTo;
                             setForm({ ...form, timeFrom: newTimeFrom, timeTo: newTimeTo });
                         }} /></div>
-                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => { 
-                            const newTimeTo = e.target.value;
-                            // Validate: timeTo should be >= timeFrom (allow overnight)
-                            if (newTimeTo && form.timeFrom) {
-                                const [h1, m1] = form.timeFrom.split(":").map(Number);
-                                const [h2, m2] = newTimeTo.split(":").map(Number);
-                                const timeFromMins = h1 * 60 + m1;
-                                const timeToMins = h2 * 60 + m2;
-                                // Allow overnight (timeTo < timeFrom means next day, which is valid)
-                                // But if timeTo is exactly same or very close, it's invalid
-                                if (timeToMins === timeFromMins) {
-                                    alert("⚠️ Time To must be after Time From. Auto-adjusting to 1 hour later.");
-                                    setForm({ ...form, timeTo: addOneHour(form.timeFrom) });
-                                } else {
-                                    setForm({ ...form, timeTo: newTimeTo });
-                                }
-                            } else {
-                                setForm({ ...form, timeTo: newTimeTo });
-                            }
-                        }} /></div>
+                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => setForm({ ...form, timeTo: e.target.value })} /></div>
                     </div>
                     {duration > 0 && (
                         <div style={{ marginBottom: "20px", textAlign: "center" }}>
