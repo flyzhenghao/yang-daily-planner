@@ -1,3 +1,9 @@
+## v1.4.5 - 2025-12-09
+
+### Fixed
+- **Mobile Layout**: Fixed "wasted space" issue by forcing full width and removing default margins on mobile devices.
+- **Version Display**: Added version number to the Settings page and as a subtle watermark on mobile for easier tracking.
+
 ## v1.4.4 - 2025-12-09
 
 ### Fixed
