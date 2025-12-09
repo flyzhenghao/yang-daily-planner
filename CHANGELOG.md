@@ -34,3 +34,6 @@
 2. **Local persistence**: ✅ Timestamp-based comparison ensures local edits aren't lost
 3. **Manual GitHub save only**: ✅ No auto-save on add/edit/delete operations
 4. **Bulk Actions**: ✅ Implemented multi-seleciton, bulk delete, and bulk edit (Category/Status)
+
+### Bug Fixes
+- **Bulk Delete**: Fixed issue where bulk delete might not work due to stale state. Improved UX to not clear selection if deletion is cancelled.

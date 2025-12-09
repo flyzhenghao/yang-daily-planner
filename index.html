@@ -1482,8 +1482,14 @@
             const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
             const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
             const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
-            const bulkDeleteActivities = (ids) => { if (confirm(`Delete ${ids.length} activities?`)) setActivities(activities.filter((a) => !ids.includes(a.id))); };
-            const bulkUpdateActivities = (ids, updates) => { setActivities(activities.map((a) => ids.includes(a.id) ? { ...a, ...updates } : a)); };
+            const bulkDeleteActivities = (ids) => {
+                if (confirm(`Delete ${ids.length} activities?`)) {
+                    setActivities(prev => prev.filter((a) => !ids.includes(a.id)));
+                    return true;
+                }
+                return false;
+            };
+            const bulkUpdateActivities = (ids, updates) => { setActivities(prev => prev.map((a) => ids.includes(a.id) ? { ...a, ...updates } : a)); };
             const openEdit = (a) => { setEditingActivity(a); setShowModal(true); };
             const closeModal = () => { setShowModal(false); setEditingActivity(null); };
 
@@ -1785,8 +1791,9 @@
             };
 
             const handleBulkDelete = () => {
-                onBulkDelete(selectedIds);
-                setSelectedIds([]);
+                if (onBulkDelete(selectedIds)) {
+                    setSelectedIds([]);
+                }
             };
 
             const handleBulkEdit = (updates) => {
