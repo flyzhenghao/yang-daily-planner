@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -17,6 +17,28 @@ Yang's Daily Planner is a single-page application that provides:
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
 ## 📝 Changelog / 版本变更说明
+
+### v1.4.0 (2024-12-09)
+
+**用户需求 / User Request:**
+- 每次增删改操作都自动调用 "save to github" 操作，这样不用手工做点击这个按钮了
+
+**实现变更 / Changes Made:**
+
+**自动保存到GitHub:**
+- ✅ 每次增删改操作后自动保存到GitHub，无需手动点击按钮
+- ✅ 添加活动、编辑活动、删除活动后自动保存
+- ✅ 添加/删除分类、添加/删除状态后自动保存
+- ✅ 1秒防抖机制，避免频繁保存
+- ✅ 初始加载时不触发保存
+- ✅ 静默保存，不显示弹窗提示（避免打断用户操作）
+
+**技术细节 / Technical Details:**
+- 使用 `useEffect` 监听 `activities`、`categories`、`statuses` 的变化
+- 使用 `React.useRef` 实现防抖和初始加载标志
+- 自动保存时使用 `console.log` 记录，不显示弹窗
+
+---
 
 ### v1.3.0 (2024-12-09)
 
