@@ -1,6 +1,6 @@
 {
-  "version": "v1.4.0",
-  "lastUpdated": "2025-12-09T00:59:26.613Z",
+  "version": "v1.2.0",
+  "lastUpdated": "2025-12-09T01:40:05.082Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -111,6 +111,16 @@
       "notes": "",
       "status": "Planning",
       "id": "1765232003538ds0rhiox9"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "11:00",
+      "timeTo": "11:30",
+      "category": "Study",
+      "item": "Badminton at homepractice",
+      "notes": "",
+      "status": "Planning",
+      "id": "17652443525378o7c2kesq"
     }
   ],
   "categories": [
