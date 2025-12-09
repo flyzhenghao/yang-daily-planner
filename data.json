@@ -1,6 +1,6 @@
 {
   "version": "v1.4.5",
-  "lastUpdated": "2025-12-09T20:59:48.839Z",
+  "lastUpdated": "2025-12-09T21:01:11.056Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -361,6 +361,46 @@
       "notes": "",
       "status": "Planning",
       "id": "1765313982255g6uf05i6f"
+    },
+    {
+      "date": "2025-12-10",
+      "timeFrom": "14:40",
+      "timeTo": "15:10",
+      "category": "Entertainment",
+      "item": "Doing personal things",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765314012165poe677ydq"
+    },
+    {
+      "date": "2025-12-10",
+      "timeFrom": "15:10",
+      "timeTo": "15:40",
+      "category": "Entertainment",
+      "item": "Cubing",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765314033598ga4j3ks7q"
+    },
+    {
+      "date": "2025-12-10",
+      "timeFrom": "15:40",
+      "timeTo": "16:20",
+      "category": "Entertainment",
+      "item": "Watching netflix",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765314041162sazxphoxr"
+    },
+    {
+      "date": "2025-12-10",
+      "timeFrom": "16:20",
+      "timeTo": "16:50",
+      "category": "Entertainment",
+      "item": "Perparing for snowboarding",
+      "notes": "",
+      "status": "Planning",
+      "id": "17653140527496pyie76e0"
     }
   ],
   "categories": [
