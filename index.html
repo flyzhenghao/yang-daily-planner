@@ -1483,8 +1483,14 @@
             const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
             const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
             const bulkDeleteActivities = (ids) => {
+                if (!ids || ids.length === 0) return false;
+                console.log("Bulk delete requested for:", ids);
                 if (confirm(`Delete ${ids.length} activities?`)) {
-                    setActivities(prev => prev.filter((a) => !ids.includes(a.id)));
+                    setActivities(prev => {
+                        const next = prev.filter((a) => !ids.includes(a.id));
+                        console.log("Activities before:", prev.length, "After:", next.length);
+                        return next;
+                    });
                     return true;
                 }
                 return false;
