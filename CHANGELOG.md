@@ -10,8 +10,8 @@
 **Implementation**:
 - Added validation in Modal's `handleSubmit()` function that runs when user clicks "Add Activity" or "Save Changes"
 - Validation logic: converts both times to minutes using `timeStrToMins()` helper and checks if `Time To > Time From`
-- If `Time To ≤ Time From`: displays error alert with clear message and example
-  - Alert message: "❌ 时间错误！'Time To' 必须晚于 'Time From'。请调整时间后再保存。Example: Time From: 09:00, Time To: 10:00"
+- If `Time To ≤ Time From`: displays inline error message in the modal
+  - Error message: "❌ 时间错误！'Time To' 必须晚于 'Time From'。"
 - Form submission is blocked (returns early) - user cannot save until they correct the time values
 - Time To input field allows any value to be entered, validation only happens on submit (not on input change)
 - This ensures clear feedback at the moment user clicks "Add Activity" button
@@ -23,6 +23,6 @@
 - Auto-save to GitHub disabled per user request: changes only persist locally until user manually clicks "Save to GitHub"
 
 ### User Requirements & Assistant Response
-1. **Time validation**: ✅ Implemented with alert + form submission prevention
+1. **Time validation**: ✅ Implemented with inline error + form submission prevention
 2. **Local persistence**: ✅ Timestamp-based comparison ensures local edits aren't lost
 3. **Manual GitHub save only**: ✅ No auto-save on add/edit/delete operations

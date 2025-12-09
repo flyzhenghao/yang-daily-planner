@@ -930,6 +930,7 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
     const getDefaultForm = (prevTimeTo) => ({ date: today, timeFrom: prevTimeTo || "09:00", timeTo: addOneHour(prevTimeTo || "09:00"), category: categories[0]?.name || "", item: "", notes: "", status: "Planning" });
     const addOneHour = (time) => { const [h, m] = time.split(":").map(Number); const newH = (h + 1) % 24; return `${String(newH).padStart(2, "0")}:${String(m).padStart(2, "0")}`; };
     const [form, setForm] = useState(activity || getDefaultForm());
+    const [error, setError] = useState(null);
     const [addedCount, setAddedCount] = useState(0);
     const isEditMode = !!activity;
     const inputRef = React.useRef(null);
@@ -943,7 +944,7 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
             const fromM = timeStrToMins(form.timeFrom);
             const toM = timeStrToMins(form.timeTo);
             if (toM <= fromM) {
-                alert("❌ 时间错误！'Time To' 必须晚于 'Time From'。请调整时间后再保存。\n\nExample: Time From: 09:00, Time To: 10:00");
+                setError("❌ 时间错误！'Time To' 必须晚于 'Time From'。");
                 return;
             }
         }
@@ -952,6 +953,7 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
         if (!isEditMode) {
             const nextTimeFrom = form.timeTo;
             setForm({ ...getDefaultForm(nextTimeFrom), date: form.date, category: form.category });
+            setError(null);
             setAddedCount(c => c + 1);
             setTimeout(() => inputRef.current?.focus(), 50);
         }
@@ -965,16 +967,17 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
             <div className="modal">
                 <h2 className="modal-title">{isEditMode ? "✏️ Edit Activity" : "➕ New Activity"}{!isEditMode && addedCount > 0 && <span style={{ fontSize: "14px", fontWeight: "normal", color: "var(--accent-green)", marginLeft: "12px" }}>✓ {addedCount} added</span>}</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group"><label className="form-label">Activity Name *</label><input ref={inputRef} type="text" className="form-input" placeholder="What are you planning?" value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} required autoFocus /></div>
+                    <div className="form-group"><label className="form-label">Activity Name *</label><input ref={inputRef} type="text" className="form-input" placeholder="What are you planning?" value={form.item} onChange={(e) => { setForm({ ...form, item: e.target.value }); setError(null); }} required autoFocus /></div>
                     <div className="form-row"><div className="form-group"><label className="form-label">Date *</label><input type="date" className="form-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></div><div className="form-group"><label className="form-label">Category *</label><select className="form-select" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>{categories.map((c) => <option key={c.id} value={c.name}>{c.icon} {c.name}</option>)}</select></div></div>
                     <div className="form-row">
-                        <div className="form-group"><label className="form-label">Time From</label><input type="time" className="form-input" value={form.timeFrom} onChange={(e) => { 
+                        <div className="form-group"><label className="form-label">Time From</label><input type="time" className="form-input" value={form.timeFrom} onChange={(e) => {
+                            setError(null);
                             const newTimeFrom = e.target.value;
                             // Auto-adjust timeTo to 1 hour after timeFrom
                             const newTimeTo = newTimeFrom ? addOneHour(newTimeFrom) : form.timeTo;
                             setForm({ ...form, timeFrom: newTimeFrom, timeTo: newTimeTo });
                         }} /></div>
-                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => setForm({ ...form, timeTo: e.target.value })} /></div>
+                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => { setForm({ ...form, timeTo: e.target.value }); setError(null); }} /></div>
                     </div>
                     {duration > 0 && (
                         <div style={{ marginBottom: "20px", textAlign: "center" }}>
@@ -983,6 +986,7 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
                     )}
                     <div className="form-group"><label className="form-label">Status</label><select className="form-select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>{statuses.map((s) => <option key={s.id} value={s.name}>{s.name}</option>)}</select></div>
                     <div className="form-group"><label className="form-label">Notes</label><textarea className="form-textarea" placeholder="Additional notes..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
+                    {error && <div style={{ color: "#E17055", fontSize: "13px", marginBottom: "16px", padding: "10px", backgroundColor: "rgba(225, 112, 85, 0.1)", borderRadius: "6px", border: "1px solid rgba(225, 112, 85, 0.2)" }}>{error}</div>}
                     <div className="modal-actions">
                         <button type="button" className="btn btn-secondary" onClick={onClose}>{isEditMode ? "Cancel" : (addedCount > 0 ? "✓ Done" : "Cancel")}</button>
                         <button type="submit" className="btn btn-primary">{isEditMode ? "Save Changes" : (addedCount > 0 ? "Add Next +" : "Add Activity")}</button>
