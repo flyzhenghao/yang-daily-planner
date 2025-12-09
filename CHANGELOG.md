@@ -2,6 +2,12 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.4.8] - 2025-12-10
+
+### Added
+- **WhatsApp Notification**: Added a "Send Report" button to generate and send a daily summary via WhatsApp.
+- **Settings**: Added "WhatsApp Number" configuration field.
+
 ## [v1.4.7] - 2024-12-10
 
 ### Added

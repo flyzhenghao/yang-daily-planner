@@ -1496,7 +1496,7 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
-        const APP_VERSION = "v1.4.7";
+        const APP_VERSION = "v1.4.8";
         const GITHUB_OWNER = "flyzhenghao";
         const GITHUB_REPO = "yang-daily-planner";
         const GITHUB_FILE_PATH = "data.json";
@@ -1623,6 +1623,10 @@
             const [isSaving, setIsSaving] = useState(false);
             const [isSyncing, setIsSyncing] = useState(false);
             const [confirmConfig, setConfirmConfig] = useState(null);
+            const [reportPhoneNumber, setReportPhoneNumber] = useState("");
+
+            useEffect(() => { setReportPhoneNumber(getLS("yang_report_phone", "")); }, []);
+            useEffect(() => { setLS("yang_report_phone", reportPhoneNumber); }, [reportPhoneNumber]);
 
             useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); }); }, []);
             useEffect(() => { if (!isLoading) { setLS("yang_activities", activities); setLS("yang_last_updated", Date.now()); } }, [activities, isLoading]);
@@ -1656,7 +1660,49 @@
             const bulkDeleteActivities = (ids, onSuccess) => { if (!ids || ids.length === 0) return; setConfirmConfig({ title: "Bulk Delete", message: `Are you sure you want to delete ${ids.length} activities?`, onConfirm: () => { setActivities(prev => prev.filter((a) => !ids.includes(a.id))); if (onSuccess) onSuccess(); setConfirmConfig(null); } }); };
             const bulkUpdateActivities = (ids, updates) => { setActivities(prev => prev.map((a) => ids.includes(a.id) ? { ...a, ...updates } : a)); };
             const openEdit = (a) => { setEditingActivity(a); setShowModal(true); };
+
             const closeModal = () => { setShowModal(false); setEditingActivity(null); };
+
+            const generateDailySummary = () => {
+                const today = getLocalDateStr();
+                const todayActs = activities.filter(a => a.date === today);
+                if (todayActs.length === 0) return "📅 Daily Report: No activities logged today.";
+
+                const finished = todayActs.filter(a => a.status === "Finished");
+                const totalMins = todayActs.reduce((s, a) => s + calcDuration(a.timeFrom, a.timeTo), 0);
+                const studyMins = todayActs.filter(a => a.category === "Study").reduce((s, a) => s + calcDuration(a.timeFrom, a.timeTo), 0);
+
+                let text = `🌟 *Daily Report - ${formatDate(today)}*\n\n`;
+                text += `📊 *Summary*\n`;
+                text += `• Total Time: ${formatDuration(totalMins)}\n`;
+                text += `• Study Time: ${formatDuration(studyMins)}\n`;
+                text += `• Tasks Completed: ${finished.length}/${todayActs.length}\n\n`;
+
+                if (finished.length > 0) {
+                    text += `✅ *Completed*\n`;
+                    finished.forEach(a => text += `• ${a.item}\n`);
+                    text += `\n`;
+                }
+
+                const others = todayActs.filter(a => a.status !== "Finished");
+                if (others.length > 0) {
+                    text += `🚧 *In Progress / Other*\n`;
+                    others.forEach(a => text += `• ${a.item} (${a.status})\n`);
+                }
+
+                return text;
+            };
+
+            const handleSendReport = () => {
+                if (!reportPhoneNumber) {
+                    alert("⚠️ Please set a Phone Number in Settings first.");
+                    setPage("settings");
+                    return;
+                }
+                const text = generateDailySummary();
+                const url = `https://wa.me/${reportPhoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            };
 
             const navItems = [{ id: "dashboard", icon: "📊", label: "Dashboard" }, { id: "activities", icon: "📝", label: "Activities" }, { id: "calendar", icon: "📅", label: "Calendar" }, { id: "statistics", icon: "📈", label: "Statistics" }, { id: "settings", icon: "⚙️", label: "Settings" }];
 
@@ -1667,6 +1713,7 @@
                         <nav className="nav-menu">{navItems.map((i) => <div key={i.id} className={`nav-item ${page === i.id ? "active" : ""}`} onClick={() => setPage(i.id)}><span className="nav-icon">{i.icon}</span><span>{i.label}</span></div>)}</nav>
                         <div style={{ padding: "16px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                             <button className="btn btn-primary" onClick={handleSaveToGitHub} disabled={isSaving} style={{ width: "100%", fontSize: "13px", padding: "10px" }}>{isSaving ? "⏳ Saving..." : "💾 Save to GitHub"}</button>
+                            <button className="btn btn-secondary" onClick={handleSendReport} style={{ width: "100%", fontSize: "13px", padding: "10px", marginTop: "8px", background: "#25D366", color: "#fff", border: "none" }}>📱 Send Report</button>
                             <button className="btn btn-secondary" onClick={() => setShowTokenModal(true)} style={{ width: "100%", fontSize: "13px", padding: "8px", marginTop: "8px" }}>🔑 GitHub Token</button>
                             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: "8px" }}>{APP_VERSION}</div>
                         </div>
@@ -1677,7 +1724,7 @@
                         {page === "activities" && <Activities activities={activities} categories={categories} statuses={statuses} onAdd={() => setShowModal(true)} onEdit={openEdit} onDelete={deleteActivity} onBulkDelete={bulkDeleteActivities} onBulkUpdate={bulkUpdateActivities} />}
                         {page === "calendar" && <Calendar activities={activities} categories={categories} statuses={statuses} selectedDate={selectedDate} setSelectedDate={setSelectedDate} view={calendarView} setView={setCalendarView} onAdd={() => setShowModal(true)} onEdit={openEdit} onDelete={deleteActivity} />}
                         {page === "statistics" && <Statistics activities={activities} categories={categories} statuses={statuses} period={period} setPeriod={setPeriod} />}
-                        {page === "settings" && <Settings categories={categories} setCategories={setCategories} statuses={statuses} setStatuses={setStatuses} onForceSync={handleForceSync} isSyncing={isSyncing} />}
+                        {page === "settings" && <Settings categories={categories} setCategories={setCategories} statuses={statuses} setStatuses={setStatuses} onForceSync={handleForceSync} isSyncing={isSyncing} reportPhoneNumber={reportPhoneNumber} setReportPhoneNumber={setReportPhoneNumber} />}
                     </main>
                     {showModal && <Modal activity={editingActivity} activities={activities} categories={categories} statuses={statuses} onSave={(a, keepOpen) => { editingActivity ? updateActivity(a) : addActivity(a); if (!keepOpen) closeModal(); }} onClose={closeModal} />}
                     {showTokenModal && <TokenModal onClose={() => setShowTokenModal(false)} />}
@@ -1752,7 +1799,7 @@
             return (<div><div className="page-header"><div><h1 className="page-title">Statistics</h1><p className="page-subtitle">Analyze patterns</p></div></div><div className="period-selector">{["daily", "weekly", "monthly"].map((p) => <button key={p} className={`period-btn ${period === p ? "active" : ""}`} onClick={() => setPeriod(p)}>{p.charAt(0).toUpperCase() + p.slice(1)}</button>)}</div><div className="dashboard-grid" style={{ marginBottom: "24px" }}><div className="stat-card"><div className="stat-icon" style={{ background: "rgba(108,92,231,0.1)" }}>📊</div><div className="stat-value">{filtered.length}</div><div className="stat-label">Total Activities</div></div><div className="stat-card"><div className="stat-icon" style={{ background: "rgba(0,206,201,0.1)" }}>⏱️</div><div className="stat-value">{(total / 60).toFixed(1)}h</div><div className="stat-label">Time Logged</div></div><div className="stat-card"><div className="stat-icon" style={{ background: "rgba(0,184,148,0.1)" }}>✅</div><div className="stat-value">{rate}%</div><div className="stat-label">Completion Rate</div></div><div className="stat-card"><div className="stat-icon" style={{ background: "rgba(253,203,110,0.1)" }}>🏆</div><div className="stat-value">{catStats[0]?.name || "-"}</div><div className="stat-label">Top Category</div></div></div><div className="charts-grid"><div className="chart-card"><div className="card-header"><h3 className="card-title">Time by Category</h3></div><PieChart data={catStats} totalLabel={period} /></div><div className="chart-card"><div className="card-header"><h3 className="card-title">Status Distribution</h3></div><BarChart data={statusStats} /></div></div><div className="suggestions-card"><h3 className="suggestions-title">📈 Insights</h3><div className="suggestion-item"><div className="suggestion-icon">📊</div><div className="suggestion-text">{rate >= 70 ? `Excellent! ${rate}% completion rate.` : rate >= 50 ? `Good effort! ${rate}% completion.` : `${rate}% completion. Set realistic goals.`}</div></div></div></div>);
         }
 
-        function Settings({ categories, setCategories, statuses, setStatuses, onForceSync, isSyncing }) {
+        function Settings({ categories, setCategories, statuses, setStatuses, onForceSync, isSyncing, reportPhoneNumber, setReportPhoneNumber }) {
             const [newCat, setNewCat] = useState({ name: "", color: "#6C5CE7", icon: "📌" });
             const [newStat, setNewStat] = useState({ name: "", color: "#74B9FF" });
             const addCat = () => { if (newCat.name.trim()) { setCategories([...categories, { ...newCat, id: generateId() }]); setNewCat({ name: "", color: "#6C5CE7", icon: "📌" }); } };
@@ -1762,6 +1809,7 @@
             return (<div><div className="page-header"><div><h1 className="page-title">Settings</h1><p className="page-subtitle">Customize categories and statuses</p></div></div>
                 <div className="settings-section"><h3 className="settings-title">📁 Categories</h3><div className="settings-list">{categories.map((c) => <div key={c.id} className="settings-item"><div className="settings-item-color" style={{ background: c.color }}></div><span>{c.icon} {c.name}</span><button onClick={() => delCat(c.id)}>×</button></div>)}</div><div className="add-item-form"><input type="text" placeholder="Name" value={newCat.name} onChange={(e) => setNewCat({ ...newCat, name: e.target.value })} /><input type="text" placeholder="Icon" style={{ maxWidth: "80px" }} value={newCat.icon} onChange={(e) => setNewCat({ ...newCat, icon: e.target.value })} /><input type="color" style={{ width: "50px", padding: "4px" }} value={newCat.color} onChange={(e) => setNewCat({ ...newCat, color: e.target.value })} /><button className="btn btn-primary btn-sm" onClick={addCat}>Add</button></div></div>
                 <div className="settings-section"><h3 className="settings-title">📋 Statuses</h3><div className="settings-list">{statuses.map((s) => <div key={s.id} className="settings-item"><div className="settings-item-color" style={{ background: s.color }}></div><span>{s.name}</span><button onClick={() => delStat(s.id)}>×</button></div>)}</div><div className="add-item-form"><input type="text" placeholder="Name" value={newStat.name} onChange={(e) => setNewStat({ ...newStat, name: e.target.value })} /><input type="color" style={{ width: "50px", padding: "4px" }} value={newStat.color} onChange={(e) => setNewStat({ ...newStat, color: e.target.value })} /><button className="btn btn-primary btn-sm" onClick={addStat}>Add</button></div></div>
+                <div className="settings-section"><h3 className="settings-title">📱 Notification</h3><p style={{ color: "var(--text-secondary)", marginBottom: "16px", fontSize: "14px" }}>Configure WhatsApp number for daily reports.</p><div className="form-group"><label className="form-label">WhatsApp Number (e.g. 6421...)</label><input type="text" className="form-input" placeholder="64212345678" value={reportPhoneNumber} onChange={(e) => setReportPhoneNumber(e.target.value)} /></div></div>
                 <div className="settings-section"><h3 className="settings-title">🔄 Data Management</h3><p style={{ color: "var(--text-secondary)", marginBottom: "16px", fontSize: "14px" }}>Manage your data synchronization and storage.</p><div style={{ marginBottom: "20px", padding: "16px", background: "#f8f9fe", borderRadius: "12px" }}><div style={{ fontWeight: "600", marginBottom: "8px", color: "var(--text-primary)" }}>☁️ 强制从云端同步 / Force Sync from Cloud</div><p style={{ color: "var(--text-secondary)", fontSize: "13px", marginBottom: "12px" }}>如果本地数据与云端不同步（例如云端有更新但本地没有显示），点击此按钮强制从 GitHub 拉取最新数据，覆盖本地缓存。</p><button className="btn btn-warning" onClick={onForceSync} disabled={isSyncing} style={{ fontSize: "14px" }}>{isSyncing ? "⏳ 同步中..." : "🔄 强制从云端同步"}</button></div><div style={{ padding: "16px", background: "rgba(225, 112, 85, 0.05)", borderRadius: "12px", border: "1px solid rgba(225, 112, 85, 0.2)" }}><div style={{ fontWeight: "600", marginBottom: "8px", color: "var(--accent-red)" }}>⚠️ 危险操作 / Danger Zone</div><p style={{ color: "var(--text-secondary)", fontSize: "13px", marginBottom: "12px" }}>Reset all local data. This action cannot be undone.</p><button className="btn btn-danger" onClick={() => { if (confirm("Reset all data? This cannot be undone.")) { localStorage.removeItem("yang_activities"); localStorage.removeItem("yang_categories"); localStorage.removeItem("yang_statuses"); localStorage.removeItem("yang_last_updated"); window.location.reload(); } }}>🗑️ Reset All Data</button></div></div>
                 <div className="settings-section"><h3 className="settings-title">ℹ️ About</h3><div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #eee", fontSize: "14px" }}><span style={{ color: "var(--text-secondary)" }}>Version</span><span style={{ fontWeight: "600" }}>{APP_VERSION}</span></div><div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "14px" }}><span style={{ color: "var(--text-secondary)" }}>Developer</span><span>Yang's Agent</span></div></div>
             </div>);
