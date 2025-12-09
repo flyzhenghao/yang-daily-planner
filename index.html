@@ -305,13 +305,32 @@ function App() {
     const [period, setPeriod] = useState("daily");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const isInitialLoad = React.useRef(true);
+    const saveTimeoutRef = React.useRef(null);
 
-    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); }); }, []);
+    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoad.current = false; }); }, []);
     useEffect(() => { if (!isLoading) setLS("yang_activities", activities); }, [activities, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
 
     const handleSaveToGitHub = async () => { setIsSaving(true); const success = await saveDataToGitHub(activities, categories, statuses); setIsSaving(false); if (success) alert("✅ Data saved to GitHub successfully!"); };
+    
+    // Auto-save to GitHub after data changes (with debounce)
+    useEffect(() => {
+        if (isLoading || isInitialLoad.current) return;
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(async () => {
+            setIsSaving(true);
+            const success = await saveDataToGitHub(activities, categories, statuses);
+            setIsSaving(false);
+            if (success) {
+                // Silent save - no alert to avoid interruption
+                console.log("✅ Auto-saved to GitHub");
+            }
+        }, 1000); // 1 second debounce
+        return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
+    }, [activities, categories, statuses, isLoading]);
+
     const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
     const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
     const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
