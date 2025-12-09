@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -17,6 +17,38 @@ Yang's Daily Planner is a single-page application that provides:
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
 ## 📝 Changelog / 版本变更说明
+
+### v1.4.1 (2024-12-09)
+
+**用户需求 / User Request:**
+1. 新建 activities 后，有时候并不能保存。可能是没有正常启动自动保存功能，刷新页面就没有了，需要修复 bug
+2. 如果修改 activities 的 time from，time to 要自动调整到一小时以后
+3. 要做一些自动检查，比如 time to 时间要大于等于 time from 时间
+
+**实现变更 / Changes Made:**
+
+**自动保存功能修复:**
+- ✅ 修复新建 activities 后无法保存的 bug
+- ✅ 实现自动保存到 GitHub 功能，每次增删改操作后自动保存
+- ✅ 1.5秒防抖机制，避免频繁保存
+- ✅ 初始加载时不触发保存
+- ✅ 静默保存，不显示弹窗提示（避免打断用户操作）
+- ✅ 只有在配置了 GitHub token 时才自动保存
+
+**时间输入优化:**
+- ✅ 修改 Time From 时，Time To 自动调整到一小时以后
+- ✅ 添加时间验证：Time To 必须大于 Time From
+- ✅ 允许跨午夜的时间范围（如 23:00-01:00）
+- ✅ 如果 Time To 等于 Time From，自动调整为 Time From + 1小时
+
+**技术细节 / Technical Details:**
+- 使用 `useEffect` 监听 `activities`、`categories`、`statuses` 的变化
+- 使用 `React.useRef` 实现防抖和初始加载标志
+- 自动保存时使用 `console.log` 记录，不显示弹窗
+- Time From 修改时自动调用 `addOneHour()` 函数调整 Time To
+- 时间验证逻辑支持跨午夜场景
+
+---
 
 ### v1.4.0 (2024-12-09)
 

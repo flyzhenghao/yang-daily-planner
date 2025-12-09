@@ -188,7 +188,7 @@
         <div id="root"></div>
         <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
-const APP_VERSION = "v1.4.0";
+const APP_VERSION = "v1.4.1";
 const GITHUB_OWNER = "flyzhenghao";
 const GITHUB_REPO = "yang-daily-planner";
 const GITHUB_FILE_PATH = "data.json";
@@ -305,13 +305,32 @@ function App() {
     const [period, setPeriod] = useState("daily");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const isInitialLoad = React.useRef(true);
+    const saveTimeoutRef = React.useRef(null);
 
-    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); }); }, []);
+    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoad.current = false; }); }, []);
     useEffect(() => { if (!isLoading) setLS("yang_activities", activities); }, [activities, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
 
     const handleSaveToGitHub = async () => { setIsSaving(true); const success = await saveDataToGitHub(activities, categories, statuses); setIsSaving(false); if (success) alert("✅ Data saved to GitHub successfully!"); };
+    
+    // Auto-save to GitHub after data changes (with debounce)
+    useEffect(() => {
+        if (isLoading || isInitialLoad.current) return;
+        const token = localStorage.getItem("yang_github_token");
+        if (!token) return; // Skip auto-save if no token configured
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(async () => {
+            setIsSaving(true);
+            const success = await saveDataToGitHub(activities, categories, statuses);
+            setIsSaving(false);
+            if (success) {
+                console.log("✅ Auto-saved to GitHub");
+            }
+        }, 1500); // 1.5 second debounce
+        return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
+    }, [activities, categories, statuses, isLoading]);
     const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
     const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
     const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
@@ -882,8 +901,32 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
                     <div className="form-group"><label className="form-label">Activity Name *</label><input ref={inputRef} type="text" className="form-input" placeholder="What are you planning?" value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} required autoFocus /></div>
                     <div className="form-row"><div className="form-group"><label className="form-label">Date *</label><input type="date" className="form-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></div><div className="form-group"><label className="form-label">Category *</label><select className="form-select" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>{categories.map((c) => <option key={c.id} value={c.name}>{c.icon} {c.name}</option>)}</select></div></div>
                     <div className="form-row">
-                        <div className="form-group"><label className="form-label">Time From</label><input type="time" className="form-input" value={form.timeFrom} onChange={(e) => setForm({ ...form, timeFrom: e.target.value })} /></div>
-                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => setForm({ ...form, timeTo: e.target.value })} /></div>
+                        <div className="form-group"><label className="form-label">Time From</label><input type="time" className="form-input" value={form.timeFrom} onChange={(e) => { 
+                            const newTimeFrom = e.target.value;
+                            // Auto-adjust timeTo to 1 hour after timeFrom
+                            const newTimeTo = newTimeFrom ? addOneHour(newTimeFrom) : form.timeTo;
+                            setForm({ ...form, timeFrom: newTimeFrom, timeTo: newTimeTo });
+                        }} /></div>
+                        <div className="form-group"><label className="form-label">Time To</label><input type="time" className="form-input" value={form.timeTo} onChange={(e) => { 
+                            const newTimeTo = e.target.value;
+                            // Validate: timeTo should be >= timeFrom (allow overnight)
+                            if (newTimeTo && form.timeFrom) {
+                                const [h1, m1] = form.timeFrom.split(":").map(Number);
+                                const [h2, m2] = newTimeTo.split(":").map(Number);
+                                const timeFromMins = h1 * 60 + m1;
+                                const timeToMins = h2 * 60 + m2;
+                                // Allow overnight (timeTo < timeFrom means next day, which is valid)
+                                // But if timeTo is exactly same or very close, it's invalid
+                                if (timeToMins === timeFromMins) {
+                                    alert("⚠️ Time To must be after Time From. Auto-adjusting to 1 hour later.");
+                                    setForm({ ...form, timeTo: addOneHour(form.timeFrom) });
+                                } else {
+                                    setForm({ ...form, timeTo: newTimeTo });
+                                }
+                            } else {
+                                setForm({ ...form, timeTo: newTimeTo });
+                            }
+                        }} /></div>
                     </div>
                     {duration > 0 && (
                         <div style={{ marginBottom: "20px", textAlign: "center" }}>
