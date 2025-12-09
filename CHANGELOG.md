@@ -43,3 +43,4 @@
   - Implemented **Bottom Navigation Bar** for better mobile accessibility.
   - Converted "Activities" table to **Card View** on mobile.
   - Optimized dashboard grid and modals for small screens.
+  - **Layout Optimization**: Reduced padding on mobile to maximize screen real estate and remove "empty" space.
