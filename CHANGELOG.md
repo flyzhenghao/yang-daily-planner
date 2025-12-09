@@ -2,6 +2,14 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.4.7] - 2024-12-10
+
+### Added
+- **Activity Autocomplete**:
+  - Automatically suggests activity names based on historical data when adding/editing activities
+  - **Category Auto-fill**: Automatically selects the corresponding category when a known activity name is chosen from the suggestions
+  - Enhances data entry speed and consistency
+
 ## [v1.4.6] - 2024-12-10
 
 ### Added
