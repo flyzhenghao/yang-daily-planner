@@ -305,32 +305,13 @@ function App() {
     const [period, setPeriod] = useState("daily");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const isInitialLoad = React.useRef(true);
-    const saveTimeoutRef = React.useRef(null);
 
-    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoad.current = false; }); }, []);
+    useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); }); }, []);
     useEffect(() => { if (!isLoading) setLS("yang_activities", activities); }, [activities, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
 
     const handleSaveToGitHub = async () => { setIsSaving(true); const success = await saveDataToGitHub(activities, categories, statuses); setIsSaving(false); if (success) alert("✅ Data saved to GitHub successfully!"); };
-    
-    // Auto-save to GitHub after data changes (with debounce)
-    useEffect(() => {
-        if (isLoading || isInitialLoad.current) return;
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(async () => {
-            setIsSaving(true);
-            const success = await saveDataToGitHub(activities, categories, statuses);
-            setIsSaving(false);
-            if (success) {
-                // Silent save - no alert to avoid interruption
-                console.log("✅ Auto-saved to GitHub");
-            }
-        }, 1000); // 1 second debounce
-        return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
-    }, [activities, categories, statuses, isLoading]);
-
     const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
     const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
     const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
@@ -407,7 +388,11 @@ function Dashboard({ activities, categories, statuses, onAdd, setPage }) {
 
     // Filter activities for the selected date range
     const filteredActs = useMemo(() => {
-        return activities.filter(a => a.date >= getDateRange.start && a.date <= getDateRange.end);
+        return activities.filter(a => a.date >= getDateRange.start && a.date <= getDateRange.end).sort((a, b) => {
+            const dateCompare = b.date.localeCompare(a.date);
+            if (dateCompare !== 0) return dateCompare;
+            return (b.timeFrom || "00:00").localeCompare(a.timeFrom || "00:00");
+        });
     }, [activities, getDateRange]);
 
     // Calculate stats for filtered activities
@@ -524,7 +509,7 @@ function Dashboard({ activities, categories, statuses, onAdd, setPage }) {
             <div className="card">
                 <div className="card-header">
                     <h3 className="card-title">
-                        {viewMode === "daily" ? "Today" : viewMode === "weekly" ? "This Week" : viewMode === "monthly" ? "This Month" : "This Year"} ({filteredActs.length})
+                        {viewMode === "daily" ? "Daily" : viewMode === "weekly" ? "This Week" : viewMode === "monthly" ? "This Month" : "This Year"} ({filteredActs.length})
                     </h3>
                     <button className="btn btn-secondary btn-sm" onClick={() => setPage("activities")}>View All →</button>
                 </div>
@@ -546,7 +531,7 @@ function Dashboard({ activities, categories, statuses, onAdd, setPage }) {
                                 const dur = calcDuration(a.timeFrom, a.timeTo);
                                 return (
                                     <tr key={a.id}>
-                                        <td>{viewMode !== "daily" ? formatDate(a.date) : "-"}</td>
+                                        <td>{formatDate(a.date)}</td>
                                         <td>{a.timeFrom}-{a.timeTo}</td>
                                         <td>{a.item}</td>
                                         <td><span className={`category-badge category-${a.category?.toLowerCase()}`}>{c?.icon} {a.category}</span></td>
@@ -612,7 +597,7 @@ function Activities({ activities, categories, statuses, onAdd, onEdit, onDelete 
         r.sort((a, b) => {
             const dateCompare = b.date.localeCompare(a.date);
             if (dateCompare !== 0) return dateCompare;
-            return (a.timeFrom || "00:00").localeCompare(b.timeFrom || "00:00");
+            return (b.timeFrom || "00:00").localeCompare(a.timeFrom || "00:00");
         }); 
         return r; 
     }, [activities, filter]);
@@ -729,7 +714,10 @@ function Calendar({ activities, categories, statuses, selectedDate, setSelectedD
     const isSel = (d) => getLocalDateStr(d) === getLocalDateStr(selectedDate);
     const dayArr = getDays(currentDate);
     const selStr = getLocalDateStr(selectedDate);
-    const selActs = activities.filter((a) => a.date === selStr);
+    const selActs = activities.filter((a) => a.date === selStr).sort((a, b) => {
+        const timeCompare = (b.timeFrom || "00:00").localeCompare(a.timeFrom || "00:00");
+        return timeCompare;
+    });
 
     return (
         <div>

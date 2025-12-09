@@ -21,22 +21,24 @@ Yang's Daily Planner is a single-page application that provides:
 ### v1.4.0 (2024-12-09)
 
 **用户需求 / User Request:**
-- 每次增删改操作都自动调用 "save to github" 操作，这样不用手工做点击这个按钮了
+1. Activities 界面要按照 date 和 time 倒序排序，最新的在上面
+2. Dashboard 当点击 Daily，activity list 标题应该是 Daily 而不是现在的 Today。同时 Date 日期要有（现在是空白）
+3. Calendar 右侧 activity list 要按照时间倒序排列
 
 **实现变更 / Changes Made:**
 
-**自动保存到GitHub:**
-- ✅ 每次增删改操作后自动保存到GitHub，无需手动点击按钮
-- ✅ 添加活动、编辑活动、删除活动后自动保存
-- ✅ 添加/删除分类、添加/删除状态后自动保存
-- ✅ 1秒防抖机制，避免频繁保存
-- ✅ 初始加载时不触发保存
-- ✅ 静默保存，不显示弹窗提示（避免打断用户操作）
+**排序优化:**
+- ✅ Activities 界面按日期和时间倒序排序，最新的活动显示在最上面
+- ✅ Calendar 右侧活动列表按时间倒序排列，最新时间在最上面
+
+**Dashboard 改进:**
+- ✅ Daily 模式标题从 "Today" 改为 "Daily"
+- ✅ Daily 模式下 Date 列显示完整日期（之前显示 "-"）
 
 **技术细节 / Technical Details:**
-- 使用 `useEffect` 监听 `activities`、`categories`、`statuses` 的变化
-- 使用 `React.useRef` 实现防抖和初始加载标志
-- 自动保存时使用 `console.log` 记录，不显示弹窗
+- Activities 排序：先按日期倒序，同日期内按时间倒序
+- Calendar 活动列表：按时间倒序排列
+- Dashboard Daily 模式：统一使用 "Daily" 标题，Date 列始终显示日期
 
 ---
 
