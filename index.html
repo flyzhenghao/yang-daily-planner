@@ -2250,6 +2250,19 @@
                     <div className="page-header"><div><h1 className="page-title">Settings</h1><p className="page-subtitle">Customize categories and statuses</p></div></div>
                     <div className="settings-section"><h3 className="settings-title">📁 Categories</h3><div className="settings-list">{categories.map((c) => <div key={c.id} className="settings-item"><div className="settings-item-color" style={{ background: c.color }}></div><span>{c.icon} {c.name}</span><button onClick={() => delCat(c.id)}>×</button></div>)}</div><div className="add-item-form"><input type="text" placeholder="Name" value={newCat.name} onChange={(e) => setNewCat({ ...newCat, name: e.target.value })} /><input type="text" placeholder="Icon" style={{ maxWidth: "80px" }} value={newCat.icon} onChange={(e) => setNewCat({ ...newCat, icon: e.target.value })} /><input type="color" style={{ width: "50px", padding: "4px" }} value={newCat.color} onChange={(e) => setNewCat({ ...newCat, color: e.target.value })} /><button className="btn btn-primary btn-sm" onClick={addCat}>Add</button></div></div>
                     <div className="settings-section"><h3 className="settings-title">📋 Statuses</h3><div className="settings-list">{statuses.map((s) => <div key={s.id} className="settings-item"><div className="settings-item-color" style={{ background: s.color }}></div><span>{s.name}</span><button onClick={() => delStat(s.id)}>×</button></div>)}</div><div className="add-item-form"><input type="text" placeholder="Name" value={newStat.name} onChange={(e) => setNewStat({ ...newStat, name: e.target.value })} /><input type="color" style={{ width: "50px", padding: "4px" }} value={newStat.color} onChange={(e) => setNewStat({ ...newStat, color: e.target.value })} /><button className="btn btn-primary btn-sm" onClick={addStat}>Add</button></div></div>
+
+                    <div className="settings-section">
+                        <h3 className="settings-title">ℹ️ About</h3>
+                        <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #eee", fontSize: "14px" }}>
+                            <span style={{ color: "var(--text-secondary)" }}>Version</span>
+                            <span style={{ fontWeight: "600" }}>{APP_VERSION}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "14px" }}>
+                            <span style={{ color: "var(--text-secondary)" }}>Developer</span>
+                            <span>Yang's Agent</span>
+                        </div>
+                    </div>
+
                     <div className="settings-section"><h3 className="settings-title">⚠️ Data Management</h3><p style={{ color: "var(--text-secondary)", marginBottom: "16px", fontSize: "14px" }}>Reset all data. Cannot be undone.</p><button className="btn btn-danger" onClick={() => { if (confirm("Reset all data?")) { localStorage.removeItem("yang_activities"); localStorage.removeItem("yang_categories"); localStorage.removeItem("yang_statuses"); window.location.reload(); } }}>🗑️ Reset All Data</button></div>
                 </div>
             );
