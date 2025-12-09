@@ -245,6 +245,27 @@
             font-size: 13px
         }
 
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(225, 112, 85, 0.1);
+        }
+
         .card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
@@ -446,6 +467,138 @@
         .status-finished {
             background: rgba(0, 184, 148, 0.15);
             color: var(--accent-green)
+        }
+
+        /* Mobile Responsive Styles */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--primary);
+        }
+
+        .mobile-nav-icon {
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 20px;
+                padding-bottom: 90px;
+                /* Space for bottom nav */
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .page-header {
+                margin-bottom: 24px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            /* Activity List Card View */
+            .activity-table {
+                display: block;
+            }
+
+            .activity-table thead {
+                display: none;
+            }
+
+            .activity-table tbody {
+                display: block;
+            }
+
+            .activity-table tr {
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border: 1px solid #eee;
+                border-radius: var(--radius-md);
+                margin-bottom: 12px;
+                padding: 12px;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .activity-table td {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+                background: none;
+                border: none;
+            }
+
+            .activity-table td:first-child,
+            .activity-table td:last-child {
+                border-radius: 0;
+            }
+
+
+            .activity-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--text-secondary);
+                font-size: 12px;
+            }
+
+            .activity-table td[data-label="Select"]::before,
+            .activity-table td[data-label="Actions"]::before {
+                display: none;
+            }
+
+            /* Hide checkbox column in mobile for now if it complicates layout, 
+               or keep it. Let's keep it but position it at top. */
+            .activity-table td:first-child {
+                /* Checkbox */
+                justify-content: flex-start;
+                margin-bottom: 4px;
+            }
+
+            .mobile-nav {
+                display: flex;
+            }
+
+            .modal {
+                width: 90vw;
+                max-width: 90vw;
+                padding: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
         }
 
         .status-partialfinished {
@@ -1534,6 +1687,16 @@
                     {showModal && <Modal activity={editingActivity} categories={categories} statuses={statuses} onSave={(a, keepOpen) => { editingActivity ? updateActivity(a) : addActivity(a); if (!keepOpen) closeModal(); }} onClose={closeModal} />}
                     {showTokenModal && <TokenModal onClose={() => setShowTokenModal(false)} />}
                     {confirmConfig && <ConfirmModal title={confirmConfig.title} message={confirmConfig.message} onConfirm={confirmConfig.onConfirm} onCancel={() => setConfirmConfig(null)} />}
+
+                    {/* Mobile Navigation */}
+                    <div className="mobile-nav">
+                        {navItems.map(item => (
+                            <div key={item.id} className={`mobile-nav-item ${page === item.id ? "active" : ""}`} onClick={() => setPage(item.id)}>
+                                <div className="mobile-nav-icon">{item.icon}</div>
+                                <span>{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         }
@@ -1875,18 +2038,18 @@
                                         const dur = calcDuration(a.timeFrom, a.timeTo);
                                         return (
                                             <tr key={a.id} className={selectedIds.includes(a.id) ? "selected-row" : ""}>
-                                                <td style={{ textAlign: "center" }}><input type="checkbox" checked={selectedIds.includes(a.id)} onChange={() => toggleSelection(a.id)} /></td>
-                                                <td>{formatDate(a.date)}</td>
-                                                <td>{a.timeFrom}-{a.timeTo}</td>
-                                                <td><span className="duration-badge">⏱️ {formatDuration(dur)}</span></td>
-                                                <td style={{ fontWeight: 600 }}>{a.item}</td>
-                                                <td><span className={`category-badge category-${a.category?.toLowerCase()}`}>{c?.icon} {a.category}</span></td>
-                                                <td><span className={`status-badge status-${a.status?.toLowerCase().replace(/\s+/g, "")}`}>{a.status}</span></td>
-                                                <td style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis" }}>{a.notes || "-"}</td>
-                                                <td>
-                                                    <div className="action-btns">
-                                                        <button className="action-btn edit" onClick={() => onEdit(a)}>✏️</button>
-                                                        <button className="action-btn delete" onClick={() => onDelete(a.id)}>🗑️</button>
+                                                <td style={{ textAlign: "center" }} data-label="Select"><input type="checkbox" checked={selectedIds.includes(a.id)} onChange={() => toggleSelection(a.id)} /></td>
+                                                <td data-label="Date">{formatDate(a.date)}</td>
+                                                <td data-label="Time">{a.timeFrom}-{a.timeTo}</td>
+                                                <td data-label="Duration"><span className="duration-badge">⏱️ {formatDuration(dur)}</span></td>
+                                                <td style={{ fontWeight: 600 }} data-label="Activity">{a.item}</td>
+                                                <td data-label="Category"><span className={`category-badge category-${a.category?.toLowerCase()}`}>{c?.icon} {a.category}</span></td>
+                                                <td data-label="Status"><span className={`status-badge status-${a.status?.toLowerCase().replace(/\s+/g, "")}`}>{a.status}</span></td>
+                                                <td style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis" }} data-label="Notes">{a.notes || "-"}</td>
+                                                <td data-label="Actions">
+                                                    <div className="action-buttons">
+                                                        <button className="btn-icon" onClick={() => onEdit(a)}>✏️</button>
+                                                        <button className="btn-icon delete" onClick={() => onDelete(a.id)}>🗑️</button>
                                                     </div>
                                                 </td>
                                             </tr>

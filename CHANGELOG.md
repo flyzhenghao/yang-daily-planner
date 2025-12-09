@@ -38,3 +38,8 @@
 ### Bug Fixes
 - **Bulk Delete**: Fixed issue where bulk delete might not work due to stale state. Improved UX to not clear selection if deletion is cancelled.
 - **UI Update**: Replaced native browser `confirm()` dialog with a custom `ConfirmModal` for consistent experience and to avoid "no dialog" issues.
+- **Mobile Support**: 
+  - Added responsive design for mobile devices (screens < 768px).
+  - Implemented **Bottom Navigation Bar** for better mobile accessibility.
+  - Converted "Activities" table to **Card View** on mobile.
+  - Optimized dashboard grid and modals for small screens.
