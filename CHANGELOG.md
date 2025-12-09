@@ -1,54 +1,134 @@
-## v1.4.5 - 2025-12-09
+# Changelog
+
+All notable changes to Yang's Daily Planner will be documented in this file.
+
+## [v1.4.6] - 2024-12-10
+
+### Added
+- **Force Sync from Cloud** feature in Settings → Data Management
+  - New "🔄 强制从云端同步 / Force Sync from Cloud" button
+  - Clears local timestamp cache and forces data refresh from GitHub
+  - Displays count of synced activities upon completion
+  - Bilingual instructions (Chinese/English)
+
+### Changed
+- Reorganized Settings page layout:
+  - 📁 Categories
+  - 📋 Statuses
+  - 🔄 Data Management (NEW section)
+  - ℹ️ About (moved to bottom)
+- `loadDataFromGitHub()` function now accepts optional `forceRemote` parameter
+  - When `true`, bypasses local timestamp comparison logic
 
 ### Fixed
-- **Mobile Layout**: Fixed "wasted space" issue by forcing full width and removing default margins on mobile devices.
-- **Mobile Density**: Completely redesigned Activity Cards on mobile using a compact 3-row layout. Hidden labels and notes, optimized fonts, and reordered fields for maximum density.
-- **Mobile Calendar**: Improved Calendar page layout on mobile to stack the activity list below the calendar for better accessibility.
-- **Version Display**: Added version number to the Settings page and as a subtle watermark on mobile for easier tracking.
+- **Critical sync bug**: Local data not updating when remote data.json has newer records
+  - Root cause: localStorage timestamp comparison was preventing remote data from loading
+  - Solution: Force sync option allows users to manually override the timestamp check
 
-## v1.4.4 - 2025-12-09
+---
+
+## [v1.4.5] - 2024-12-09
+
+### Added
+- Bulk edit and delete functionality for activities
+- Confirmation dialogs for destructive actions
+
+### Changed
+- Improved mobile responsive layout
+- Enhanced activity table with data-label attributes for mobile view
+
+---
+
+## [v1.4.4] - 2024-12-08
+
+### Added
+- Local data persistence protection
+  - Compares local vs remote timestamps before loading
+  - Prevents accidental overwrite of local edits
+
+### Changed
+- Improved data synchronization logic
+
+---
+
+## [v1.4.3] - 2024-12-07
+
+### Added
+- Duration display with ⏱️ badge throughout the app
+- Time validation in activity modal (prevents invalid time ranges)
 
 ### Fixed
+- Time calculation for activities spanning midnight
 
-#### 1. Time Validation on Activity Save
-**User Requirement**: 
-- "点击 add activity，要求：Time To 必须大于 Time From"
-- "Time To 如果小于 Time From，点击'add activity' 时候要提示报错，要求修改并且不能保存，直到修改正确"
+---
 
-**Implementation**:
-- Added validation in Modal's `handleSubmit()` function that runs when user clicks "Add Activity" or "Save Changes"
-- Validation logic: converts both times to minutes using `timeStrToMins()` helper and checks if `Time To > Time From`
-- If `Time To ≤ Time From`: displays inline error message in the modal
-  - Error message: "❌ 时间错误！'Time To' 必须晚于 'Time From'。"
-- Form submission is blocked (returns early) - user cannot save until they correct the time values
-- Time To input field allows any value to be entered, validation only happens on submit (not on input change)
-- This ensures clear feedback at the moment user clicks "Add Activity" button
+## [v1.4.2] - 2024-12-06
 
-#### 2. Prevent Loss of Recent Local Edits
-- The app now stores a `yang_last_updated` timestamp in `localStorage` whenever activities change
-- On load, compares `yang_last_updated` with remote `data.json`'s `lastUpdated` field
-- If local changes are newer, local `localStorage` is used instead of overwriting with older remote data
-- Auto-save to GitHub disabled per user request: changes only persist locally until user manually clicks "Save to GitHub"
+### Added
+- Dashboard date picker with daily/weekly/monthly/yearly views
+- Health score calculation based on activity balance
 
-#### 3. Bulk Actions for Activities (New)
-   - Added checkboxes to "Activities" list for multi-selection
-   - Added "Select All" checkbox in table header
-   - Added Bulk Actions toolbar (appears when items are selected):
-     - **Bulk Delete**: Delete multiple activities at once
-     - **Bulk Edit**: Batch update Category and Status for selected items
+### Changed
+- Improved statistics page with period selector
 
-### User Requirements & Assistant Response
-1. **Time validation**: ✅ Implemented with inline error + form submission prevention
-2. **Local persistence**: ✅ Timestamp-based comparison ensures local edits aren't lost
-3. **Manual GitHub save only**: ✅ No auto-save on add/edit/delete operations
-4. **Bulk Actions**: ✅ Implemented multi-seleciton, bulk delete, and bulk edit (Category/Status)
+---
 
-### Bug Fixes
-- **Bulk Delete**: Fixed issue where bulk delete might not work due to stale state. Improved UX to not clear selection if deletion is cancelled.
-- **UI Update**: Replaced native browser `confirm()` dialog with a custom `ConfirmModal` for consistent experience and to avoid "no dialog" issues.
-- **Mobile Support**: 
-  - Added responsive design for mobile devices (screens < 768px).
-  - Implemented **Bottom Navigation Bar** for better mobile accessibility.
-  - Converted "Activities" table to **Card View** on mobile.
-  - Optimized dashboard grid and modals for small screens.
-  - **Layout Optimization**: Reduced padding on mobile to maximize screen real estate and remove "empty" space.
+## [v1.4.1] - 2024-12-05
+
+### Added
+- GitHub token configuration modal
+- Save to GitHub functionality with progress indicator
+
+### Fixed
+- Mobile navigation bar styling
+
+---
+
+## [v1.4.0] - 2024-12-04
+
+### Added
+- GitHub Pages deployment support
+- Cloud data synchronization via GitHub API
+- Year view in calendar
+
+### Changed
+- Single-file architecture (HTML + CSS + JS in one file)
+
+---
+
+## [v1.3.0] - 2024-12-01
+
+### Added
+- Calendar view with month/year toggle
+- Activity health indicators on calendar days
+- Expandable activity details in calendar sidebar
+
+---
+
+## [v1.2.0] - 2024-11-28
+
+### Added
+- Statistics page with pie and bar charts
+- Category and status management in Settings
+- Smart suggestions based on activity patterns
+
+---
+
+## [v1.1.0] - 2024-11-25
+
+### Added
+- Activity filtering and search
+- Continuous add mode (add multiple activities without closing modal)
+- Auto-advance time feature
+
+---
+
+## [v1.0.0] - 2024-11-20
+
+### Initial Release
+- Dashboard with activity overview
+- Activity management (add, edit, delete)
+- Categories: Study, Entertainment, Social, Exercise, Sleep, Other
+- Statuses: Planning, Processing, Finished, Partial Finished, Abandoned
+- Local storage persistence
+- Mobile responsive design
