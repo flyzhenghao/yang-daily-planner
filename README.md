@@ -2,7 +2,7 @@
 
 A comprehensive daily management web application designed specifically for Year 9 students in New Zealand. This tool helps plan, track, and review daily activities with insightful statistics and health monitoring.
 
-![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## 📋 Overview
@@ -17,6 +17,36 @@ Yang's Daily Planner is a single-page application that provides:
 - **Health Suggestions**: AI-powered recommendations based on activity patterns
 
 ## 📝 Changelog / 版本变更说明
+
+### v1.4.2 (2024-12-09)
+
+**用户需求 / User Request:**
+1. 测试时间验证：Time To 必须大于 Time From，发现如果小于，可以允许保存，但实际上并没有后台保存，刷新后信息就没有。要求保存前做检查，如果小于要提醒修改并且不能保存直到修改正确。
+2. 还是不能自动保存。而且手工点击"save to github" 后也没有保存。刷新后信息就没有了。
+
+**实现变更 / Changes Made:**
+
+**时间验证强化:**
+- ✅ 在保存前添加严格的时间验证，阻止 Time To <= Time From 的保存
+- ✅ 如果时间无效，显示警告并阻止保存，直到用户修改正确
+- ✅ 时间验证在提交表单时进行，确保数据有效性
+
+**保存功能修复:**
+- ✅ 修复自动保存功能，改进错误处理和日志记录
+- ✅ 修复手动保存功能，改进错误提示
+- ✅ 更新 GitHub API Authorization header 使用 `Bearer` 格式
+- ✅ 添加详细的错误日志，方便调试
+- ✅ 改进错误处理，区分 token 未配置和其他错误
+
+**技术细节 / Technical Details:**
+- 在 `handleSubmit` 中添加时间验证逻辑
+- 时间验证：计算分钟数，确保 Time To > Time From
+- 如果时间无效，阻止 `onSave` 调用
+- 改进 `saveDataToGitHub` 函数的错误处理
+- 使用 `Bearer` 格式的 Authorization header
+- 添加 console.log 记录保存过程，方便调试
+
+---
 
 ### v1.4.1 (2024-12-09)
 

@@ -188,7 +188,7 @@
         <div id="root"></div>
         <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
-const APP_VERSION = "v1.4.1";
+const APP_VERSION = "v1.4.2";
 const GITHUB_OWNER = "flyzhenghao";
 const GITHUB_REPO = "yang-daily-planner";
 const GITHUB_FILE_PATH = "data.json";
@@ -257,18 +257,60 @@ async function loadDataFromGitHub() {
 
 async function saveDataToGitHub(activities, categories, statuses) {
     const token = localStorage.getItem("yang_github_token");
-    if (!token) { alert("⚠️ GitHub token not configured. Please set it in Settings."); return false; }
+    if (!token) { 
+        console.warn("⚠️ GitHub token not configured");
+        return false; 
+    }
     try {
         const dataObj = { version: APP_VERSION, lastUpdated: new Date().toISOString(), activities, categories, statuses };
         const content = JSON.stringify(dataObj, null, 2);
         const encodedContent = btoa(unescape(encodeURIComponent(content)));
-        const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, { headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json" }, cache: "no-cache" });
-        if (!getResponse.ok) throw new Error(`Failed to get file info: ${getResponse.status}`);
+        
+        // Get current file info
+        const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, { 
+            headers: { 
+                Authorization: `token ${token}`, 
+                Accept: "application/vnd.github.v3+json" 
+            }, 
+            cache: "no-cache" 
+        });
+        
+        if (!getResponse.ok) {
+            const errorText = await getResponse.text();
+            console.error("Failed to get file info:", getResponse.status, errorText);
+            throw new Error(`Failed to get file info: ${getResponse.status} - ${errorText}`);
+        }
+        
         const fileData = await getResponse.json();
-        const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, { method: "PUT", headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" }, body: JSON.stringify({ message: `Update data - ${new Date().toISOString()}`, content: encodedContent, sha: fileData.sha, branch: GITHUB_BRANCH }) });
-        if (!updateResponse.ok) { const errorData = await updateResponse.json(); throw new Error(`Failed: ${errorData.message || "Unknown error"}`); }
+        
+        // Update file
+        const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, { 
+            method: "PUT", 
+            headers: { 
+                Authorization: `token ${token}`, 
+                Accept: "application/vnd.github.v3+json", 
+                "Content-Type": "application/json" 
+            }, 
+            body: JSON.stringify({ 
+                message: `Update data - ${new Date().toISOString()}`, 
+                content: encodedContent, 
+                sha: fileData.sha, 
+                branch: GITHUB_BRANCH 
+            }) 
+        });
+        
+        if (!updateResponse.ok) { 
+            const errorData = await updateResponse.json().catch(() => ({ message: "Unknown error" }));
+            console.error("Failed to update file:", updateResponse.status, errorData);
+            throw new Error(`Failed to save: ${errorData.message || "Unknown error"}`); 
+        }
+        
+        console.log("✅ Successfully saved to GitHub");
         return true;
-    } catch (error) { console.error("Error saving to GitHub:", error); alert(`❌ Failed to save to GitHub: ${error.message}`); return false; }
+    } catch (error) { 
+        console.error("Error saving to GitHub:", error); 
+        return false; 
+    }
 }
 
 function PieChart({ data, totalLabel }) {
@@ -313,20 +355,40 @@ function App() {
     useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
 
-    const handleSaveToGitHub = async () => { setIsSaving(true); const success = await saveDataToGitHub(activities, categories, statuses); setIsSaving(false); if (success) alert("✅ Data saved to GitHub successfully!"); };
+    const handleSaveToGitHub = async () => { 
+        setIsSaving(true); 
+        const success = await saveDataToGitHub(activities, categories, statuses); 
+        setIsSaving(false); 
+        if (success) {
+            alert("✅ Data saved to GitHub successfully!");
+        } else {
+            const token = localStorage.getItem("yang_github_token");
+            if (!token) {
+                alert("⚠️ GitHub token not configured. Please set it in Settings.");
+            } else {
+                alert("❌ Failed to save to GitHub. Please check the console for details.");
+            }
+        }
+    };
     
     // Auto-save to GitHub after data changes (with debounce)
     useEffect(() => {
         if (isLoading || isInitialLoad.current) return;
         const token = localStorage.getItem("yang_github_token");
-        if (!token) return; // Skip auto-save if no token configured
+        if (!token) {
+            console.log("⏭️ Skipping auto-save: GitHub token not configured");
+            return; // Skip auto-save if no token configured
+        }
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
         saveTimeoutRef.current = setTimeout(async () => {
+            console.log("💾 Auto-saving to GitHub...");
             setIsSaving(true);
             const success = await saveDataToGitHub(activities, categories, statuses);
             setIsSaving(false);
             if (success) {
-                console.log("✅ Auto-saved to GitHub");
+                console.log("✅ Auto-saved to GitHub successfully");
+            } else {
+                console.error("❌ Auto-save to GitHub failed");
             }
         }, 1500); // 1.5 second debounce
         return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
@@ -881,6 +943,21 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!form.item.trim()) return;
+        
+        // Validate time: Time To must be greater than Time From
+        if (form.timeFrom && form.timeTo) {
+            const [h1, m1] = form.timeFrom.split(":").map(Number);
+            const [h2, m2] = form.timeTo.split(":").map(Number);
+            const timeFromMins = h1 * 60 + m1;
+            const timeToMins = h2 * 60 + m2;
+            
+            // Check if timeTo is less than or equal to timeFrom (not allowing overnight for now)
+            if (timeToMins <= timeFromMins) {
+                alert("⚠️ Time To must be greater than Time From. Please adjust the time before saving.");
+                return; // Prevent save
+            }
+        }
+        
         onSave(form, !isEditMode);
         if (!isEditMode) {
             const nextTimeFrom = form.timeTo;
