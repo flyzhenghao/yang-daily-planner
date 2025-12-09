@@ -22,7 +22,15 @@
 - If local changes are newer, local `localStorage` is used instead of overwriting with older remote data
 - Auto-save to GitHub disabled per user request: changes only persist locally until user manually clicks "Save to GitHub"
 
+#### 3. Bulk Actions for Activities (New)
+   - Added checkboxes to "Activities" list for multi-selection
+   - Added "Select All" checkbox in table header
+   - Added Bulk Actions toolbar (appears when items are selected):
+     - **Bulk Delete**: Delete multiple activities at once
+     - **Bulk Edit**: Batch update Category and Status for selected items
+
 ### User Requirements & Assistant Response
 1. **Time validation**: ✅ Implemented with inline error + form submission prevention
 2. **Local persistence**: ✅ Timestamp-based comparison ensures local edits aren't lost
 3. **Manual GitHub save only**: ✅ No auto-save on add/edit/delete operations
+4. **Bulk Actions**: ✅ Implemented multi-seleciton, bulk delete, and bulk edit (Category/Status)
