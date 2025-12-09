@@ -226,6 +226,12 @@ const calcDuration = (timeFrom, timeTo) => {
     return mins;
 };
 
+// Helper: convert HH:MM to minutes since midnight
+const timeStrToMins = (time) => {
+    if (!time) return null;
+    const [h, m] = time.split(":").map(Number);
+    return h * 60 + m;
+};
 // Helper: Format duration for display
 const formatDuration = (mins) => {
     if (mins <= 0) return "-";
@@ -246,9 +252,18 @@ async function loadDataFromGitHub() {
         const response = await fetch(`data.json?t=${Date.now()}`, { cache: "no-cache" });
         if (response.ok) {
             const data = await response.json();
+            // Compare remote lastUpdated with local last updated timestamp to avoid
+            // overwriting newer local changes with an older remote copy.
+            const remoteUpdated = data.lastUpdated ? Date.parse(data.lastUpdated) : 0;
+            const localUpdated = getLS("yang_last_updated", 0) || 0;
+            if (localUpdated && localUpdated > remoteUpdated) {
+                // Local changes are newer — prefer local storage
+                return { activities: getLS("yang_activities", []), categories: getLS("yang_categories", defaultCategories), statuses: getLS("yang_statuses", defaultStatuses) };
+            }
             if (data.activities) setLS("yang_activities", data.activities);
             if (data.categories) setLS("yang_categories", data.categories);
             if (data.statuses) setLS("yang_statuses", data.statuses);
+            setLS("yang_last_updated", remoteUpdated || Date.now());
             return data;
         }
     } catch (error) { console.log("Using localStorage fallback"); }
@@ -351,7 +366,7 @@ function App() {
     const saveTimeoutRef = React.useRef(null);
 
     useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoad.current = false; }); }, []);
-    useEffect(() => { if (!isLoading) setLS("yang_activities", activities); }, [activities, isLoading]);
+    useEffect(() => { if (!isLoading) { setLS("yang_activities", activities); setLS("yang_last_updated", Date.now()); } }, [activities, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
     useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
 
@@ -371,28 +386,7 @@ function App() {
         }
     };
     
-    // Auto-save to GitHub after data changes (with debounce)
-    useEffect(() => {
-        if (isLoading || isInitialLoad.current) return;
-        const token = localStorage.getItem("yang_github_token");
-        if (!token) {
-            console.log("⏭️ Skipping auto-save: GitHub token not configured");
-            return; // Skip auto-save if no token configured
-        }
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(async () => {
-            console.log("💾 Auto-saving to GitHub...");
-            setIsSaving(true);
-            const success = await saveDataToGitHub(activities, categories, statuses);
-            setIsSaving(false);
-            if (success) {
-                console.log("✅ Auto-saved to GitHub successfully");
-            } else {
-                console.error("❌ Auto-save to GitHub failed");
-            }
-        }, 1500); // 1.5 second debounce
-        return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
-    }, [activities, categories, statuses, isLoading]);
+    // Auto-save disabled: per user request, do not automatically save changes to GitHub on add/update/delete.
     const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
     const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
     const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
@@ -943,21 +937,15 @@ function Modal({ activity, categories, statuses, onSave, onClose }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!form.item.trim()) return;
-        
-        // Validate time: Time To must be greater than Time From
+        // Validate time range: Time To must be later than Time From (no overnight allowed)
         if (form.timeFrom && form.timeTo) {
-            const [h1, m1] = form.timeFrom.split(":").map(Number);
-            const [h2, m2] = form.timeTo.split(":").map(Number);
-            const timeFromMins = h1 * 60 + m1;
-            const timeToMins = h2 * 60 + m2;
-            
-            // Check if timeTo is less than or equal to timeFrom (not allowing overnight for now)
-            if (timeToMins <= timeFromMins) {
-                alert("⚠️ Time To must be greater than Time From. Please adjust the time before saving.");
-                return; // Prevent save
+            const fromM = timeStrToMins(form.timeFrom);
+            const toM = timeStrToMins(form.timeTo);
+            if (toM <= fromM) {
+                alert("⚠️ 'Time To' must be later than 'Time From'. Please adjust the times.");
+                return;
             }
         }
-        
         onSave(form, !isEditMode);
         if (!isEditMode) {
             const nextTimeFrom = form.timeTo;
