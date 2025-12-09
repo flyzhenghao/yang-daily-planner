@@ -1454,10 +1454,10 @@
             const [period, setPeriod] = useState("daily");
             const [isLoading, setIsLoading] = useState(true);
             const [isSaving, setIsSaving] = useState(false);
-            const isInitialLoad = React.useRef(true);
-            const saveTimeoutRef = React.useRef(null);
+            const [isInitialLoadRef] = useState(React.useRef(true));
+            const [confirmConfig, setConfirmConfig] = useState(null);
 
-            useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoad.current = false; }); }, []);
+            useEffect(() => { loadDataFromGitHub().then((data) => { if (data.activities) setActivities(data.activities); if (data.categories) setCategories(data.categories); if (data.statuses) setStatuses(data.statuses); setIsLoading(false); isInitialLoadRef.current = false; }); }, []);
             useEffect(() => { if (!isLoading) { setLS("yang_activities", activities); setLS("yang_last_updated", Date.now()); } }, [activities, isLoading]);
             useEffect(() => { if (!isLoading) setLS("yang_categories", categories); }, [categories, isLoading]);
             useEffect(() => { if (!isLoading) setLS("yang_statuses", statuses); }, [statuses, isLoading]);
@@ -1481,20 +1481,31 @@
             // Auto-save disabled: per user request, do not automatically save changes to GitHub on add/update/delete.
             const addActivity = (a) => setActivities([...activities, { ...a, id: generateId() }]);
             const updateActivity = (a) => setActivities(activities.map((x) => (x.id === a.id ? a : x)));
-            const deleteActivity = (id) => { if (confirm("Delete this activity?")) setActivities(activities.filter((a) => a.id !== id)); };
-            const bulkDeleteActivities = (ids) => {
-                if (!ids || ids.length === 0) return false;
-                console.log("Bulk delete requested for:", ids);
-                if (confirm(`Delete ${ids.length} activities?`)) {
-                    setActivities(prev => {
-                        const next = prev.filter((a) => !ids.includes(a.id));
-                        console.log("Activities before:", prev.length, "After:", next.length);
-                        return next;
-                    });
-                    return true;
-                }
-                return false;
+
+            const deleteActivity = (id) => {
+                setConfirmConfig({
+                    title: "Delete Activity",
+                    message: "Are you sure you want to delete this activity?",
+                    onConfirm: () => {
+                        setActivities(prev => prev.filter((a) => a.id !== id));
+                        setConfirmConfig(null);
+                    }
+                });
             };
+
+            const bulkDeleteActivities = (ids, onSuccess) => {
+                if (!ids || ids.length === 0) return;
+                setConfirmConfig({
+                    title: "Bulk Delete",
+                    message: `Are you sure you want to delete ${ids.length} activities?`,
+                    onConfirm: () => {
+                        setActivities(prev => prev.filter((a) => !ids.includes(a.id)));
+                        if (onSuccess) onSuccess();
+                        setConfirmConfig(null);
+                    }
+                });
+            };
+
             const bulkUpdateActivities = (ids, updates) => { setActivities(prev => prev.map((a) => ids.includes(a.id) ? { ...a, ...updates } : a)); };
             const openEdit = (a) => { setEditingActivity(a); setShowModal(true); };
             const closeModal = () => { setShowModal(false); setEditingActivity(null); };
@@ -1522,6 +1533,7 @@
                     </main>
                     {showModal && <Modal activity={editingActivity} categories={categories} statuses={statuses} onSave={(a, keepOpen) => { editingActivity ? updateActivity(a) : addActivity(a); if (!keepOpen) closeModal(); }} onClose={closeModal} />}
                     {showTokenModal && <TokenModal onClose={() => setShowTokenModal(false)} />}
+                    {confirmConfig && <ConfirmModal title={confirmConfig.title} message={confirmConfig.message} onConfirm={confirmConfig.onConfirm} onCancel={() => setConfirmConfig(null)} />}
                 </div>
             );
         }
@@ -1797,9 +1809,7 @@
             };
 
             const handleBulkDelete = () => {
-                if (onBulkDelete(selectedIds)) {
-                    setSelectedIds([]);
-                }
+                onBulkDelete(selectedIds, () => setSelectedIds([]));
             };
 
             const handleBulkEdit = (updates) => {
@@ -2196,6 +2206,21 @@
                         <div className="modal-actions">
                             <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
                             <button className="btn btn-primary" onClick={handleSave}>Apply to All</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function ConfirmModal({ title, message, onConfirm, onCancel }) {
+            return (
+                <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onCancel()}>
+                    <div className="modal" style={{ maxWidth: "400px" }}>
+                        <h2 className="modal-title">{title}</h2>
+                        <p style={{ marginBottom: "20px", color: "var(--text-secondary)" }}>{message}</p>
+                        <div className="modal-actions">
+                            <button className="btn btn-secondary" onClick={onCancel}>Cancel</button>
+                            <button className="btn btn-danger" onClick={onConfirm}>Delete</button>
                         </div>
                     </div>
                 </div>

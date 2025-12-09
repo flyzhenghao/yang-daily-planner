@@ -37,3 +37,4 @@
 
 ### Bug Fixes
 - **Bulk Delete**: Fixed issue where bulk delete might not work due to stale state. Improved UX to not clear selection if deletion is cancelled.
+- **UI Update**: Replaced native browser `confirm()` dialog with a custom `ConfirmModal` for consistent experience and to avoid "no dialog" issues.
