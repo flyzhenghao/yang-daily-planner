@@ -2,6 +2,8 @@
 
 ### Fixed
 - **Mobile Layout**: Fixed "wasted space" issue by forcing full width and removing default margins on mobile devices.
+- **Mobile Density**: Compacted "Activity" cards on mobile to show more items per screen.
+- **Mobile Calendar**: Improved Calendar page layout on mobile to stack the activity list below the calendar for better accessibility.
 - **Version Display**: Added version number to the Settings page and as a subtle watermark on mobile for easier tracking.
 
 ## v1.4.4 - 2025-12-09

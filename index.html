@@ -562,17 +562,26 @@
                 background: white;
                 border: 1px solid #eee;
                 border-radius: var(--radius-md);
-                margin-bottom: 12px;
-                padding: 12px;
+                margin-bottom: 8px;
+                /* Reduced from 12px */
+                padding: 8px 12px;
+                /* Reduced padding */
                 box-shadow: var(--shadow-sm);
             }
 
             .activity-table td {
                 display: flex;
                 justify-content: space-between;
-                padding: 4px 0;
+                padding: 2px 0;
+                /* Reduced from 4px */
                 background: none;
                 border: none;
+            }
+
+            .calendar-page-grid {
+                grid-template-columns: 1fr !important;
+                /* Stack vertically on mobile */
+                gap: 24px;
             }
 
             .activity-table td:first-child,
@@ -648,8 +657,15 @@
         }
 
         .action-btn.delete {
-            background: rgba(225, 112, 85, 0.1);
+            background: rgba(255, 118, 117, 0.1);
             color: var(--accent-red)
+        }
+
+        /* Calendar Layout */
+        .calendar-page-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
         }
 
         .action-btn:hover {
@@ -2127,7 +2143,7 @@
             return (
                 <div>
                     <div className="page-header"><div><h1 className="page-title">Calendar</h1><p className="page-subtitle">Track progress</p></div><button className="btn btn-primary" onClick={onAdd}>➕ Add Activity</button></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px" }}>
+                    <div className="calendar-page-grid">
                         <div className="calendar-container">
                             <div className="calendar-header">
                                 <div className="calendar-nav"><button className="calendar-nav-btn" onClick={() => view === "year" ? navY(-1) : navM(-1)}>←</button><h2 className="calendar-title">{view === "year" ? currentDate.getFullYear() : `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}</h2><button className="calendar-nav-btn" onClick={() => view === "year" ? navY(1) : navM(1)}>→</button></div>
