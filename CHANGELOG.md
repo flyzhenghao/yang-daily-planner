@@ -2,7 +2,7 @@
 
 ### Fixed
 - **Mobile Layout**: Fixed "wasted space" issue by forcing full width and removing default margins on mobile devices.
-- **Mobile Density**: Compacted "Activity" cards on mobile to show more items per screen.
+- **Mobile Density**: Completely redesigned Activity Cards on mobile using a compact 3-row layout. Hidden labels and notes, optimized fonts, and reordered fields for maximum density.
 - **Mobile Calendar**: Improved Calendar page layout on mobile to stack the activity list below the calendar for better accessibility.
 - **Version Display**: Added version number to the Settings page and as a subtle watermark on mobile for easier tracking.
 
