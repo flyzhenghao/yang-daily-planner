@@ -1,6 +1,6 @@
 {
-  "version": "v1.2.0",
-  "lastUpdated": "2025-12-09T02:20:41.655Z",
+  "version": "v1.4.0",
+  "lastUpdated": "2025-12-09T02:27:18.384Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -141,6 +141,36 @@
       "notes": "",
       "status": "Processing",
       "id": "1765244763305xp39m7qrb"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "14:20",
+      "timeTo": "14:50",
+      "category": "Entertainment",
+      "item": "playing games ",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765247182178jtao3vvor"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "03:30",
+      "timeTo": "03:50",
+      "category": "Study",
+      "item": "Study math",
+      "notes": "",
+      "status": "Planning",
+      "id": "17652472087416pjgppcf2"
+    },
+    {
+      "date": "2025-12-09",
+      "timeFrom": "04:00",
+      "timeTo": "04:20",
+      "category": "Study",
+      "item": "Cubing",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765247223146xli1f7z9l"
     }
   ],
   "categories": [
