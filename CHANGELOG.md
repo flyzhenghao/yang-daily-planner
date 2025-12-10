@@ -2,6 +2,15 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.4.9] - 2025-12-10
+
+### Changed
+- **Removed Statistics Module**: Simplify application structure by removing the dedicated Statistics page.
+- **Dashboard Updates**:
+  - Renamed "**Time Distribution**" to "**Time by Category**".
+  - Added "**Status Distribution**" widget to the dashboard layout.
+  - Reorganized charts row to display 3 widgets: Time by Category, Status Distribution, and Health Score.
+
 ## [v1.4.8] - 2025-12-10
 
 ### Added
