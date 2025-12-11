@@ -2,6 +2,12 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.4.11] - 2025-12-11
+
+### Changed
+- **UI Improvement**:
+  - Increased size of checkboxes in the Activities table for better clickability and ease of use on all devices.
+
 ## [v1.4.10] - 2025-12-11
 
 ### Added
