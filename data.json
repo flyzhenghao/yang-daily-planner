@@ -1,6 +1,6 @@
 {
-  "version": "v1.4.10",
-  "lastUpdated": "2025-12-11T08:51:09.818Z",
+  "version": "v1.4.11",
+  "lastUpdated": "2025-12-11T20:16:04.242Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -631,6 +631,56 @@
       "notes": "",
       "status": "Finished",
       "id": "1765442543223d7mwmvxtr"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "09:20",
+      "timeTo": "09:40",
+      "category": "Other",
+      "item": "Math",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765484098684jhtq1yk91"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "09:40",
+      "timeTo": "10:20",
+      "category": "Exercise",
+      "item": "Badminton at homepractice",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765484110731dd2yjo3vc"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "10:20",
+      "timeTo": "11:00",
+      "category": "Other",
+      "item": "Doing personal stuff",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765484120416dt6n3bcwf"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "11:00",
+      "timeTo": "23:30",
+      "category": "Study",
+      "item": "Studying english",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765484131783rop2w7xhv"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "11:30",
+      "timeTo": "12:30",
+      "category": "Social",
+      "item": "Talking to friends",
+      "notes": "",
+      "status": "Planning",
+      "id": "17654841578315gst62i29"
     }
   ],
   "categories": [
