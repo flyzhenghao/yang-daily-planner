@@ -1,6 +1,6 @@
 {
-  "version": "v1.4.9",
-  "lastUpdated": "2025-12-10T23:50:49.781Z",
+  "version": "v1.4.10",
+  "lastUpdated": "2025-12-11T08:51:09.818Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -419,7 +419,7 @@
       "category": "Study",
       "item": "Studying math",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "17653952828412smql81ok"
     },
     {
@@ -429,7 +429,7 @@
       "category": "Exercise",
       "item": "Basketball",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395462367nleq9uc59"
     },
     {
@@ -439,7 +439,7 @@
       "category": "Entertainment",
       "item": "Cubing",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395469024sh5hlcr0m"
     },
     {
@@ -449,7 +449,7 @@
       "category": "Study",
       "item": "Studying english",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395485183rrsbjqsw8"
     },
     {
@@ -459,7 +459,7 @@
       "category": "Entertainment",
       "item": "Playing games",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395494874r208w8lm5"
     },
     {
@@ -469,7 +469,7 @@
       "category": "Other",
       "item": "Eating lunch",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395508843v9hdirkhm"
     },
     {
@@ -479,7 +479,7 @@
       "category": "Social",
       "item": "Talk to friends",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395522692qscwr78k4"
     },
     {
@@ -489,7 +489,7 @@
       "category": "Exercise",
       "item": "Badminton",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765395544951b1h8fxdwy"
     },
     {
@@ -499,7 +499,7 @@
       "category": "Study",
       "item": "Studying english",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765398841768oojqagitr"
     },
     {
@@ -509,8 +509,128 @@
       "category": "Entertainment",
       "item": "Cubing",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "17653988547417i2n51ako"
+    },
+    {
+      "date": "2025-12-10",
+      "timeFrom": "20:30",
+      "timeTo": "21:02",
+      "category": "Social",
+      "item": "Talking to friends",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765413143501yfrsw4dmq"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "16:30",
+      "timeTo": "17:20",
+      "category": "Entertainment",
+      "item": "Watching netflix",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765428044319ofoqlteh5"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "17:20",
+      "timeTo": "17:50",
+      "category": "Study",
+      "item": "Studying math",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765428055057obtfo9rmh"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "17:50",
+      "timeTo": "18:20",
+      "category": "Entertainment",
+      "item": "Play games",
+      "notes": "",
+      "status": "Finished",
+      "id": "17654280686699z82jjsan"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "18:20",
+      "timeTo": "18:40",
+      "category": "Other",
+      "item": "Dinner",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765428078983nurq526hp"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "18:40",
+      "timeTo": "19:20",
+      "category": "Social",
+      "item": "Talking to friends",
+      "notes": "",
+      "status": "Finished",
+      "id": "17654401647431oj0xcj8o"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "19:20",
+      "timeTo": "19:40",
+      "category": "Study",
+      "item": "Study social science",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765440174465o2ymokctv"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "19:40",
+      "timeTo": "20:20",
+      "category": "Entertainment",
+      "item": "Watching netflix",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765440189109ilpfyhxmd"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "20:20",
+      "timeTo": "20:50",
+      "category": "Entertainment",
+      "item": "Watching badminton videos",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765440201553c8syfhcv8"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "20:50",
+      "timeTo": "21:00",
+      "category": "Other",
+      "item": "Doing personal stuff",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765440252730x6jct884g"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "21:00",
+      "timeTo": "21:10",
+      "category": "Other",
+      "item": "Sorting out cello music sheets",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765442530213s5m1t8t2f"
+    },
+    {
+      "date": "2025-12-11",
+      "timeFrom": "21:10",
+      "timeTo": "21:30",
+      "category": "Other",
+      "item": "Cello",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765442543223d7mwmvxtr"
     }
   ],
   "categories": [
