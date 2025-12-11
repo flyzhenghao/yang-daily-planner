@@ -2,6 +2,13 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.4.10] - 2025-12-11
+
+### Added
+- **Activity Filter**:
+  - Added **Date Range Filter** (From / To) to the Activities page.
+  - Allows filtering activities by a specific date range in addition to Category, Status, and Search.
+
 ## [v1.4.9] - 2025-12-10
 
 ### Changed
