@@ -1,6 +1,6 @@
 {
   "version": "v1.4.11",
-  "lastUpdated": "2025-12-11T20:16:04.242Z",
+  "lastUpdated": "2025-12-12T21:30:25.560Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -639,7 +639,7 @@
       "category": "Other",
       "item": "Math",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765484098684jhtq1yk91"
     },
     {
@@ -649,7 +649,7 @@
       "category": "Exercise",
       "item": "Badminton at homepractice",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765484110731dd2yjo3vc"
     },
     {
@@ -659,7 +659,7 @@
       "category": "Other",
       "item": "Doing personal stuff",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765484120416dt6n3bcwf"
     },
     {
@@ -669,18 +669,68 @@
       "category": "Study",
       "item": "Studying english",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765484131783rop2w7xhv"
     },
     {
       "date": "2025-12-12",
       "timeFrom": "11:30",
-      "timeTo": "12:30",
+      "timeTo": "12:00",
       "category": "Social",
       "item": "Talking to friends",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "17654841578315gst62i29"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "12:00",
+      "timeTo": "12:30",
+      "category": "Entertainment",
+      "item": "Playing games",
+      "notes": "",
+      "status": "Finished",
+      "id": "176548419153839x4cx15y"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "12:30",
+      "timeTo": "13:00",
+      "category": "Study",
+      "item": "Playing basketball",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765485269294k3aleqec1"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "13:00",
+      "timeTo": "13:20",
+      "category": "Other",
+      "item": "Eating lunch",
+      "notes": "",
+      "status": "Finished",
+      "id": "17654853079158zy7991w2"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "13:20",
+      "timeTo": "13:50",
+      "category": "Other",
+      "item": "Prepare for badminton",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765485696867ttomwwid1"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "14:00",
+      "timeTo": "15:00",
+      "category": "Exercise",
+      "item": "Badminton",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765485716913yuxj6vdqi"
     }
   ],
   "categories": [
