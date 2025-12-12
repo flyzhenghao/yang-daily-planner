@@ -1,6 +1,6 @@
 {
   "version": "v1.4.11",
-  "lastUpdated": "2025-12-12T22:06:15.252Z",
+  "lastUpdated": "2025-12-12T22:08:44.691Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -931,6 +931,56 @@
       "notes": "",
       "status": "Planning",
       "id": "176557717343792jrpfgp4"
+    },
+    {
+      "date": "2025-12-13",
+      "timeFrom": "18:40",
+      "timeTo": "19:20",
+      "category": "Other",
+      "item": "Doing personal stuff",
+      "notes": "",
+      "status": "Planning",
+      "id": "17655772769664kzuvci4a"
+    },
+    {
+      "date": "2025-12-13",
+      "timeFrom": "19:20",
+      "timeTo": "20:10",
+      "category": "Other",
+      "item": "Watch badminton",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765577283403t1jy93fof"
+    },
+    {
+      "date": "2025-12-13",
+      "timeFrom": "20:20",
+      "timeTo": "20:40",
+      "category": "Study",
+      "item": "Reading books",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765577297618v0z25h23x"
+    },
+    {
+      "date": "2025-12-13",
+      "timeFrom": "20:50",
+      "timeTo": "21:10",
+      "category": "Social",
+      "item": "Talking to friends",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765577308724lewvdgack"
+    },
+    {
+      "date": "2025-12-13",
+      "timeFrom": "21:10",
+      "timeTo": "21:30",
+      "category": "Other",
+      "item": "Prepare to sleep",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765577322293rrzclplp9"
     }
   ],
   "categories": [
