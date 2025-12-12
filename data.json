@@ -1,6 +1,6 @@
 {
   "version": "v1.4.11",
-  "lastUpdated": "2025-12-12T21:58:23.530Z",
+  "lastUpdated": "2025-12-12T21:58:59.087Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -739,7 +739,7 @@
       "category": "Entertainment",
       "item": "Play games",
       "notes": "",
-      "status": "Processing",
+      "status": "Finished",
       "id": "17655765231044fb5mijyv"
     },
     {
@@ -759,7 +759,7 @@
       "category": "Study",
       "item": "Studying math",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765576548222r1ppqg7a8"
     },
     {
@@ -789,7 +789,7 @@
       "category": "Other",
       "item": "Eating dinner",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765576645972xd50ic1wa"
     },
     {
@@ -799,7 +799,7 @@
       "category": "Other",
       "item": "Perparing for snowboarding",
       "notes": "",
-      "status": "Planning",
+      "status": "Finished",
       "id": "1765576660877mb3qutfup"
     },
     {
