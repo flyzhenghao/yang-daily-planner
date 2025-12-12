@@ -460,6 +460,77 @@
                 vertical-align: middle;
             }
 
+            .filter-bar {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 12px;
+                padding: 16px;
+                background: #fafbff;
+                border: 1px solid #eef0ff;
+                border-radius: var(--radius-lg);
+                margin-bottom: 16px;
+            }
+
+            .filter-bar input,
+            .filter-bar select {
+                flex: 1 1 180px;
+                min-width: 180px;
+                padding: 10px 14px;
+                border: 2px solid #e8e8f0;
+                border-radius: var(--radius-md);
+                font-family: "Quicksand", sans-serif;
+                font-size: 14px;
+                color: var(--text-primary);
+                background: #fff;
+                transition: all 0.2s ease;
+                outline: none;
+            }
+
+            .filter-bar input::placeholder {
+                color: var(--text-muted);
+            }
+
+            .filter-bar input:focus,
+            .filter-bar select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+            }
+
+            .filter-bar select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                padding-right: 40px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 18px;
+            }
+
+            .filter-bar input[type="date"] {
+                flex: 0 1 170px;
+            }
+
+            .bulk-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                background: #fff;
+                border: 1px solid #eef0ff;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .bulk-actions > span {
+                color: var(--text-secondary);
+                font-size: 14px;
+            }
+
             .category-badge {
                 display: inline-flex;
                 align-items: center;
@@ -845,6 +916,18 @@
                 box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
             }
 
+            .form-select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                padding-right: 40px;
+                background-color: #fff;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 18px;
+            }
+
             .form-textarea {
                 resize: vertical;
                 min-height: 80px;
@@ -863,6 +946,116 @@
                 margin-top: 28px;
                 padding-top: 20px;
                 border-top: 1px solid #e8e8f0;
+            }
+
+            .optimizer-modal {
+                max-width: 860px;
+            }
+
+            .optimizer-summary {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 8px 0 18px;
+            }
+
+            .optimizer-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 10px;
+                background: #fafbff;
+                border: 1px solid #eef0ff;
+                border-radius: 999px;
+                font-size: 12px;
+                color: var(--text-secondary);
+            }
+
+            .optimizer-section {
+                margin-top: 18px;
+            }
+
+            .optimizer-section-title {
+                font-family: "Nunito", sans-serif;
+                font-size: 14px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                color: var(--text-muted);
+                margin-bottom: 10px;
+            }
+
+            .issue-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .issue-card {
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 14px 16px;
+                border-radius: var(--radius-lg);
+                background: #fafbff;
+                border: 1px solid #eef0ff;
+            }
+
+            .issue-badge {
+                flex: 0 0 auto;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 999px;
+                font-size: 14px;
+                font-weight: 800;
+            }
+
+            .issue-badge.info {
+                background: rgba(116, 185, 255, 0.18);
+                color: #0984e3;
+            }
+
+            .issue-badge.warn {
+                background: rgba(253, 203, 110, 0.25);
+                color: #e17055;
+            }
+
+            .issue-badge.error {
+                background: rgba(225, 112, 85, 0.2);
+                color: #d63031;
+            }
+
+            .issue-content {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .issue-title {
+                font-weight: 800;
+                color: var(--text-primary);
+                margin-bottom: 4px;
+            }
+
+            .issue-meta {
+                font-size: 12px;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+            }
+
+            .issue-details {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.5;
+            }
+
+            .issue-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 10px;
             }
 
             .calendar-container {
@@ -1587,7 +1780,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.5.2";
+            const APP_VERSION = "v1.6.0";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -1660,6 +1853,864 @@
                 } catch (e) {
                     console.error(e);
                 }
+            };
+
+            const minsToTimeStr = (mins) => {
+                if (mins == null || Number.isNaN(mins)) return "";
+                const m = ((Math.round(mins) % 1440) + 1440) % 1440;
+                const h = Math.floor(m / 60);
+                const mm = m % 60;
+                return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+            };
+
+            const isOtherCategoryName = (name) => {
+                const raw = String(name || "").trim();
+                if (!raw) return false;
+                if (/other/i.test(raw)) return true;
+                if (raw.includes("其他") || raw.includes("其它")) return true;
+                return false;
+            };
+
+            const normalizeTextForMatch = (text) => {
+                return String(text || "")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[\u2014\u2013]/g, "-")
+                    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, " ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+            };
+
+            const extractCategoryCandidate = (item) => {
+                const raw = String(item || "").trim();
+                if (!raw) return null;
+                const firstPart = raw.split(/\s*[-–—:|>]+\s*/)[0]?.trim();
+                if (!firstPart) return null;
+                const cleaned = firstPart.replace(/\s+/g, " ").trim();
+                if (cleaned.length < 2) return null;
+                return cleaned.length > 28
+                    ? cleaned.slice(0, 28).trim()
+                    : cleaned;
+            };
+
+            const buildActivityHistoryIndex = (activities) => {
+                const byItem = new Map();
+                for (const a of activities || []) {
+                    const itemKey = normalizeTextForMatch(a.item);
+                    if (!itemKey) continue;
+                    const entry = byItem.get(itemKey) || {
+                        item: String(a.item || "").trim(),
+                        total: 0,
+                        categories: new Map(),
+                    };
+                    entry.total += 1;
+                    const cat = String(a.category || "");
+                    entry.categories.set(
+                        cat,
+                        (entry.categories.get(cat) || 0) + 1,
+                    );
+                    if (
+                        a.item &&
+                        String(a.item).trim().length >
+                            String(entry.item || "").length
+                    ) {
+                        entry.item = String(a.item).trim();
+                    }
+                    byItem.set(itemKey, entry);
+                }
+                return { byItem };
+            };
+
+            const buildCategoryKeywordIndex = (categories) => {
+                const keywordIndex = new Map();
+                for (const c of categories || []) {
+                    const name = String(c.name || "");
+                    const lower = name.toLowerCase();
+
+                    let keywords = [];
+                    if (
+                        lower === "study" ||
+                        lower.includes("study") ||
+                        name.includes("学习")
+                    ) {
+                        keywords = [
+                            "study",
+                            "homework",
+                            "revision",
+                            "revise",
+                            "read",
+                            "reading",
+                            "school",
+                            "class",
+                            "lesson",
+                            "tutor",
+                            "tuition",
+                            "exam",
+                            "quiz",
+                            "assignment",
+                            "project",
+                            "research",
+                            "coding",
+                            "code",
+                            "program",
+                            "leetcode",
+                            "学习",
+                            "作业",
+                            "复习",
+                            "阅读",
+                            "上课",
+                            "补习",
+                            "考试",
+                            "测验",
+                            "项目",
+                            "编程",
+                        ];
+                    } else if (
+                        lower === "entertainment" ||
+                        lower.includes("entertain") ||
+                        name.includes("娱乐")
+                    ) {
+                        keywords = [
+                            "game",
+                            "gaming",
+                            "youtube",
+                            "video",
+                            "tv",
+                            "movie",
+                            "netflix",
+                            "tiktok",
+                            "music",
+                            "play",
+                            "fun",
+                            "动漫",
+                            "游戏",
+                            "视频",
+                            "电视",
+                            "电影",
+                            "音乐",
+                            "娱乐",
+                        ];
+                    } else if (
+                        lower === "social" ||
+                        lower.includes("social") ||
+                        name.includes("社交") ||
+                        name.includes("朋友")
+                    ) {
+                        keywords = [
+                            "chat",
+                            "call",
+                            "meet",
+                            "party",
+                            "hangout",
+                            "family",
+                            "friend",
+                            "friends",
+                            "talk",
+                            "social",
+                            "dinner",
+                            "聚会",
+                            "聊天",
+                            "通话",
+                            "见面",
+                            "朋友",
+                            "家人",
+                            "社交",
+                        ];
+                    } else if (
+                        lower === "exercise" ||
+                        lower.includes("exercise") ||
+                        lower.includes("sport") ||
+                        name.includes("运动") ||
+                        name.includes("健身")
+                    ) {
+                        keywords = [
+                            "gym",
+                            "run",
+                            "running",
+                            "walk",
+                            "walking",
+                            "workout",
+                            "exercise",
+                            "sport",
+                            "training",
+                            "swim",
+                            "swimming",
+                            "basketball",
+                            "football",
+                            "soccer",
+                            "tennis",
+                            "yoga",
+                            "跑步",
+                            "散步",
+                            "健身",
+                            "运动",
+                            "训练",
+                            "游泳",
+                            "篮球",
+                            "足球",
+                            "瑜伽",
+                        ];
+                    } else if (
+                        lower === "sleep" ||
+                        lower.includes("sleep") ||
+                        name.includes("睡")
+                    ) {
+                        keywords = [
+                            "sleep",
+                            "nap",
+                            "bed",
+                            "rest",
+                            "wake",
+                            "wakeup",
+                            "night",
+                            "睡",
+                            "睡觉",
+                            "午睡",
+                            "休息",
+                            "起床",
+                        ];
+                    }
+
+                    const nameNorm = normalizeTextForMatch(name);
+                    if (nameNorm) {
+                        keywords.push(...nameNorm.split(" ").filter(Boolean));
+                    }
+
+                    const deduped = [
+                        ...new Set(
+                            keywords
+                                .map((k) => normalizeTextForMatch(k))
+                                .filter((k) => k && k.length >= 2),
+                        ),
+                    ];
+                    keywordIndex.set(name, deduped);
+                }
+                return keywordIndex;
+            };
+
+            const suggestCategoryBySemantic = (
+                item,
+                categories,
+                keywordIndex,
+            ) => {
+                const itemNorm = normalizeTextForMatch(item);
+                if (!itemNorm) return null;
+                let best = null;
+                for (const c of categories || []) {
+                    const name = String(c.name || "");
+                    if (isOtherCategoryName(name)) continue;
+                    const keywords = keywordIndex.get(name) || [];
+                    let score = 0;
+                    const matched = [];
+                    for (const kw of keywords) {
+                        if (itemNorm.includes(kw)) {
+                            score += kw.length >= 5 ? 2 : 1;
+                            if (matched.length < 3) matched.push(kw);
+                        }
+                    }
+                    if (!best || score > best.score) {
+                        best = { category: name, score, matched };
+                    }
+                }
+                if (!best || best.score < 2) return null;
+                return best;
+            };
+
+            const suggestCategoryByHistory = (item, historyIndex) => {
+                const key = normalizeTextForMatch(item);
+                if (!key) return null;
+                const entry = historyIndex?.byItem?.get(key);
+                if (!entry) return null;
+                const breakdown = [...entry.categories.entries()]
+                    .filter(([name]) => name)
+                    .sort((a, b) => b[1] - a[1]);
+                if (breakdown.length === 0) return null;
+                const [topCategory, topCount] = breakdown[0];
+                const confidence = topCount / entry.total;
+                return {
+                    topCategory,
+                    topCount,
+                    confidence,
+                    total: entry.total,
+                    breakdown,
+                };
+            };
+
+            const analyzeActivitiesOptimizer = ({
+                scopeActivities,
+                historyActivities,
+                categories,
+                statuses,
+                options = {},
+            }) => {
+                const cfg = {
+                    gapMinMins: 30,
+                    maxGapsPerDay: 5,
+                    historyConfidence: 0.6,
+                    minOtherCandidateCount: 3,
+                    ...options,
+                };
+
+                const issues = [];
+                const categoryNamesLower = new Set(
+                    (categories || [])
+                        .map((c) => normalizeTextForMatch(c.name))
+                        .filter(Boolean),
+                );
+                const otherCategoryNames = new Set(
+                    (categories || [])
+                        .map((c) => c.name)
+                        .filter(isOtherCategoryName)
+                        .map((n) => String(n).toLowerCase()),
+                );
+
+                const finishedStatusName =
+                    (statuses || []).find((s) => /^finished$/i.test(s.name))
+                        ?.name || statuses?.[0]?.name;
+
+                const sleepCategoryName =
+                    (categories || []).find(
+                        (c) =>
+                            /^sleep$/i.test(String(c.name || "")) ||
+                            String(c.name || "").includes("睡"),
+                    )?.name || null;
+
+                const historyIndex =
+                    buildActivityHistoryIndex(historyActivities);
+                const keywordIndex = buildCategoryKeywordIndex(categories);
+
+                // Group scope activities by normalized item
+                const scopeByItem = new Map();
+                for (const a of scopeActivities || []) {
+                    const itemKey = normalizeTextForMatch(a.item);
+                    if (!itemKey) continue;
+                    if (!scopeByItem.has(itemKey)) scopeByItem.set(itemKey, []);
+                    scopeByItem.get(itemKey).push(a);
+                }
+
+                // Activity ↔ Category checks (history + semantic)
+                for (const [itemKey, group] of scopeByItem.entries()) {
+                    const displayItem =
+                        group.find((x) => x.item && x.item.trim())?.item ||
+                        itemKey;
+
+                    const scopeCategoryCounts = new Map();
+                    for (const a of group) {
+                        const cat = String(a.category || "");
+                        scopeCategoryCounts.set(
+                            cat,
+                            (scopeCategoryCounts.get(cat) || 0) + 1,
+                        );
+                    }
+                    const scopeBreakdown = [
+                        ...scopeCategoryCounts.entries(),
+                    ].sort((a, b) => b[1] - a[1]);
+                    const scopeTopCategory = scopeBreakdown[0]?.[0] || "";
+
+                    const historyRec = suggestCategoryByHistory(
+                        displayItem,
+                        historyIndex,
+                    );
+                    const semanticRec = suggestCategoryBySemantic(
+                        displayItem,
+                        categories,
+                        keywordIndex,
+                    );
+
+                    const recommendation =
+                        historyRec &&
+                        historyRec.topCategory &&
+                        historyRec.confidence >= cfg.historyConfidence
+                            ? {
+                                  category: historyRec.topCategory,
+                                  source: "history",
+                                  confidence: historyRec.confidence,
+                              }
+                            : semanticRec &&
+                                semanticRec.category &&
+                                semanticRec.score >= 3
+                              ? {
+                                    category: semanticRec.category,
+                                    source: "semantic",
+                                    matched: semanticRec.matched,
+                                }
+                              : null;
+
+                    if (historyRec && historyRec.breakdown.length > 1) {
+                        const breakdownText = historyRec.breakdown
+                            .slice(0, 4)
+                            .map(([cat, count]) => `${cat} ${count}`)
+                            .join(", ");
+
+                        const idsToFix =
+                            historyRec.topCategory &&
+                            historyRec.confidence >= cfg.historyConfidence
+                                ? group
+                                      .filter(
+                                          (a) =>
+                                              a.category !==
+                                              historyRec.topCategory,
+                                      )
+                                      .map((a) => a.id)
+                                      .filter(Boolean)
+                                : [];
+
+                        issues.push({
+                            id: `hist-${itemKey}`,
+                            kind: "category",
+                            severity: idsToFix.length > 0 ? "warn" : "info",
+                            title: `Category consistency: "${displayItem}"`,
+                            meta: `History: ${breakdownText}`,
+                            details:
+                                idsToFix.length > 0
+                                    ? `Recommend "${historyRec.topCategory}" (${Math.round(historyRec.confidence * 100)}% in history).`
+                                    : "This activity has been logged under multiple categories in the past.",
+                            actions:
+                                idsToFix.length > 0
+                                    ? [
+                                          {
+                                              kind: "applyCategory",
+                                              label: `Apply "${historyRec.topCategory}" to ${idsToFix.length} activities`,
+                                              category: historyRec.topCategory,
+                                              ids: idsToFix,
+                                          },
+                                      ]
+                                    : [],
+                        });
+                    } else if (scopeBreakdown.length > 1) {
+                        issues.push({
+                            id: `scope-${itemKey}`,
+                            kind: "category",
+                            severity: "warn",
+                            title: `Category inconsistent in current view: "${displayItem}"`,
+                            meta: `Current view: ${scopeBreakdown
+                                .slice(0, 4)
+                                .map(([cat, count]) => `${cat} ${count}`)
+                                .join(", ")}`,
+                            details:
+                                "Consider standardizing this activity to a single category.",
+                            actions: [],
+                        });
+                    }
+
+                    const skipRec =
+                        recommendation &&
+                        recommendation.source === "history" &&
+                        historyRec &&
+                        historyRec.breakdown.length > 1;
+                    if (
+                        !skipRec &&
+                        recommendation &&
+                        recommendation.category &&
+                        scopeTopCategory &&
+                        scopeTopCategory !== recommendation.category
+                    ) {
+                        const idsToFix = group
+                            .filter(
+                                (a) => a.category !== recommendation.category,
+                            )
+                            .map((a) => a.id)
+                            .filter(Boolean);
+                        if (idsToFix.length > 0) {
+                            const detail =
+                                recommendation.source === "history"
+                                    ? `History suggests "${recommendation.category}" (${Math.round((recommendation.confidence || 0) * 100)}% in history).`
+                                    : `Semantic match suggests "${recommendation.category}"${
+                                          recommendation.matched?.length
+                                              ? ` (matched: ${recommendation.matched.join(", ")})`
+                                              : ""
+                                      }.`;
+                            issues.push({
+                                id: `rec-${itemKey}`,
+                                kind: "category",
+                                severity: "info",
+                                title: `Category suggestion: "${displayItem}"`,
+                                meta: `Current: ${scopeTopCategory}`,
+                                details: detail,
+                                actions: [
+                                    {
+                                        kind: "applyCategory",
+                                        label: `Apply "${recommendation.category}" to ${idsToFix.length} activities`,
+                                        category: recommendation.category,
+                                        ids: idsToFix,
+                                    },
+                                ],
+                            });
+                        }
+                    }
+
+                    const groupHasOther = group.some((a) =>
+                        otherCategoryNames.has(
+                            String(a.category || "").toLowerCase(),
+                        ),
+                    );
+                    if (
+                        groupHasOther &&
+                        recommendation &&
+                        recommendation.category &&
+                        !isOtherCategoryName(recommendation.category)
+                    ) {
+                        const idsToFix = group
+                            .filter((a) =>
+                                otherCategoryNames.has(
+                                    String(a.category || "").toLowerCase(),
+                                ),
+                            )
+                            .map((a) => a.id)
+                            .filter(Boolean);
+                        if (idsToFix.length > 0) {
+                            issues.push({
+                                id: `other-existing-${itemKey}`,
+                                kind: "other",
+                                severity: "warn",
+                                title: `Other looks specific: "${displayItem}"`,
+                                meta: `Suggest: ${recommendation.category}`,
+                                details:
+                                    "This activity is tagged as Other but appears to fit an existing category.",
+                                actions: [
+                                    {
+                                        kind: "applyCategory",
+                                        label: `Move ${idsToFix.length} to "${recommendation.category}"`,
+                                        category: recommendation.category,
+                                        ids: idsToFix,
+                                    },
+                                ],
+                            });
+                        }
+                    }
+                }
+
+                // Suggest new categories for "Other"
+                const candidateIndex = new Map();
+                for (const a of historyActivities || []) {
+                    const catLower = String(a.category || "").toLowerCase();
+                    if (!otherCategoryNames.has(catLower)) continue;
+                    const candidate = extractCategoryCandidate(a.item);
+                    const candidateKey = normalizeTextForMatch(candidate);
+                    if (!candidate || !candidateKey) continue;
+                    if (isOtherCategoryName(candidate)) continue;
+                    if (categoryNamesLower.has(candidateKey)) continue;
+
+                    const entry = candidateIndex.get(candidateKey) || {
+                        label: candidate,
+                        count: 0,
+                        examples: [],
+                    };
+                    entry.count += 1;
+                    if (entry.examples.length < 3 && a.item) {
+                        entry.examples.push(a.item);
+                    }
+                    candidateIndex.set(candidateKey, entry);
+                }
+
+                const scopeOther = (scopeActivities || []).filter((a) =>
+                    otherCategoryNames.has(
+                        String(a.category || "").toLowerCase(),
+                    ),
+                );
+                const scopeOtherByCandidate = new Map();
+                for (const a of scopeOther) {
+                    const candidate = extractCategoryCandidate(a.item);
+                    const key = normalizeTextForMatch(candidate);
+                    if (!candidate || !key) continue;
+                    const hist = candidateIndex.get(key);
+                    if (!hist || hist.count < cfg.minOtherCandidateCount)
+                        continue;
+                    if (!scopeOtherByCandidate.has(key))
+                        scopeOtherByCandidate.set(key, []);
+                    scopeOtherByCandidate.get(key).push(a);
+                }
+
+                for (const [key, acts] of scopeOtherByCandidate.entries()) {
+                    const info = candidateIndex.get(key);
+                    const ids = acts.map((a) => a.id).filter(Boolean);
+                    issues.push({
+                        id: `other-newcat-${key}`,
+                        kind: "other",
+                        severity: "info",
+                        title: `New category candidate: "${info.label}"`,
+                        meta: `Seen ${info.count}× under Other (history)`,
+                        details: info.examples.length
+                            ? `Examples: ${info.examples.join(" · ")}`
+                            : "Frequently logged under Other.",
+                        actions: [
+                            {
+                                kind: "createCategory",
+                                label: `Create category "${info.label}"`,
+                                name: info.label,
+                            },
+                            ...(ids.length > 0
+                                ? [
+                                      {
+                                          kind: "applyCategory",
+                                          label: `Apply "${info.label}" to ${ids.length} activities in view`,
+                                          category: info.label,
+                                          ids,
+                                          alsoCreate: true,
+                                      },
+                                  ]
+                                : []),
+                        ],
+                    });
+                }
+
+                // Time checks per day
+                const scopeByDate = new Map();
+                for (const a of scopeActivities || []) {
+                    const date = String(a.date || "");
+                    if (!date) continue;
+                    if (!scopeByDate.has(date)) scopeByDate.set(date, []);
+                    scopeByDate.get(date).push(a);
+                }
+
+                for (const [date, dayActsRaw] of scopeByDate.entries()) {
+                    const missingTimeActs = (dayActsRaw || []).filter(
+                        (a) => !a.timeFrom || !a.timeTo,
+                    );
+                    if (missingTimeActs.length > 0) {
+                        issues.push({
+                            id: `missing-time-${date}`,
+                            kind: "time",
+                            severity: "info",
+                            title: `Missing time fields (${missingTimeActs.length})`,
+                            meta: date,
+                            details:
+                                "Some activities are missing start/end time, so overlap and gap checks may be incomplete.",
+                            actions: [],
+                        });
+                    }
+
+                    const dayActs = (dayActsRaw || []).filter(
+                        (a) => a.timeFrom && a.timeTo,
+                    );
+                    if (dayActs.length === 0) continue;
+
+                    // Duplicate time slots
+                    const bySlot = new Map();
+                    for (const a of dayActs) {
+                        const slotKey = `${a.timeFrom || ""}|${a.timeTo || ""}`;
+                        if (!bySlot.has(slotKey)) bySlot.set(slotKey, []);
+                        bySlot.get(slotKey).push(a);
+                    }
+                    const duplicateSlots = [...bySlot.entries()].filter(
+                        ([, list]) => list.length > 1,
+                    );
+                    if (duplicateSlots.length > 0) {
+                        issues.push({
+                            id: `duplicate-slot-${date}`,
+                            kind: "time",
+                            severity: "warn",
+                            title: `Duplicate time slots (${duplicateSlots.length})`,
+                            meta: date,
+                            details: duplicateSlots
+                                .slice(0, 8)
+                                .map(([slot, list]) => {
+                                    const [from, to] = slot.split("|");
+                                    const names = list
+                                        .map((x) => x.item)
+                                        .filter(Boolean)
+                                        .slice(0, 4)
+                                        .join(" · ");
+                                    return `${from}–${to}: ${names}${list.length > 4 ? ` (+${list.length - 4} more)` : ""}`;
+                                }),
+                            actions: [],
+                        });
+                    }
+
+                    const intervals = [];
+                    for (const a of dayActs) {
+                        const start = timeStrToMins(a.timeFrom);
+                        const endRaw = timeStrToMins(a.timeTo);
+                        if (start == null || endRaw == null) continue;
+                        let end = endRaw;
+                        if (end < start) end += 1440;
+                        intervals.push({ a, start, end });
+
+                        if (end === start) {
+                            issues.push({
+                                id: `zero-duration-${a.id}`,
+                                kind: "time",
+                                severity: "warn",
+                                title: "Zero duration activity",
+                                meta: `${date} ${a.timeFrom}–${a.timeTo}`,
+                                details: `"${a.item}" has the same start and end time.`,
+                                actions: [],
+                            });
+                        } else if (end - start < 5) {
+                            issues.push({
+                                id: `tiny-duration-${a.id}`,
+                                kind: "time",
+                                severity: "info",
+                                title: `Very short activity (${end - start}m)`,
+                                meta: `${date} ${a.timeFrom}–${a.timeTo}`,
+                                details: `"${a.item}" might be better merged into a larger block.`,
+                                actions: [],
+                            });
+                        }
+                    }
+
+                    intervals.sort((x, y) => x.start - y.start);
+
+                    // Overlaps
+                    const overlaps = [];
+                    for (let i = 0; i < intervals.length - 1; i++) {
+                        const cur = intervals[i];
+                        const next = intervals[i + 1];
+                        if (next.start < cur.end) overlaps.push({ cur, next });
+                    }
+                    if (overlaps.length > 0) {
+                        issues.push({
+                            id: `overlap-${date}`,
+                            kind: "time",
+                            severity: "error",
+                            title: `Time overlaps (${overlaps.length})`,
+                            meta: date,
+                            details: overlaps
+                                .slice(0, 8)
+                                .map(({ cur, next }) => {
+                                    const overlapStart = Math.max(
+                                        cur.start,
+                                        next.start,
+                                    );
+                                    const overlapEnd = Math.min(
+                                        cur.end,
+                                        next.end,
+                                    );
+                                    const overlapMins = Math.max(
+                                        0,
+                                        overlapEnd - overlapStart,
+                                    );
+                                    return `${cur.a.timeFrom}–${cur.a.timeTo} "${cur.a.item}" overlaps ${next.a.timeFrom}–${next.a.timeTo} "${next.a.item}" (${overlapMins}m)`;
+                                }),
+                            actions: [],
+                        });
+                    }
+
+                    // Gaps (00:00–24:00), including carry-over from previous day
+                    const coverageIntervals = intervals.map((it) => ({
+                        start: it.start,
+                        end: it.end,
+                    }));
+
+                    const prevDateObj = new Date(date + "T00:00:00");
+                    if (!Number.isNaN(prevDateObj.getTime())) {
+                        prevDateObj.setDate(prevDateObj.getDate() - 1);
+                        const prevDate = getLocalDateStr(prevDateObj);
+                        const prevActs = (historyActivities || []).filter(
+                            (a) =>
+                                a.date === prevDate && a.timeFrom && a.timeTo,
+                        );
+                        for (const a of prevActs) {
+                            const startPrev = timeStrToMins(a.timeFrom);
+                            const endPrev = timeStrToMins(a.timeTo);
+                            if (startPrev == null || endPrev == null) continue;
+                            if (endPrev < startPrev && endPrev > 0) {
+                                coverageIntervals.push({
+                                    start: 0,
+                                    end: endPrev,
+                                });
+                            }
+                        }
+                    }
+
+                    const merged = [];
+                    for (const it of coverageIntervals) {
+                        const start = Math.max(0, Math.min(it.start, 1440));
+                        const end = Math.max(0, Math.min(it.end, 1440));
+                        if (end <= start) continue;
+                        const last = merged[merged.length - 1];
+                        if (!last || start > last.end) {
+                            merged.push({ start, end });
+                        } else {
+                            last.end = Math.max(last.end, end);
+                        }
+                    }
+
+                    const gaps = [];
+                    let cursor = 0;
+                    for (const block of merged) {
+                        if (block.start > cursor) {
+                            gaps.push({ start: cursor, end: block.start });
+                        }
+                        cursor = Math.max(cursor, block.end);
+                    }
+                    if (cursor < 1440) gaps.push({ start: cursor, end: 1440 });
+
+                    const bigGaps = gaps
+                        .map((g) => ({ ...g, duration: g.end - g.start }))
+                        .filter((g) => g.duration >= cfg.gapMinMins);
+
+                    if (bigGaps.length > 0) {
+                        const keep = [];
+                        for (const g of bigGaps) {
+                            if (g.start >= 22 * 60 || g.end <= 7 * 60) {
+                                keep.push(g);
+                            }
+                        }
+                        const ranked = [...bigGaps].sort(
+                            (a, b) => b.duration - a.duration,
+                        );
+                        for (const g of ranked) {
+                            if (keep.length >= cfg.maxGapsPerDay) break;
+                            if (
+                                !keep.some(
+                                    (k) =>
+                                        k.start === g.start && k.end === g.end,
+                                )
+                            ) {
+                                keep.push(g);
+                            }
+                        }
+                        keep.sort((a, b) => a.start - b.start);
+
+                        for (const g of keep) {
+                            const from = minsToTimeStr(g.start);
+                            const to = minsToTimeStr(g.end);
+                            const suggestSleep =
+                                g.start >= 22 * 60 || g.end <= 7 * 60;
+                            const actions = [];
+                            if (suggestSleep && sleepCategoryName) {
+                                actions.push({
+                                    kind: "addActivity",
+                                    label: `Add "Sleep" ${from}–${to}`,
+                                    prefill: {
+                                        date,
+                                        timeFrom: from,
+                                        timeTo: to,
+                                        item: "Sleep",
+                                        category: sleepCategoryName,
+                                        ...(finishedStatusName
+                                            ? { status: finishedStatusName }
+                                            : {}),
+                                    },
+                                });
+                            }
+                            issues.push({
+                                id: `gap-${date}-${g.start}-${g.end}`,
+                                kind: "gap",
+                                severity: "info",
+                                title: `Gap ${from}–${to} (${Math.round(g.duration)}m)`,
+                                meta: date,
+                                details: suggestSleep
+                                    ? `Likely Sleep time. Consider adding Sleep for ${from}–${to}.`
+                                    : `Unlogged time. Consider adding an activity for ${from}–${to}.`,
+                                actions,
+                            });
+                        }
+                    }
+                }
+
+                const severityOrder = { error: 0, warn: 1, info: 2 };
+                issues.sort((a, b) => {
+                    const sa = severityOrder[a.severity] ?? 9;
+                    const sb = severityOrder[b.severity] ?? 9;
+                    if (sa !== sb) return sa - sb;
+                    return String(a.meta || "").localeCompare(
+                        String(b.meta || ""),
+                    );
+                });
+
+                return { issues };
             };
 
             async function loadDataFromGitHub(forceRemote = false) {
@@ -1934,6 +2985,7 @@
                 const [showModal, setShowModal] = useState(false);
                 const [showTokenModal, setShowTokenModal] = useState(false);
                 const [editingActivity, setEditingActivity] = useState(null);
+                const [prefillActivity, setPrefillActivity] = useState(null);
                 const [selectedDate, setSelectedDate] = useState(new Date());
                 const [calendarView, setCalendarView] = useState("month");
                 const [period, setPeriod] = useState("daily");
@@ -2052,14 +3104,49 @@
                     );
                     handleSaveToGitHub();
                 };
+                const createCategory = (name, icon = "🏷️") => {
+                    const trimmed = String(name || "").trim();
+                    if (!trimmed) return;
+                    setCategories((prev) => {
+                        if (
+                            prev.some(
+                                (c) =>
+                                    String(c.name || "").toLowerCase() ===
+                                    trimmed.toLowerCase(),
+                            )
+                        ) {
+                            return prev;
+                        }
+                        const color = `#${Math.floor(Math.random() * 16777215)
+                            .toString(16)
+                            .padStart(6, "0")}`;
+                        return [
+                            ...prev,
+                            {
+                                id: generateId(),
+                                name: trimmed,
+                                icon,
+                                color,
+                            },
+                        ];
+                    });
+                };
+
+                const openAdd = (prefill = null) => {
+                    setEditingActivity(null);
+                    setPrefillActivity(prefill);
+                    setShowModal(true);
+                };
                 const openEdit = (a) => {
                     setEditingActivity(a);
+                    setPrefillActivity(null);
                     setShowModal(true);
                 };
 
                 const closeModal = () => {
                     setShowModal(false);
                     setEditingActivity(null);
+                    setPrefillActivity(null);
                 };
 
                 const generateDailySummary = (date) => {
@@ -2238,7 +3325,7 @@
                                     activities={activities}
                                     categories={categories}
                                     statuses={statuses}
-                                    onAdd={() => setShowModal(true)}
+                                    onAdd={openAdd}
                                     setPage={setPage}
                                 />
                             )}
@@ -2247,11 +3334,12 @@
                                     activities={activities}
                                     categories={categories}
                                     statuses={statuses}
-                                    onAdd={() => setShowModal(true)}
+                                    onAdd={openAdd}
                                     onEdit={openEdit}
                                     onDelete={deleteActivity}
                                     onBulkDelete={bulkDeleteActivities}
                                     onBulkUpdate={bulkUpdateActivities}
+                                    onCreateCategory={createCategory}
                                 />
                             )}
                             {page === "calendar" && (
@@ -2263,7 +3351,7 @@
                                     setSelectedDate={setSelectedDate}
                                     view={calendarView}
                                     setView={setCalendarView}
-                                    onAdd={() => setShowModal(true)}
+                                    onAdd={openAdd}
                                     onEdit={openEdit}
                                     onDelete={deleteActivity}
                                 />
@@ -2284,6 +3372,7 @@
                         {showModal && (
                             <Modal
                                 activity={editingActivity}
+                                prefill={prefillActivity}
                                 activities={activities}
                                 categories={categories}
                                 statuses={statuses}
@@ -2666,6 +3755,7 @@
                 onDelete,
                 onBulkDelete,
                 onBulkUpdate,
+                onCreateCategory,
                 condensed,
             }) {
                 const [filter, setFilter] = useState({
@@ -2680,6 +3770,7 @@
                     asc: false,
                 });
                 const [selectedIds, setSelectedIds] = useState([]);
+                const [showOptimizer, setShowOptimizer] = useState(false);
 
                 const handleFilterChange = (field, value) => {
                     setFilter({ ...filter, [field]: value });
@@ -2764,12 +3855,26 @@
                                         activities in total.
                                     </p>
                                 </div>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={onAdd}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: "12px",
+                                        flexWrap: "wrap",
+                                    }}
                                 >
-                                    ✨ Add Activity
-                                </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setShowOptimizer(true)}
+                                    >
+                                        🧠 Optimize
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => onAdd && onAdd()}
+                                    >
+                                        ✨ Add Activity
+                                    </button>
+                                </div>
                             </div>
                         )}
                         <div className="card">
@@ -2886,6 +3991,18 @@
                                 selectedIds={selectedIds}
                             />
                         </div>
+                        {showOptimizer && (
+                            <OptimizerModal
+                                scopeActivities={filteredActivities}
+                                historyActivities={activities}
+                                categories={categories}
+                                statuses={statuses}
+                                onBulkUpdate={onBulkUpdate}
+                                onAdd={onAdd}
+                                onCreateCategory={onCreateCategory}
+                                onClose={() => setShowOptimizer(false)}
+                            />
+                        )}
                     </div>
                 );
             }
@@ -3526,22 +4643,24 @@
 
             function Modal({
                 activity,
+                prefill,
                 activities,
                 categories,
                 statuses,
                 onSave,
                 onClose,
             }) {
+                const defaultForm = {
+                    date: getLocalDateStr(),
+                    timeFrom: "",
+                    timeTo: "",
+                    item: "",
+                    category: categories[0]?.name || "",
+                    status: statuses[0]?.name || "",
+                    notes: "",
+                };
                 const [form, setForm] = useState(
-                    activity || {
-                        date: getLocalDateStr(),
-                        timeFrom: "",
-                        timeTo: "",
-                        item: "",
-                        category: categories[0]?.name || "",
-                        status: statuses[0]?.name || "",
-                        notes: "",
-                    },
+                    activity || { ...defaultForm, ...(prefill || {}) },
                 );
                 const [suggestions, setSuggestions] = useState([]);
                 const [keepOpen, setKeepOpen] = useState(false);
@@ -3742,6 +4861,243 @@
                                     onClick={handleSave}
                                 >
                                     Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function OptimizerModal({
+                scopeActivities,
+                historyActivities,
+                categories,
+                statuses,
+                onBulkUpdate,
+                onAdd,
+                onCreateCategory,
+                onClose,
+            }) {
+                const analysis = useMemo(
+                    () =>
+                        analyzeActivitiesOptimizer({
+                            scopeActivities,
+                            historyActivities,
+                            categories,
+                            statuses,
+                        }),
+                    [scopeActivities, historyActivities, categories, statuses],
+                );
+
+                const issues = analysis.issues || [];
+                const counts = useMemo(() => {
+                    const out = { error: 0, warn: 0, info: 0 };
+                    for (const i of issues) {
+                        out[i.severity] = (out[i.severity] || 0) + 1;
+                    }
+                    return out;
+                }, [issues]);
+
+                const dayCount = useMemo(() => {
+                    const s = new Set(
+                        (scopeActivities || [])
+                            .map((a) => a.date)
+                            .filter(Boolean),
+                    );
+                    return s.size;
+                }, [scopeActivities]);
+
+                const sections = useMemo(() => {
+                    const byKind = {
+                        category: [],
+                        other: [],
+                        time: [],
+                        gap: [],
+                    };
+                    for (const i of issues) {
+                        if (byKind[i.kind]) byKind[i.kind].push(i);
+                    }
+                    return [
+                        {
+                            key: "category",
+                            title: "Category & Tagging",
+                            items: [...byKind.category, ...byKind.other],
+                        },
+                        {
+                            key: "time",
+                            title: "Time Conflicts",
+                            items: byKind.time,
+                        },
+                        { key: "gap", title: "Gaps", items: byKind.gap },
+                    ].filter((s) => s.items.length > 0);
+                }, [issues]);
+
+                const severityIcon = (sev) => {
+                    if (sev === "error") return "×";
+                    if (sev === "warn") return "!";
+                    return "i";
+                };
+
+                const handleAction = (action) => {
+                    if (!action) return;
+                    if (action.kind === "createCategory") {
+                        onCreateCategory && onCreateCategory(action.name);
+                        return;
+                    }
+                    if (action.kind === "applyCategory") {
+                        if (action.alsoCreate) {
+                            onCreateCategory &&
+                                onCreateCategory(action.category);
+                        }
+                        onBulkUpdate &&
+                            onBulkUpdate(action.ids || [], {
+                                category: action.category,
+                            });
+                        return;
+                    }
+                    if (action.kind === "addActivity") {
+                        onAdd && onAdd(action.prefill || null);
+                        onClose && onClose();
+                    }
+                };
+
+                return (
+                    <div className="modal-overlay" onClick={onClose}>
+                        <div
+                            className="modal optimizer-modal"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="modal-title">
+                                Activities Optimizer
+                            </h2>
+                            <div style={{ color: "var(--text-secondary)" }}>
+                                Runs checks on your current Activities filters
+                                using your full history for smarter suggestions.
+                            </div>
+                            <div className="optimizer-summary">
+                                <div className="optimizer-chip">
+                                    Scope: <b>{scopeActivities?.length || 0}</b>{" "}
+                                    activities
+                                </div>
+                                <div className="optimizer-chip">
+                                    Days: <b>{dayCount}</b>
+                                </div>
+                                <div className="optimizer-chip">
+                                    Issues: <b>{issues.length}</b> ({" "}
+                                    {counts.error} errors, {counts.warn} warns,{" "}
+                                    {counts.info} info )
+                                </div>
+                            </div>
+
+                            {issues.length === 0 ? (
+                                <div
+                                    className="empty-state"
+                                    style={{ margin: 0 }}
+                                >
+                                    <div className="empty-icon">✅</div>
+                                    <h3 className="empty-title">All good!</h3>
+                                    <p>No issues found in current scope.</p>
+                                </div>
+                            ) : (
+                                sections.map((section) => (
+                                    <div
+                                        key={section.key}
+                                        className="optimizer-section"
+                                    >
+                                        <div className="optimizer-section-title">
+                                            {section.title}
+                                        </div>
+                                        <div className="issue-list">
+                                            {section.items.map((issue) => (
+                                                <div
+                                                    key={issue.id}
+                                                    className="issue-card"
+                                                >
+                                                    <div
+                                                        className={`issue-badge ${issue.severity}`}
+                                                    >
+                                                        {severityIcon(
+                                                            issue.severity,
+                                                        )}
+                                                    </div>
+                                                    <div className="issue-content">
+                                                        <div className="issue-title">
+                                                            {issue.title}
+                                                        </div>
+                                                        {issue.meta && (
+                                                            <div className="issue-meta">
+                                                                {issue.meta}
+                                                            </div>
+                                                        )}
+                                                        <div className="issue-details">
+                                                            {Array.isArray(
+                                                                issue.details,
+                                                            ) ? (
+                                                                <ul
+                                                                    style={{
+                                                                        marginLeft:
+                                                                            "18px",
+                                                                    }}
+                                                                >
+                                                                    {issue.details.map(
+                                                                        (
+                                                                            line,
+                                                                            idx,
+                                                                        ) => (
+                                                                            <li
+                                                                                key={`${issue.id}-${idx}`}
+                                                                            >
+                                                                                {
+                                                                                    line
+                                                                                }
+                                                                            </li>
+                                                                        ),
+                                                                    )}
+                                                                </ul>
+                                                            ) : (
+                                                                issue.details
+                                                            )}
+                                                        </div>
+                                                        {issue.actions &&
+                                                            issue.actions
+                                                                .length > 0 && (
+                                                                <div className="issue-actions">
+                                                                    {issue.actions.map(
+                                                                        (
+                                                                            a,
+                                                                            idx,
+                                                                        ) => (
+                                                                            <button
+                                                                                key={`${issue.id}-a-${idx}`}
+                                                                                className="btn btn-sm btn-secondary"
+                                                                                onClick={() =>
+                                                                                    handleAction(
+                                                                                        a,
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    a.label
+                                                                                }
+                                                                            </button>
+                                                                        ),
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+
+                            <div className="modal-actions">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={onClose}
+                                >
+                                    Close
                                 </button>
                             </div>
                         </div>

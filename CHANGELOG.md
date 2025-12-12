@@ -2,6 +2,18 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.6.0] - 2025-12-13
+
+### Added
+- **Activities Optimizer**: Added an "🧠 Optimize" tool on the Activities page to automatically check data quality and provide smart suggestions:
+  - **Activity ↔ Category validation** via semantic keyword matching + historical consistency analysis (flags mismatches and recommends the most common category)
+  - **"Other" refinement**: detects "Other" activities that likely belong to an existing category, and suggests creating a new category for frequently repeated "Other" items
+  - **Duplicate/conflict checks**: finds duplicate time slots and overlapping activities in the same period
+  - **Gap detection**: extracts unlogged time blocks and suggests Sleep for late-night/early-morning gaps (with quick-add action)
+
+### Changed
+- **Activities UI**: Improved the look & feel of Activities inputs/selects (filters + selects) with consistent styling, spacing, focus states, and a custom select arrow.
+
 ## [v1.5.2] - 2025-12-13
 
 ### Added
