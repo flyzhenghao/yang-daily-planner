@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.5.2] - 2025-12-13
+
+### Added
+- **Dashboard Tooltip**: Added a tooltip to the "Time by Category" chart on the Dashboard. When hovering over a category, a detailed list of activities for that category is displayed, including Duration, Activity, Date, and Time, sorted by duration.
+
 ## [v1.5.1] - 2025-12-13
 
 ### Changed
