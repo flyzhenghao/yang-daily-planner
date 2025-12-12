@@ -1,6 +1,6 @@
 {
   "version": "v1.4.11",
-  "lastUpdated": "2025-12-12T21:30:25.560Z",
+  "lastUpdated": "2025-12-12T21:58:23.530Z",
   "activities": [
     {
       "date": "2025-12-08",
@@ -665,7 +665,7 @@
     {
       "date": "2025-12-12",
       "timeFrom": "11:00",
-      "timeTo": "23:30",
+      "timeTo": "11:30",
       "category": "Study",
       "item": "Studying english",
       "notes": "",
@@ -731,6 +731,86 @@
       "notes": "",
       "status": "Finished",
       "id": "1765485716913yuxj6vdqi"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "15:20",
+      "timeTo": "16:20",
+      "category": "Entertainment",
+      "item": "Play games",
+      "notes": "",
+      "status": "Processing",
+      "id": "17655765231044fb5mijyv"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "15:50",
+      "timeTo": "16:50",
+      "category": "Social",
+      "item": "Talk to friends",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765576537280zexj1ta1f"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "16:20",
+      "timeTo": "17:00",
+      "category": "Study",
+      "item": "Studying math",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765576548222r1ppqg7a8"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "17:00",
+      "timeTo": "17:30",
+      "category": "Other",
+      "item": "Doing personal stuff",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765576609362wwkxwfx6v"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "17:30",
+      "timeTo": "18:00",
+      "category": "Entertainment",
+      "item": "Watching netflix",
+      "notes": "",
+      "status": "Finished",
+      "id": "1765576620645v6oz9irq4"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "18:00",
+      "timeTo": "18:30",
+      "category": "Other",
+      "item": "Eating dinner",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765576645972xd50ic1wa"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "18:30",
+      "timeTo": "19:00",
+      "category": "Other",
+      "item": "Perparing for snowboarding",
+      "notes": "",
+      "status": "Planning",
+      "id": "1765576660877mb3qutfup"
+    },
+    {
+      "date": "2025-12-12",
+      "timeFrom": "19:00",
+      "timeTo": "23:00",
+      "category": "Exercise",
+      "item": "Snowboarding",
+      "notes": "",
+      "status": "Finished",
+      "id": "17655766764191m88t4jci"
     }
   ],
   "categories": [
