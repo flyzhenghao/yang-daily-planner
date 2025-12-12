@@ -1550,7 +1550,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.5.0";
+            const APP_VERSION = "v1.5.1";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -1848,6 +1848,7 @@
                 const [isSyncing, setIsSyncing] = useState(false);
                 const [confirmConfig, setConfirmConfig] = useState(null);
                 const [reportPhoneNumber, setReportPhoneNumber] = useState("");
+                const [showReportModal, setShowReportModal] = useState(false);
                 const [reportDate, setReportDate] = useState(getLocalDateStr());
 
                 useEffect(() => {
@@ -2022,9 +2023,14 @@
                         setPage("settings");
                         return;
                     }
-                    const text = generateDailySummary(reportDate);
+                    setShowReportModal(true);
+                };
+
+                const handleConfirmSendReport = (date) => {
+                    const text = generateDailySummary(date);
                     const url = `https://wa.me/${reportPhoneNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(text)}`;
                     window.open(url, "_blank");
+                    setShowReportModal(false);
                 };
 
                 const navItems = [
@@ -2083,24 +2089,6 @@
                                         ? "⏳ Saving..."
                                         : "💾 Save to GitHub"}
                                 </button>
-                                <div style={{ marginTop: "8px" }}>
-                                    <input
-                                        type="date"
-                                        value={reportDate}
-                                        onChange={(e) =>
-                                            setReportDate(e.target.value)
-                                        }
-                                        style={{
-                                            width: "100%",
-                                            padding: "8px",
-                                            borderRadius: "var(--radius-sm)",
-                                            border: "1px solid rgba(255,255,255,0.2)",
-                                            background: "rgba(0,0,0,0.1)",
-                                            color: "#fff",
-                                            fontFamily: "Quicksand",
-                                        }}
-                                    />
-                                </div>
                                 <button
                                     className="btn btn-secondary"
                                     onClick={handleSendReport}
@@ -2229,6 +2217,12 @@
                                 message={confirmConfig.message}
                                 onConfirm={confirmConfig.onConfirm}
                                 onCancel={() => setConfirmConfig(null)}
+                            />
+                        )}
+                        {showReportModal && (
+                            <ReportModal
+                                onConfirm={handleConfirmSendReport}
+                                onCancel={() => setShowReportModal(false)}
                             />
                         )}
                         <div className="mobile-nav">
@@ -4441,22 +4435,10 @@
 
             function ConfirmModal({ title, message, onConfirm, onCancel }) {
                 return (
-                    <div
-                        className="modal-overlay"
-                        onClick={(e) =>
-                            e.target === e.currentTarget && onCancel()
-                        }
-                    >
+                    <div className="modal-overlay">
                         <div className="modal" style={{ maxWidth: "400px" }}>
                             <h2 className="modal-title">{title}</h2>
-                            <p
-                                style={{
-                                    marginBottom: "20px",
-                                    color: "var(--text-secondary)",
-                                }}
-                            >
-                                {message}
-                            </p>
+                            <p>{message}</p>
                             <div className="modal-actions">
                                 <button
                                     className="btn btn-secondary"
@@ -4468,7 +4450,45 @@
                                     className="btn btn-danger"
                                     onClick={onConfirm}
                                 >
-                                    Delete
+                                    Confirm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function ReportModal({ onConfirm, onCancel }) {
+                const [date, setDate] = useState(getLocalDateStr());
+
+                const handleConfirm = () => {
+                    onConfirm(date);
+                };
+
+                return (
+                    <div className="modal-overlay">
+                        <div className="modal" style={{ maxWidth: "400px" }}>
+                            <h2 className="modal-title">Select Report Date</h2>
+                            <div className="form-group">
+                                <input
+                                    type="date"
+                                    className="form-input"
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                />
+                            </div>
+                            <div className="modal-actions">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={onCancel}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={handleConfirm}
+                                >
+                                    Confirm
                                 </button>
                             </div>
                         </div>

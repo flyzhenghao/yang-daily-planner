@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.5.1] - 2025-12-13
+
+### Changed
+- **"Send Report" UI**: The date picker for the "Send Report" feature is now displayed in a modal dialog after clicking the "Send Report" button, instead of being always visible on the sidebar.
+
 ## [v1.5.0] - 2025-12-13
 
 ### Added
@@ -10,7 +15,7 @@ All notable changes to Yang's Daily Planner will be documented in this file.
 ### Fixed
 - **Auto-Save**: Fixed a bug where adding, deleting, or modifying an activity did not always trigger the "Save to GitHub" function. Now, all these actions will automatically save the changes.
 
-## [v1.4.11] - 2025-12-11
+## [v.1.4.11] - 2025-12-11
 
 
 ### Changed
