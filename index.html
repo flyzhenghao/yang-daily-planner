@@ -1780,7 +1780,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.6.0";
+            const APP_VERSION = "v1.6.1";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -1854,6 +1854,8 @@
                     console.error(e);
                 }
             };
+
+            const OPTIMIZER_IGNORED_KEY = "yang_optimizer_ignored_issues";
 
             const minsToTimeStr = (mins) => {
                 if (mins == null || Number.isNaN(mins)) return "";
@@ -2428,25 +2430,26 @@
                         id: `other-newcat-${key}`,
                         kind: "other",
                         severity: "info",
-                        title: `New category candidate: "${info.label}"`,
+                        title: `New category candidate`,
                         meta: `Seen ${info.count}× under Other (history)`,
+                        suggestedName: info.label,
                         details: info.examples.length
                             ? `Examples: ${info.examples.join(" · ")}`
                             : "Frequently logged under Other.",
                         actions: [
                             {
                                 kind: "createCategory",
-                                label: `Create category "${info.label}"`,
-                                name: info.label,
+                                label: "Create category",
+                                defaultName: info.label,
                             },
                             ...(ids.length > 0
                                 ? [
                                       {
                                           kind: "applyCategory",
-                                          label: `Apply "${info.label}" to ${ids.length} activities in view`,
-                                          category: info.label,
+                                          label: `Apply to ${ids.length} activities in view`,
                                           ids,
                                           alsoCreate: true,
+                                          defaultName: info.label,
                                       },
                                   ]
                                 : []),
@@ -2559,31 +2562,58 @@
                         if (next.start < cur.end) overlaps.push({ cur, next });
                     }
                     if (overlaps.length > 0) {
-                        issues.push({
-                            id: `overlap-${date}`,
-                            kind: "time",
-                            severity: "error",
-                            title: `Time overlaps (${overlaps.length})`,
-                            meta: date,
-                            details: overlaps
-                                .slice(0, 8)
-                                .map(({ cur, next }) => {
-                                    const overlapStart = Math.max(
-                                        cur.start,
-                                        next.start,
-                                    );
-                                    const overlapEnd = Math.min(
-                                        cur.end,
-                                        next.end,
-                                    );
-                                    const overlapMins = Math.max(
-                                        0,
-                                        overlapEnd - overlapStart,
-                                    );
-                                    return `${cur.a.timeFrom}–${cur.a.timeTo} "${cur.a.item}" overlaps ${next.a.timeFrom}–${next.a.timeTo} "${next.a.item}" (${overlapMins}m)`;
-                                }),
-                            actions: [],
+                        overlaps.slice(0, 12).forEach(({ cur, next }) => {
+                            const overlapStart = Math.max(
+                                cur.start,
+                                next.start,
+                            );
+                            const overlapEnd = Math.min(cur.end, next.end);
+                            const overlapMins = Math.max(
+                                0,
+                                overlapEnd - overlapStart,
+                            );
+                            const aId = cur.a?.id;
+                            const bId = next.a?.id;
+                            issues.push({
+                                id: `overlap-${date}-${aId || "a"}-${bId || "b"}`,
+                                kind: "time",
+                                severity: "error",
+                                title: `Time overlap (${overlapMins}m)`,
+                                meta: `${date} · ${cur.a.timeFrom}–${cur.a.timeTo} vs ${next.a.timeFrom}–${next.a.timeTo}`,
+                                details: `"${cur.a.item}" overlaps "${next.a.item}".`,
+                                actions: [
+                                    ...(aId
+                                        ? [
+                                              {
+                                                  kind: "editActivity",
+                                                  label: `Edit "${cur.a.item}"`,
+                                                  activityId: aId,
+                                              },
+                                          ]
+                                        : []),
+                                    ...(bId
+                                        ? [
+                                              {
+                                                  kind: "editActivity",
+                                                  label: `Edit "${next.a.item}"`,
+                                                  activityId: bId,
+                                              },
+                                          ]
+                                        : []),
+                                ],
+                            });
                         });
+                        if (overlaps.length > 12) {
+                            issues.push({
+                                id: `overlap-more-${date}`,
+                                kind: "time",
+                                severity: "info",
+                                title: "More overlaps not shown",
+                                meta: date,
+                                details: `${overlaps.length - 12} more overlaps exist. Fix some overlaps and re-run.`,
+                                actions: [],
+                            });
+                        }
                     }
 
                     // Gaps (00:00–24:00), including carry-over from previous day
@@ -3999,6 +4029,7 @@
                                 statuses={statuses}
                                 onBulkUpdate={onBulkUpdate}
                                 onAdd={onAdd}
+                                onEdit={onEdit}
                                 onCreateCategory={onCreateCategory}
                                 onClose={() => setShowOptimizer(false)}
                             />
@@ -4875,21 +4906,67 @@
                 statuses,
                 onBulkUpdate,
                 onAdd,
+                onEdit,
                 onCreateCategory,
                 onClose,
             }) {
-                const analysis = useMemo(
-                    () =>
-                        analyzeActivitiesOptimizer({
-                            scopeActivities,
-                            historyActivities,
-                            categories,
-                            statuses,
-                        }),
-                    [scopeActivities, historyActivities, categories, statuses],
+                const computeIssues = () => {
+                    const res = analyzeActivitiesOptimizer({
+                        scopeActivities,
+                        historyActivities,
+                        categories,
+                        statuses,
+                    });
+                    return res.issues || [];
+                };
+
+                const [ignoredIssueIds, setIgnoredIssueIds] = useState(() =>
+                    (getLS(OPTIMIZER_IGNORED_KEY, []) || []).filter(Boolean),
+                );
+                const ignoredSet = useMemo(
+                    () => new Set(ignoredIssueIds || []),
+                    [ignoredIssueIds],
+                );
+                const ignoreIssue = (id) => {
+                    if (!id) return;
+                    setIgnoredIssueIds((prev) => {
+                        const list = Array.isArray(prev) ? prev : [];
+                        if (list.includes(id)) return list;
+                        const next = [...list, id];
+                        setLS(OPTIMIZER_IGNORED_KEY, next);
+                        return next;
+                    });
+                };
+                const resetIgnores = () => {
+                    setIgnoredIssueIds([]);
+                    setLS(OPTIMIZER_IGNORED_KEY, []);
+                };
+
+                const [issuesSnapshot, setIssuesSnapshot] = useState(() =>
+                    computeIssues(),
                 );
 
-                const issues = analysis.issues || [];
+                const issues = useMemo(
+                    () =>
+                        (issuesSnapshot || []).filter(
+                            (i) => i && i.id && !ignoredSet.has(i.id),
+                        ),
+                    [issuesSnapshot, ignoredSet],
+                );
+
+                const [categoryEdits, setCategoryEdits] = useState({});
+                const getEditedCategoryName = (issue, fallback) => {
+                    const raw =
+                        categoryEdits[issue.id] ??
+                        issue.suggestedName ??
+                        fallback ??
+                        "";
+                    return String(raw || "").trim();
+                };
+
+                const rerun = () => {
+                    setIssuesSnapshot(computeIssues());
+                };
                 const counts = useMemo(() => {
                     const out = { error: 0, warn: 0, info: 0 };
                     for (const i of issues) {
@@ -4938,25 +5015,42 @@
                     return "i";
                 };
 
-                const handleAction = (action) => {
+                const handleAction = (issue, action) => {
                     if (!action) return;
                     if (action.kind === "createCategory") {
-                        onCreateCategory && onCreateCategory(action.name);
+                        const name = getEditedCategoryName(
+                            issue,
+                            action.name || action.defaultName,
+                        );
+                        if (!name) return;
+                        onCreateCategory && onCreateCategory(name);
                         return;
                     }
                     if (action.kind === "applyCategory") {
-                        if (action.alsoCreate) {
-                            onCreateCategory &&
-                                onCreateCategory(action.category);
+                        const categoryName = getEditedCategoryName(
+                            issue,
+                            action.category || action.defaultName,
+                        );
+                        if (!categoryName) return;
+                        if (action.alsoCreate && onCreateCategory) {
+                            onCreateCategory(categoryName);
                         }
                         onBulkUpdate &&
                             onBulkUpdate(action.ids || [], {
-                                category: action.category,
+                                category: categoryName,
                             });
                         return;
                     }
                     if (action.kind === "addActivity") {
                         onAdd && onAdd(action.prefill || null);
+                        onClose && onClose();
+                        return;
+                    }
+                    if (action.kind === "editActivity") {
+                        const target = (historyActivities || []).find(
+                            (a) => a.id === action.activityId,
+                        );
+                        if (target && onEdit) onEdit(target);
                         onClose && onClose();
                     }
                 };
@@ -4986,6 +5080,9 @@
                                     Issues: <b>{issues.length}</b> ({" "}
                                     {counts.error} errors, {counts.warn} warns,{" "}
                                     {counts.info} info )
+                                </div>
+                                <div className="optimizer-chip">
+                                    Ignored: <b>{ignoredIssueIds.length}</b>
                                 </div>
                             </div>
 
@@ -5022,7 +5119,9 @@
                                                     </div>
                                                     <div className="issue-content">
                                                         <div className="issue-title">
-                                                            {issue.title}
+                                                            {issue.suggestedName
+                                                                ? `New category candidate: "${getEditedCategoryName(issue, issue.suggestedName) || issue.suggestedName}"`
+                                                                : issue.title}
                                                         </div>
                                                         {issue.meta && (
                                                             <div className="issue-meta">
@@ -5058,32 +5157,91 @@
                                                                 issue.details
                                                             )}
                                                         </div>
-                                                        {issue.actions &&
-                                                            issue.actions
-                                                                .length > 0 && (
-                                                                <div className="issue-actions">
-                                                                    {issue.actions.map(
-                                                                        (
-                                                                            a,
-                                                                            idx,
-                                                                        ) => (
-                                                                            <button
-                                                                                key={`${issue.id}-a-${idx}`}
-                                                                                className="btn btn-sm btn-secondary"
-                                                                                onClick={() =>
-                                                                                    handleAction(
-                                                                                        a,
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                {
-                                                                                    a.label
-                                                                                }
-                                                                            </button>
-                                                                        ),
-                                                                    )}
+                                                        {issue.suggestedName && (
+                                                            <div
+                                                                style={{
+                                                                    marginTop:
+                                                                        "10px",
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "11px",
+                                                                        fontWeight: 700,
+                                                                        color: "var(--text-muted)",
+                                                                        textTransform:
+                                                                            "uppercase",
+                                                                        letterSpacing:
+                                                                            "0.5px",
+                                                                        marginBottom:
+                                                                            "6px",
+                                                                    }}
+                                                                >
+                                                                    Category
+                                                                    name
                                                                 </div>
-                                                            )}
+                                                                <input
+                                                                    className="form-input"
+                                                                    style={{
+                                                                        padding:
+                                                                            "10px 12px",
+                                                                    }}
+                                                                    value={
+                                                                        categoryEdits[
+                                                                            issue
+                                                                                .id
+                                                                        ] ??
+                                                                        issue.suggestedName
+                                                                    }
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
+                                                                        setCategoryEdits(
+                                                                            (
+                                                                                prev,
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [issue.id]:
+                                                                                    e
+                                                                                        .target
+                                                                                        .value,
+                                                                            }),
+                                                                        )
+                                                                    }
+                                                                    placeholder="New category name"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        <div className="issue-actions">
+                                                            {(
+                                                                issue.actions ||
+                                                                []
+                                                            ).map((a, idx) => (
+                                                                <button
+                                                                    key={`${issue.id}-a-${idx}`}
+                                                                    className="btn btn-sm btn-secondary"
+                                                                    onClick={() =>
+                                                                        handleAction(
+                                                                            issue,
+                                                                            a,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {a.label}
+                                                                </button>
+                                                            ))}
+                                                            <button
+                                                                className="btn btn-sm btn-secondary"
+                                                                onClick={() =>
+                                                                    ignoreIssue(
+                                                                        issue.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Ignore
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -5093,6 +5251,20 @@
                             )}
 
                             <div className="modal-actions">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={rerun}
+                                >
+                                    Re-run
+                                </button>
+                                {ignoredIssueIds.length > 0 && (
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={resetIgnores}
+                                    >
+                                        Reset ignores
+                                    </button>
+                                )}
                                 <button
                                     className="btn btn-secondary"
                                     onClick={onClose}

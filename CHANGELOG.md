@@ -2,6 +2,18 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.6.1] - 2025-12-13
+
+### Added
+- **Activities Optimizer - Ignore**: Each optimizer issue now supports **Ignore** (persisted), so ignored items won't be shown again in future checks. Also added **Re-run** and **Reset ignores** controls.
+- **Activities Optimizer - Editable Suggestions**: "New category candidate" suggestions can now be edited before creating/applying.
+
+### Fixed
+- **New Category Candidate Actions**: Creating a suggested category no longer removes the issue card immediately, so you can continue to apply it to related activities.
+
+### Changed
+- **Time Conflicts**: Time overlap issues now include quick actions to open/edit the related activities.
+
 ## [v1.6.0] - 2025-12-13
 
 ### Added
