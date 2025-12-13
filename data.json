@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T21:18:41.347Z",
+  "lastUpdated": "2025-12-13T21:18:57.854Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -991,6 +991,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765660646783uz6dtkeqt"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "11:00",
+      "timeTo": "11:30",
+      "item": "Studying english",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "17656607213463fsd48phm"
     }
   ],
   "categories": [
