@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T21:29:26.837Z",
+  "lastUpdated": "2025-12-13T21:29:39.426Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -1101,6 +1101,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765661358764ni314ldyu"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "17:30",
+      "timeTo": "18:00",
+      "item": "Pushups",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "17656613668365ggktkaou"
     }
   ],
   "categories": [
