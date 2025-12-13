@@ -33,3 +33,8 @@ build/
 # Misc
 *.bak
 *.tmp
+
+# Local-only folders (do not upload)
+chat/
+source/
+.claude-exports/
