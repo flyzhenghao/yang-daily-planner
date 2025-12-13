@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T21:17:26.784Z",
+  "lastUpdated": "2025-12-13T21:18:41.347Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -981,6 +981,16 @@
       "notes": "",
       "status": "Finished",
       "id": "1765224163895pvwm8hm7y"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "10:30",
+      "timeTo": "10:50",
+      "item": "Eating breakfast ",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765660646783uz6dtkeqt"
     }
   ],
   "categories": [
