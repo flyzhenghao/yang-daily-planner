@@ -158,6 +158,21 @@
                 padding: 8px;
             }
 
+            .logo-clickable {
+                cursor: pointer;
+                border-radius: var(--radius-md);
+                transition: background 0.2s ease;
+            }
+
+            .logo-clickable:hover {
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .logo-clickable:focus-visible {
+                outline: 2px solid rgba(255, 255, 255, 0.6);
+                outline-offset: 2px;
+            }
+
             .logo-icon {
                 width: 48px;
                 height: 48px;
@@ -1584,6 +1599,73 @@
                 color: var(--text-primary);
             }
 
+            .settings-subtitle {
+                font-family: "Nunito", sans-serif;
+                font-size: 15px;
+                font-weight: 700;
+                margin: 0 0 12px;
+                color: var(--text-primary);
+            }
+
+            .settings-divider {
+                height: 1px;
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 20%,
+                    var(--border)
+                );
+                margin: 20px 0;
+            }
+
+            .profile-avatar-row {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent-pink),
+                    var(--accent-orange)
+                );
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                color: #fff;
+                font-family: "Nunito", sans-serif;
+                font-weight: 800;
+                font-size: 26px;
+                box-shadow: var(--shadow-sm);
+                border: 2px solid
+                    color-mix(in oklab, var(--primary) 18%, var(--border));
+            }
+
+            .profile-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .profile-avatar-actions {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+
+            .profile-hint {
+                color: var(--text-secondary);
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
             .settings-list {
                 display: flex;
                 flex-wrap: wrap;
@@ -2048,11 +2130,12 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.7.3";
+            const APP_VERSION = "v1.8.0";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
             const GITHUB_BRANCH = "main";
+            const GITHUB_TOKEN_KEY = "yang_github_token";
 
             const defaultCategories = [
                 { id: 1, name: "Study", color: "#6C5CE7", icon: "📚" },
@@ -2069,6 +2152,14 @@
                 { id: 4, name: "Partial Finished", color: "#6C5CE7" },
                 { id: 5, name: "Abandoned", color: "#B2BEC3" },
             ];
+            const PROFILE_KEY = "yang_profile";
+            const defaultProfile = {
+                name: "Yang",
+                school: "",
+                grade: "Year 9",
+                email: "",
+                avatarDataUrl: "",
+            };
 
             const getLocalDateStr = (date = new Date()) => {
                 const d = new Date(date);
@@ -2121,6 +2212,45 @@
                 } catch (e) {
                     console.error(e);
                 }
+            };
+
+            const normalizeGitHubToken = (raw) => {
+                const trimmed = String(raw || "").trim();
+                if (!trimmed) return "";
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    if (typeof parsed === "string") return parsed.trim();
+                } catch {}
+                return trimmed;
+            };
+
+            const getGitHubToken = () => {
+                try {
+                    return normalizeGitHubToken(
+                        localStorage.getItem(GITHUB_TOKEN_KEY),
+                    );
+                } catch {
+                    return "";
+                }
+            };
+
+            const setGitHubToken = (token) => {
+                try {
+                    const trimmed = String(token || "").trim();
+                    if (!trimmed) {
+                        localStorage.removeItem(GITHUB_TOKEN_KEY);
+                        return;
+                    }
+                    localStorage.setItem(GITHUB_TOKEN_KEY, trimmed);
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+
+            const clearGitHubToken = () => {
+                try {
+                    localStorage.removeItem(GITHUB_TOKEN_KEY);
+                } catch {}
             };
 
             const OPTIMIZER_IGNORED_KEY = "yang_optimizer_ignored_issues";
@@ -3229,7 +3359,7 @@
             }
 
             async function saveDataToGitHub(activities, categories, statuses) {
-                const token = localStorage.getItem("yang_github_token");
+                const token = getGitHubToken();
                 if (!token) {
                     console.warn("⚠️ GitHub token not configured");
                     return false;
@@ -3444,7 +3574,6 @@
                 const [categories, setCategories] = useState(defaultCategories);
                 const [statuses, setStatuses] = useState(defaultStatuses);
                 const [showModal, setShowModal] = useState(false);
-                const [showTokenModal, setShowTokenModal] = useState(false);
                 const [editingActivity, setEditingActivity] = useState(null);
                 const [prefillActivity, setPrefillActivity] = useState(null);
                 const [selectedDate, setSelectedDate] = useState(new Date());
@@ -3496,11 +3625,11 @@
                     setIsSaving(false);
                     if (success) alert("✅ Data saved to GitHub successfully!");
                     else {
-                        const token = localStorage.getItem("yang_github_token");
+                        const token = getGitHubToken();
                         alert(
                             token
                                 ? "❌ Failed to save to GitHub."
-                                : "⚠️ GitHub token not configured.",
+                                : "⚠️ Please set GitHub token in Settings → System.",
                         );
                     }
                 };
@@ -3686,7 +3815,18 @@
                 return (
                     <div className="app-container">
                         <aside className="sidebar">
-                            <div className="logo">
+                            <div
+                                className="logo logo-clickable"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => setPage("profile")}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                        e.preventDefault();
+                                        setPage("profile");
+                                    }
+                                }}
+                            >
                                 <div className="logo-icon">🌟</div>
                                 <div>
                                     <div className="logo-text">
@@ -3716,6 +3856,7 @@
                                     padding: "16px 0",
                                     borderTop:
                                         "1px solid rgba(255,255,255,0.1)",
+                                    marginTop: "auto",
                                 }}
                             >
                                 <button
@@ -3747,37 +3888,6 @@
                                 >
                                     📱 Send Report
                                 </button>
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowTokenModal(true)}
-                                    style={{
-                                        width: "100%",
-                                        fontSize: "13px",
-                                        padding: "8px",
-                                        marginTop: "8px",
-                                    }}
-                                >
-                                    🔑 GitHub Token
-                                </button>
-                                <div
-                                    style={{
-                                        fontSize: "10px",
-                                        color: "rgba(255,255,255,0.5)",
-                                        textAlign: "center",
-                                        marginTop: "8px",
-                                    }}
-                                >
-                                    {APP_VERSION}
-                                </div>
-                            </div>
-                            <div className="user-profile">
-                                <div className="avatar">Y</div>
-                                <div className="user-info">
-                                    <div className="user-name">Yang</div>
-                                    <div className="user-role">
-                                        Year 9 Student
-                                    </div>
-                                </div>
                             </div>
                         </aside>
                         <main className="main-content">
@@ -3831,6 +3941,9 @@
                                     setReportPhoneNumber={setReportPhoneNumber}
                                 />
                             )}
+                            {page === "profile" && (
+                                <Profile onBack={() => setPage("dashboard")} />
+                            )}
                         </main>
                         {showModal && (
                             <Modal
@@ -3851,11 +3964,6 @@
                                     handleSaveToGitHub();
                                 }}
                                 onClose={closeModal}
-                            />
-                        )}
-                        {showTokenModal && (
-                            <TokenModal
-                                onClose={() => setShowTokenModal(false)}
                             />
                         )}
                         {confirmConfig && (
@@ -5179,6 +5287,12 @@
                 reportPhoneNumber,
                 setReportPhoneNumber,
             }) {
+                const [savedGitHubToken, setSavedGitHubToken] =
+                    useState(getGitHubToken());
+                const [githubToken, setGithubToken] =
+                    useState(savedGitHubToken);
+                const [githubTokenVisible, setGithubTokenVisible] =
+                    useState(false);
                 const [newCat, setNewCat] = useState({ name: "", icon: "🏷️" });
                 const [editingCategory, setEditingCategory] = useState(null);
                 const [editDraft, setEditDraft] = useState({
@@ -5188,6 +5302,27 @@
                 });
                 const [deletingCategory, setDeletingCategory] = useState(null);
                 const [deleteMoveTo, setDeleteMoveTo] = useState("");
+
+                const tokenConfigured = Boolean(savedGitHubToken);
+                const tokenDirty = githubToken !== savedGitHubToken;
+
+                const handleSaveGitHubToken = () => {
+                    setGitHubToken(githubToken);
+                    const next = getGitHubToken();
+                    setSavedGitHubToken(next);
+                    setGithubToken(next);
+                    alert(
+                        next
+                            ? "✅ GitHub token saved."
+                            : "✅ GitHub token cleared.",
+                    );
+                };
+
+                const handleClearGitHubToken = () => {
+                    clearGitHubToken();
+                    setSavedGitHubToken("");
+                    setGithubToken("");
+                };
 
                 const makeRandomColor = () =>
                     `#${Math.floor(Math.random() * 16777215)
@@ -5341,7 +5476,144 @@
                             <h1 className="page-title">Settings</h1>
                         </div>
                         <div className="settings-section">
-                            <h2 className="settings-title">Data Management</h2>
+                            <h2 className="settings-title">System</h2>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "12px",
+                                    marginBottom: "6px",
+                                }}
+                            >
+                                <h3
+                                    className="settings-subtitle"
+                                    style={{ margin: 0 }}
+                                >
+                                    GitHub Token
+                                </h3>
+                                <div
+                                    style={{
+                                        fontSize: "12px",
+                                        fontWeight: 700,
+                                        color: tokenConfigured
+                                            ? "var(--accent-green)"
+                                            : "var(--accent-red)",
+                                    }}
+                                >
+                                    {tokenConfigured ? "Configured" : "Not set"}
+                                    {tokenDirty ? " • Unsaved" : ""}
+                                </div>
+                            </div>
+                            <p
+                                style={{
+                                    color: "var(--text-secondary)",
+                                    marginBottom: "12px",
+                                }}
+                            >
+                                A GitHub personal access token with{" "}
+                                <code>repo</code> scope is required for cloud
+                                sync.{" "}
+                                <a
+                                    href="https://github.com/settings/tokens/new"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Create one here
+                                </a>
+                                .
+                            </p>
+                            <div className="form-group">
+                                <label className="form-label">
+                                    Personal Access Token
+                                </label>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: "10px",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <input
+                                        className="form-input"
+                                        type={
+                                            githubTokenVisible
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        value={githubToken}
+                                        onChange={(e) =>
+                                            setGithubToken(e.target.value)
+                                        }
+                                        placeholder="ghp_..."
+                                        style={{ flex: 1 }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setGithubTokenVisible((v) => !v)
+                                        }
+                                        style={{
+                                            padding: "10px 12px",
+                                            minWidth: "76px",
+                                        }}
+                                    >
+                                        {githubTokenVisible ? "Hide" : "Show"}
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "12px",
+                                    justifyContent: "flex-end",
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={handleClearGitHubToken}
+                                    disabled={!tokenConfigured && !githubToken}
+                                >
+                                    Clear
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={handleSaveGitHubToken}
+                                    disabled={!tokenDirty}
+                                >
+                                    Save
+                                </button>
+                            </div>
+
+                            <div className="settings-divider" />
+
+                            <h3 className="settings-subtitle">
+                                WhatsApp Reporting
+                            </h3>
+                            <div className="form-group" style={{ margin: 0 }}>
+                                <label className="form-label">
+                                    Phone Number
+                                </label>
+                                <input
+                                    className="form-input"
+                                    type="tel"
+                                    value={reportPhoneNumber}
+                                    onChange={(e) =>
+                                        setReportPhoneNumber(e.target.value)
+                                    }
+                                    placeholder="+1234567890"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="settings-section">
+                            <h2 className="settings-title">Data</h2>
+                            <h3 className="settings-subtitle">
+                                Data Management
+                            </h3>
                             <p
                                 style={{
                                     color: "var(--text-secondary)",
@@ -5357,28 +5629,10 @@
                             >
                                 {isSyncing ? "⏳ Syncing..." : "🔄 Force Sync"}
                             </button>
-                        </div>
-                        <div className="settings-section">
-                            <h2 className="settings-title">
-                                WhatsApp Reporting
-                            </h2>
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Phone Number
-                                </label>
-                                <input
-                                    className="form-input"
-                                    type="tel"
-                                    value={reportPhoneNumber}
-                                    onChange={(e) =>
-                                        setReportPhoneNumber(e.target.value)
-                                    }
-                                    placeholder="+1234567890"
-                                />
-                            </div>
-                        </div>
-                        <div className="settings-section">
-                            <h2 className="settings-title">Categories</h2>
+
+                            <div className="settings-divider" />
+
+                            <h3 className="settings-subtitle">Categories</h3>
                             <div className="settings-list">
                                 {categories.map((c) => (
                                     <div key={c.id} className="settings-item">
@@ -6587,50 +6841,213 @@
                 );
             }
 
-            function TokenModal({ onClose }) {
-                const [token, setToken] = useState(
-                    getLS("yang_github_token", ""),
+            function Profile({ onBack }) {
+                const [savedProfile, setSavedProfile] = useState(() =>
+                    getLS(PROFILE_KEY, defaultProfile),
                 );
+                const [draft, setDraft] = useState(savedProfile);
+
+                const profileDirty = useMemo(
+                    () =>
+                        JSON.stringify(draft) !== JSON.stringify(savedProfile),
+                    [draft, savedProfile],
+                );
+
+                const initials = useMemo(() => {
+                    const raw = String(draft.name || "").trim();
+                    if (!raw) return "Y";
+                    const parts = raw.split(/\s+/).filter(Boolean);
+                    return (
+                        parts
+                            .slice(0, 2)
+                            .map((p) => p.slice(0, 1).toUpperCase())
+                            .join("") || "Y"
+                    );
+                }, [draft.name]);
+
+                const updateField = (key, value) =>
+                    setDraft((prev) => ({ ...prev, [key]: value }));
+
+                const handleAvatarUpload = (file) => {
+                    if (!file) return;
+                    if (!file.type || !file.type.startsWith("image/")) {
+                        alert("Please select an image file.");
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = reader.result;
+                        if (typeof result === "string") {
+                            updateField("avatarDataUrl", result);
+                        }
+                    };
+                    reader.onerror = () => {
+                        alert("❌ Failed to read image file.");
+                    };
+                    reader.readAsDataURL(file);
+                };
+
+                const handleSave = () => {
+                    const next = {
+                        name: String(draft.name || "").trim(),
+                        school: String(draft.school || "").trim(),
+                        grade: String(draft.grade || "").trim(),
+                        email: String(draft.email || "").trim(),
+                        avatarDataUrl: String(draft.avatarDataUrl || ""),
+                    };
+                    setLS(PROFILE_KEY, next);
+                    setSavedProfile(next);
+                    setDraft(next);
+                    alert("✅ Profile saved.");
+                };
+
+                const handleReset = () => {
+                    setDraft(savedProfile);
+                };
+
                 return (
-                    <div className="modal-overlay" onClick={onClose}>
-                        <div
-                            className="modal"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <h2 className="modal-title">GitHub Token</h2>
-                            <p>
-                                A personal access token with 'repo' scope is
-                                required for data sync.{" "}
-                                <a
-                                    href="https://github.com/settings/tokens/new"
-                                    target="_blank"
-                                >
-                                    Create one here
-                                </a>
-                                .
-                            </p>
-                            <input
-                                type="password"
-                                className="form-input"
-                                value={token}
-                                onChange={(e) => setToken(e.target.value)}
-                            />
-                            <div className="modal-actions">
+                    <div className="animate-fade-in">
+                        <div className="page-header">
+                            <div>
+                                <h1 className="page-title">Profile</h1>
+                                <div className="page-subtitle">
+                                    Manage your basic information.
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "12px",
+                                    flexWrap: "wrap",
+                                }}
+                            >
                                 <button
+                                    type="button"
                                     className="btn btn-secondary"
-                                    onClick={onClose}
+                                    onClick={onBack}
                                 >
-                                    Cancel
+                                    ← Back
                                 </button>
                                 <button
+                                    type="button"
                                     className="btn btn-primary"
-                                    onClick={() => {
-                                        setLS("yang_github_token", token);
-                                        onClose();
-                                    }}
+                                    onClick={handleSave}
+                                    disabled={!profileDirty}
                                 >
                                     Save
                                 </button>
+                            </div>
+                        </div>
+
+                        <div className="settings-section">
+                            <h2 className="settings-title">Basic Info</h2>
+
+                            <div className="profile-avatar-row">
+                                <div className="profile-avatar">
+                                    {draft.avatarDataUrl ? (
+                                        <img
+                                            src={draft.avatarDataUrl}
+                                            alt="Avatar"
+                                        />
+                                    ) : (
+                                        <span>{initials}</span>
+                                    )}
+                                </div>
+                                <div style={{ flex: 1, minWidth: "220px" }}>
+                                    <div className="profile-avatar-actions">
+                                        <label className="btn btn-secondary">
+                                            📷 Upload Avatar
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                style={{ display: "none" }}
+                                                onChange={(e) =>
+                                                    handleAvatarUpload(
+                                                        e.target.files?.[0],
+                                                    )
+                                                }
+                                            />
+                                        </label>
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary"
+                                            onClick={() =>
+                                                updateField("avatarDataUrl", "")
+                                            }
+                                            disabled={!draft.avatarDataUrl}
+                                        >
+                                            Remove Avatar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary"
+                                            onClick={handleReset}
+                                            disabled={!profileDirty}
+                                        >
+                                            Reset
+                                        </button>
+                                    </div>
+                                    <div
+                                        className="profile-hint"
+                                        style={{ marginTop: "10px" }}
+                                    >
+                                        Saved locally in this browser.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">Name</label>
+                                    <input
+                                        className="form-input"
+                                        value={draft.name}
+                                        onChange={(e) =>
+                                            updateField("name", e.target.value)
+                                        }
+                                        placeholder="Your name"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Grade</label>
+                                    <input
+                                        className="form-input"
+                                        value={draft.grade}
+                                        onChange={(e) =>
+                                            updateField("grade", e.target.value)
+                                        }
+                                        placeholder="Year 9"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">School</label>
+                                    <input
+                                        className="form-input"
+                                        value={draft.school}
+                                        onChange={(e) =>
+                                            updateField(
+                                                "school",
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="School name"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Email</label>
+                                    <input
+                                        className="form-input"
+                                        type="email"
+                                        value={draft.email}
+                                        onChange={(e) =>
+                                            updateField("email", e.target.value)
+                                        }
+                                        placeholder="name@example.com"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

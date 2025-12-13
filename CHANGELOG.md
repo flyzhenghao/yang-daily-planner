@@ -2,6 +2,19 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.8.0] - 2025-12-14
+
+### Added
+- **Profile page**: Click **Yang's Planner** (top-left) to edit personal profile (name, school, grade, email, avatar).
+
+### Changed
+- **Settings IA**: Grouped Settings into **System** (GitHub Token + WhatsApp Reporting) and **Data** (Data Management + Categories).
+- **GitHub Token configuration**: Moved GitHub token configuration into Settings → System (removed the sidebar entry).
+- **Sidebar cleanup**: Removed the bottom "Yang" block; moved "Save to GitHub" and "Send Report" to the sidebar bottom; removed the sidebar version display.
+
+### Fixed
+- **GitHub token handling**: Normalized token storage so existing saved tokens work reliably with GitHub API authentication.
+
 ## [v1.7.3] - 2025-12-13
 
 ### Added
