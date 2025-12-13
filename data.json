@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T21:29:52.856Z",
+  "lastUpdated": "2025-12-13T21:30:05.883Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -1121,6 +1121,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765661379425juy29m9r2"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "18:30",
+      "timeTo": "19:00",
+      "item": "Dinner",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "17656613928564wm29m776"
     }
   ],
   "categories": [
