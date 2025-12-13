@@ -1,6 +1,6 @@
 {
   "version": "v1.7.2",
-  "lastUpdated": "2025-12-13T02:23:38.294Z",
+  "lastUpdated": "2025-12-13T02:24:03.293Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -56,7 +56,7 @@
       "date": "2025-12-13",
       "timeFrom": "18:00",
       "timeTo": "18:30",
-      "category": "Other",
+      "category": "Eating",
       "item": "Eating dinner",
       "notes": "",
       "status": "Planning",
@@ -196,7 +196,7 @@
       "date": "2025-12-12",
       "timeFrom": "18:00",
       "timeTo": "18:30",
-      "category": "Other",
+      "category": "Eating",
       "item": "Eating dinner",
       "notes": "",
       "status": "Finished",
@@ -766,7 +766,7 @@
       "date": "2025-12-09",
       "timeFrom": "18:20",
       "timeTo": "18:50",
-      "category": "Other",
+      "category": "Eating",
       "item": "Eating dinner",
       "notes": "",
       "status": "Finished",
