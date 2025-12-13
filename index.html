@@ -1593,9 +1593,18 @@
                 color: var(--text-muted);
                 font-size: 16px;
                 padding: 0 4px;
+                line-height: 1;
             }
 
             .settings-item button:hover {
+                color: var(--accent-red);
+            }
+
+            .settings-item button.edit:hover {
+                color: var(--primary);
+            }
+
+            .settings-item button.delete:hover {
                 color: var(--accent-red);
             }
 
@@ -1924,7 +1933,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.7.1";
+            const APP_VERSION = "v1.7.2";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -3697,6 +3706,8 @@
                                 <Settings
                                     categories={categories}
                                     setCategories={setCategories}
+                                    activities={activities}
+                                    setActivities={setActivities}
                                     statuses={statuses}
                                     setStatuses={setStatuses}
                                     onForceSync={handleForceSync}
@@ -5044,6 +5055,8 @@
             function Settings({
                 categories,
                 setCategories,
+                activities,
+                setActivities,
                 statuses,
                 setStatuses,
                 onForceSync,
@@ -5052,22 +5065,159 @@
                 setReportPhoneNumber,
             }) {
                 const [newCat, setNewCat] = useState({ name: "", icon: "🏷️" });
+                const [editingCategory, setEditingCategory] = useState(null);
+                const [editDraft, setEditDraft] = useState({
+                    name: "",
+                    icon: "🏷️",
+                    color: "#6c5ce7",
+                });
+                const [deletingCategory, setDeletingCategory] = useState(null);
+                const [deleteMoveTo, setDeleteMoveTo] = useState("");
+
+                const makeRandomColor = () =>
+                    `#${Math.floor(Math.random() * 16777215)
+                        .toString(16)
+                        .padStart(6, "0")}`;
 
                 const handleAddCategory = () => {
+                    const name = String(newCat.name || "").trim();
+                    const icon = String(newCat.icon || "").trim() || "🏷️";
                     if (
-                        newCat.name &&
-                        !categories.some((c) => c.name === newCat.name)
+                        name &&
+                        !categories.some(
+                            (c) =>
+                                String(c.name || "").toLowerCase() ===
+                                name.toLowerCase(),
+                        )
                     ) {
                         setCategories([
                             ...categories,
                             {
-                                ...newCat,
+                                name,
+                                icon,
                                 id: generateId(),
-                                color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+                                color: makeRandomColor(),
                             },
                         ]);
                         setNewCat({ name: "", icon: "🏷️" });
                     }
+                };
+
+                const startEditCategory = (cat) => {
+                    if (!cat) return;
+                    setEditDraft({
+                        name: String(cat.name || "").trim(),
+                        icon: String(cat.icon || "").trim() || "🏷️",
+                        color: String(cat.color || "").trim() || "#6c5ce7",
+                    });
+                    setEditingCategory(cat);
+                };
+
+                const saveCategoryEdit = () => {
+                    if (!editingCategory) return;
+                    const nextName = String(editDraft.name || "").trim();
+                    const nextIcon =
+                        String(editDraft.icon || "").trim() || "🏷️";
+                    const nextColor = String(editDraft.color || "").trim();
+
+                    if (!nextName) {
+                        alert("Category name cannot be empty.");
+                        return;
+                    }
+                    if (
+                        categories.some(
+                            (c) =>
+                                c.id !== editingCategory.id &&
+                                String(c.name || "").toLowerCase() ===
+                                    nextName.toLowerCase(),
+                        )
+                    ) {
+                        alert("Category name already exists.");
+                        return;
+                    }
+
+                    const oldName = editingCategory.name;
+                    setCategories((prev) =>
+                        prev.map((c) =>
+                            c.id === editingCategory.id
+                                ? {
+                                      ...c,
+                                      name: nextName,
+                                      icon: nextIcon,
+                                      color: nextColor || c.color,
+                                  }
+                                : c,
+                        ),
+                    );
+                    if (oldName !== nextName && setActivities) {
+                        setActivities((prev) =>
+                            prev.map((a) =>
+                                a.category === oldName
+                                    ? { ...a, category: nextName }
+                                    : a,
+                            ),
+                        );
+                    }
+                    setEditingCategory(null);
+                };
+
+                const startDeleteCategory = (cat) => {
+                    if (!cat) return;
+                    if ((categories || []).length <= 1) {
+                        alert("At least one category is required.");
+                        return;
+                    }
+
+                    const usedCount = (activities || []).filter(
+                        (a) => a.category === cat.name,
+                    ).length;
+
+                    const fallback =
+                        categories.find(
+                            (c) =>
+                                c.id !== cat.id && isOtherCategoryName(c.name),
+                        )?.name ||
+                        categories.find((c) => c.id !== cat.id)?.name ||
+                        "";
+
+                    setDeletingCategory({ ...cat, usedCount });
+                    setDeleteMoveTo(fallback);
+                };
+
+                const confirmDeleteCategory = () => {
+                    if (!deletingCategory) return;
+                    if ((categories || []).length <= 1) {
+                        alert("At least one category is required.");
+                        return;
+                    }
+
+                    const oldName = deletingCategory.name;
+                    const usedCount = (activities || []).filter(
+                        (a) => a.category === oldName,
+                    ).length;
+                    const replacement = String(deleteMoveTo || "").trim();
+
+                    if (usedCount > 0 && !replacement) {
+                        alert(
+                            "Please choose a category to move activities to.",
+                        );
+                        return;
+                    }
+
+                    if (usedCount > 0 && setActivities) {
+                        setActivities((prev) =>
+                            prev.map((a) =>
+                                a.category === oldName
+                                    ? { ...a, category: replacement }
+                                    : a,
+                            ),
+                        );
+                    }
+                    setCategories((prev) =>
+                        prev.filter((c) => c.id !== deletingCategory.id),
+                    );
+                    setDeletingCategory(null);
+                    setDeleteMoveTo("");
                 };
 
                 return (
@@ -5117,11 +5267,53 @@
                             <div className="settings-list">
                                 {categories.map((c) => (
                                     <div key={c.id} className="settings-item">
-                                        {c.icon} {c.name}
+                                        <span
+                                            className="settings-item-color"
+                                            style={{
+                                                background:
+                                                    c.color || "#e8e8f0",
+                                            }}
+                                        ></span>
+                                        <span>
+                                            {c.icon} {c.name}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="edit"
+                                            title="Edit"
+                                            onClick={() => startEditCategory(c)}
+                                        >
+                                            ✏️
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="delete"
+                                            title="Delete"
+                                            onClick={() =>
+                                                startDeleteCategory(c)
+                                            }
+                                        >
+                                            🗑️
+                                        </button>
                                     </div>
                                 ))}
                             </div>
                             <div className="add-item-form">
+                                <input
+                                    type="text"
+                                    value={newCat.icon}
+                                    onChange={(e) =>
+                                        setNewCat({
+                                            ...newCat,
+                                            icon: e.target.value,
+                                        })
+                                    }
+                                    placeholder="🏷️"
+                                    style={{
+                                        maxWidth: "90px",
+                                        textAlign: "center",
+                                    }}
+                                />
                                 <input
                                     type="text"
                                     value={newCat.name}
@@ -5132,6 +5324,10 @@
                                         })
                                     }
                                     placeholder="New Category Name"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter")
+                                            handleAddCategory();
+                                    }}
                                 />
                                 <button
                                     className="btn btn-secondary"
@@ -5145,6 +5341,187 @@
                             <h2 className="settings-title">About</h2>
                             <p>Version: {APP_VERSION}</p>
                         </div>
+
+                        {editingCategory && (
+                            <div
+                                className="modal-overlay"
+                                onClick={() => setEditingCategory(null)}
+                            >
+                                <div
+                                    className="modal"
+                                    style={{ maxWidth: "520px" }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <h2 className="modal-title">
+                                        Edit Category
+                                    </h2>
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Icon
+                                            </label>
+                                            <input
+                                                className="form-input"
+                                                value={editDraft.icon}
+                                                onChange={(e) =>
+                                                    setEditDraft((prev) => ({
+                                                        ...prev,
+                                                        icon: e.target.value,
+                                                    }))
+                                                }
+                                                placeholder="🏷️"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Name
+                                            </label>
+                                            <input
+                                                className="form-input"
+                                                value={editDraft.name}
+                                                onChange={(e) =>
+                                                    setEditDraft((prev) => ({
+                                                        ...prev,
+                                                        name: e.target.value,
+                                                    }))
+                                                }
+                                                placeholder="Category name"
+                                                autoFocus
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">
+                                            Color
+                                        </label>
+                                        <input
+                                            type="color"
+                                            value={editDraft.color}
+                                            onChange={(e) =>
+                                                setEditDraft((prev) => ({
+                                                    ...prev,
+                                                    color: e.target.value,
+                                                }))
+                                            }
+                                            style={{
+                                                width: "100%",
+                                                height: "42px",
+                                                padding: 0,
+                                                border: "2px solid #e8e8f0",
+                                                borderRadius: "12px",
+                                                background: "transparent",
+                                                cursor: "pointer",
+                                            }}
+                                        />
+                                    </div>
+                                    <div
+                                        style={{
+                                            color: "var(--text-muted)",
+                                            fontSize: "12px",
+                                            marginTop: "-8px",
+                                        }}
+                                    >
+                                        Renaming updates all related activities.
+                                    </div>
+                                    <div className="modal-actions">
+                                        <button
+                                            className="btn btn-secondary"
+                                            onClick={() =>
+                                                setEditingCategory(null)
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={saveCategoryEdit}
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {deletingCategory && (
+                            <div
+                                className="modal-overlay"
+                                onClick={() => setDeletingCategory(null)}
+                            >
+                                <div
+                                    className="modal"
+                                    style={{ maxWidth: "560px" }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <h2 className="modal-title">
+                                        Delete Category
+                                    </h2>
+                                    <p
+                                        style={{
+                                            color: "var(--text-secondary)",
+                                        }}
+                                    >
+                                        Delete{" "}
+                                        <b>
+                                            {deletingCategory.icon}{" "}
+                                            {deletingCategory.name}
+                                        </b>
+                                        ?
+                                    </p>
+
+                                    {deletingCategory.usedCount > 0 && (
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Move{" "}
+                                                {deletingCategory.usedCount}{" "}
+                                                activities to
+                                            </label>
+                                            <select
+                                                className="form-select"
+                                                value={deleteMoveTo}
+                                                onChange={(e) =>
+                                                    setDeleteMoveTo(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            >
+                                                {categories
+                                                    .filter(
+                                                        (c) =>
+                                                            c.id !==
+                                                            deletingCategory.id,
+                                                    )
+                                                    .map((c) => (
+                                                        <option
+                                                            key={c.id}
+                                                            value={c.name}
+                                                        >
+                                                            {c.icon} {c.name}
+                                                        </option>
+                                                    ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    <div className="modal-actions">
+                                        <button
+                                            className="btn btn-secondary"
+                                            onClick={() =>
+                                                setDeletingCategory(null)
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={confirmDeleteCategory}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
             }

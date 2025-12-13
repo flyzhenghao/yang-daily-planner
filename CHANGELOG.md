@@ -2,6 +2,15 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.7.2] - 2025-12-13
+
+### Added
+- **Settings - Categories Edit/Delete**: Categories can now be edited (name/icon/color) and deleted from Settings → Categories.
+
+### Changed
+- **Category Rename Safety**: Renaming a category also updates all related activities to keep data consistent.
+- **Category Delete Safety**: When deleting a category that is in use, you must choose a target category to move related activities to (and the app prevents deleting the last remaining category).
+
 ## [v1.7.1] - 2025-12-13
 
 ### Added
