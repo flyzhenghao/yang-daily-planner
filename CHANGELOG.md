@@ -2,6 +2,15 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.7.1] - 2025-12-13
+
+### Added
+- **Activities Optimizer - Manual Edit Related (Per-Activity)**: "Category consistency" → "Manual edit related" now supports editing related activities one-by-one (with quick Edit buttons), in addition to optional bulk category/status apply.
+- **Dashboard - Smart Suggestions (Embedded)**: Restored Smart Suggestions and embedded them under the Health Score chart for a single, unified view.
+
+### Fixed
+- **Dashboard - Health Score**: Restored a more dynamic Health Score calculation (Study/Exercise/Sleep/Entertainment) and improved category matching so the score changes even when category names are customized.
+
 ## [v1.7.0] - 2025-12-13
 
 ### Added

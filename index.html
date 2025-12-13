@@ -1520,6 +1520,34 @@
                 opacity: 0.9;
             }
 
+            /* Dashboard: embed smart suggestions under Health Score */
+            .health-suggestions {
+                padding: 0 20px 20px;
+            }
+
+            .health-suggestions-title {
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-muted);
+                margin-bottom: 8px;
+            }
+
+            .health-suggestions .suggestion-item {
+                border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+                padding: 10px 0;
+            }
+
+            .health-suggestions .suggestion-icon {
+                background: rgba(108, 92, 231, 0.12);
+            }
+
+            .health-suggestions .suggestion-text {
+                color: var(--text-secondary);
+                opacity: 1;
+            }
+
             .settings-section {
                 background: var(--bg-card);
                 border-radius: var(--radius-lg);
@@ -1834,53 +1862,60 @@
         </style>
         <script>
             // Theme detection and switching
-            (function() {
+            (function () {
                 // Function to apply theme
                 function applyTheme(theme) {
-                    document.documentElement.setAttribute('data-theme', theme);
-                    console.log('🎨 Theme changed to:', theme);
+                    document.documentElement.setAttribute("data-theme", theme);
+                    console.log("🎨 Theme changed to:", theme);
                 }
 
                 // Function to detect system theme preference
                 function detectSystemTheme() {
-                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-                        ? 'dark'
-                        : 'light';
+                    return window.matchMedia &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches
+                        ? "dark"
+                        : "light";
                 }
 
                 // Initialize theme on page load
-                const savedTheme = localStorage.getItem('yang_theme');
+                const savedTheme = localStorage.getItem("yang_theme");
                 const systemTheme = detectSystemTheme();
                 const initialTheme = savedTheme || systemTheme;
                 applyTheme(initialTheme);
 
                 // Listen for system theme changes
                 if (window.matchMedia) {
-                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                        const newTheme = e.matches ? 'dark' : 'light';
-                        applyTheme(newTheme);
-                        localStorage.setItem('yang_theme', newTheme);
-                    });
+                    window
+                        .matchMedia("(prefers-color-scheme: dark)")
+                        .addEventListener("change", (e) => {
+                            const newTheme = e.matches ? "dark" : "light";
+                            applyTheme(newTheme);
+                            localStorage.setItem("yang_theme", newTheme);
+                        });
                 }
 
                 // Expose theme toggle function globally
-                window.toggleTheme = function() {
-                    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                window.toggleTheme = function () {
+                    const currentTheme =
+                        document.documentElement.getAttribute("data-theme") ||
+                        "light";
+                    const newTheme =
+                        currentTheme === "light" ? "dark" : "light";
                     applyTheme(newTheme);
-                    localStorage.setItem('yang_theme', newTheme);
+                    localStorage.setItem("yang_theme", newTheme);
                     return newTheme;
                 };
 
                 // Expose setTheme function for external control (e.g., TweakCN)
-                window.setTheme = function(theme) {
-                    if (theme === 'light' || theme === 'dark') {
+                window.setTheme = function (theme) {
+                    if (theme === "light" || theme === "dark") {
                         applyTheme(theme);
-                        localStorage.setItem('yang_theme', theme);
+                        localStorage.setItem("yang_theme", theme);
                     }
                 };
 
-                console.log('✅ Theme system initialized');
+                console.log("✅ Theme system initialized");
             })();
         </script>
     </head>
@@ -1889,7 +1924,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.7.0";
+            const APP_VERSION = "v1.7.1";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -3868,16 +3903,166 @@
                     return ss.filter((s) => s.value > 0);
                 }, [filteredActs, statuses]);
 
-                const healthScore = useMemo(() => {
-                    const sleep =
-                        stats.find((s) => s.name === "Sleep")?.minutes || 0;
-                    const exercise =
-                        stats.find((s) => s.name === "Exercise")?.minutes || 0;
-                    let score = 50;
-                    if (sleep >= 420) score += 25;
-                    if (exercise >= 30) score += 25;
-                    return Math.min(100, score);
+                const classifyHealthCategory = (name, icon) => {
+                    const raw = String(name || "");
+                    const norm = normalizeTextForMatch(raw);
+                    const ic = String(icon || "");
+
+                    if (
+                        /sleep|nap|rest|bed/.test(norm) ||
+                        raw.includes("睡") ||
+                        raw.includes("休息") ||
+                        ic.includes("😴") ||
+                        ic.includes("🛌")
+                    )
+                        return "sleep";
+                    if (
+                        /exercise|workout|gym|run|running|walk|sport|fitness/.test(
+                            norm,
+                        ) ||
+                        raw.includes("运动") ||
+                        raw.includes("锻炼") ||
+                        raw.includes("健身") ||
+                        raw.includes("跑") ||
+                        ic.includes("🏃") ||
+                        ic.includes("🏋") ||
+                        ic.includes("🚴")
+                    )
+                        return "exercise";
+                    if (
+                        /study|learn|learning|read|reading|school|class|course|homework|revision/.test(
+                            norm,
+                        ) ||
+                        raw.includes("学习") ||
+                        raw.includes("读书") ||
+                        raw.includes("阅读") ||
+                        raw.includes("复习") ||
+                        raw.includes("作业") ||
+                        ic.includes("📚") ||
+                        ic.includes("📝")
+                    )
+                        return "study";
+                    if (
+                        /entertainment|fun|game|gaming|video|tv|movie|music|play|social media|tiktok|douyin|bilibili|youtube|netflix/.test(
+                            norm,
+                        ) ||
+                        raw.includes("娱乐") ||
+                        raw.includes("游戏") ||
+                        raw.includes("电影") ||
+                        raw.includes("电视剧") ||
+                        raw.includes("刷") ||
+                        raw.includes("抖") ||
+                        ic.includes("🎮") ||
+                        ic.includes("🎬") ||
+                        ic.includes("🎵")
+                    )
+                        return "entertainment";
+
+                    return null;
+                };
+
+                const healthBuckets = useMemo(() => {
+                    const totals = {
+                        study: 0,
+                        exercise: 0,
+                        sleep: 0,
+                        entertainment: 0,
+                    };
+                    for (const s of stats || []) {
+                        const bucket = classifyHealthCategory(s.name, s.icon);
+                        if (!bucket) continue;
+                        totals[bucket] += s.minutes || 0;
+                    }
+                    return totals;
                 }, [stats]);
+
+                const healthScore = useMemo(() => {
+                    const st = healthBuckets.study || 0;
+                    const ex = healthBuckets.exercise || 0;
+                    const sl = healthBuckets.sleep || 0;
+                    const en = healthBuckets.entertainment || 0;
+
+                    const mult =
+                        viewMode === "daily"
+                            ? 1
+                            : viewMode === "weekly"
+                              ? 7
+                              : viewMode === "monthly"
+                                ? 30
+                                : 365;
+
+                    let score = 50;
+
+                    if (st >= 180 * mult * 0.8 && st <= 180 * mult * 1.5) {
+                        score += 15;
+                    } else if (st >= 180 * mult * 0.5) {
+                        score += 10;
+                    }
+
+                    if (ex >= 45 * mult * 0.7) score += 15;
+                    else if (ex > 0) score += 8;
+
+                    if (sl >= 480 * mult * 0.9 && sl <= 480 * mult * 1.1) {
+                        score += 15;
+                    } else if (sl >= 480 * mult * 0.8) {
+                        score += 10;
+                    }
+
+                    if (en > 0 && en <= 120 * mult) score += 5;
+                    else if (en > 120 * mult) score -= 5;
+
+                    return Math.min(100, Math.max(0, Math.round(score)));
+                }, [healthBuckets, viewMode]);
+
+                const healthTips = useMemo(() => {
+                    const tips = [];
+
+                    const st = healthBuckets.study || 0;
+                    const ex = healthBuckets.exercise || 0;
+                    const en = healthBuckets.entertainment || 0;
+
+                    const mult =
+                        viewMode === "daily"
+                            ? 1
+                            : viewMode === "weekly"
+                              ? 7
+                              : viewMode === "monthly"
+                                ? 30
+                                : 365;
+
+                    if (st < 90 * mult) {
+                        tips.push({
+                            icon: "📚",
+                            text: `Study time is low. Aim for ${((180 * mult) / 60).toFixed(0)}h ${viewMode}.`,
+                        });
+                    }
+                    if (ex < 22 * mult) {
+                        tips.push({
+                            icon: "🏃",
+                            text: `Exercise more! Target: ${((45 * mult) / 60).toFixed(1)}h ${viewMode}.`,
+                        });
+                    }
+                    if (en > 180 * mult) {
+                        tips.push({
+                            icon: "🎮",
+                            text: "Screen time is high.",
+                        });
+                    }
+                    if (healthScore >= 80) {
+                        tips.push({
+                            icon: "🌟",
+                            text: "Excellent balance!",
+                        });
+                    }
+                    if (tips.length === 0) {
+                        tips.push({
+                            icon: "✨",
+                            text: "Start logging activities!",
+                        });
+                    }
+
+                    return tips;
+                }, [healthBuckets, healthScore, viewMode]);
 
                 const getColor = (score) => {
                     if (score > 80) return "var(--accent-green)";
@@ -4001,6 +4186,26 @@
                                                 / 100
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div className="health-suggestions">
+                                    <div className="health-suggestions-title">
+                                        💡 Smart Suggestions
+                                    </div>
+                                    <div>
+                                        {healthTips.map((t, i) => (
+                                            <div
+                                                key={i}
+                                                className="suggestion-item"
+                                            >
+                                                <div className="suggestion-icon">
+                                                    {t.icon}
+                                                </div>
+                                                <div className="suggestion-text">
+                                                    {t.text}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -5179,6 +5384,7 @@
                 statuses,
                 defaultCategory = "",
                 defaultStatus = "",
+                onEditActivity,
                 onApply,
                 onClose,
             }) {
@@ -5189,6 +5395,20 @@
                 const related = useMemo(() => {
                     return (activities || []).filter((a) => idSet.has(a.id));
                 }, [activities, idSet]);
+
+                const sortedRelated = useMemo(() => {
+                    const list = [...(related || [])];
+                    list.sort((a, b) => {
+                        const dc = String(b.date || "").localeCompare(
+                            String(a.date || ""),
+                        );
+                        if (dc !== 0) return dc;
+                        return String(b.timeFrom || "").localeCompare(
+                            String(a.timeFrom || ""),
+                        );
+                    });
+                    return list;
+                }, [related]);
 
                 const commonCategory = useMemo(() => {
                     const counts = new Map();
@@ -5231,6 +5451,18 @@
                     setStatus(defaultStatus || commonStatus || "");
                 }, [defaultStatus, commonStatus]);
 
+                const [query, setQuery] = useState("");
+                const visibleRelated = useMemo(() => {
+                    const q = normalizeTextForMatch(query);
+                    if (!q) return sortedRelated;
+                    return (sortedRelated || []).filter((a) => {
+                        const hay = normalizeTextForMatch(
+                            `${a.item || ""} ${a.category || ""} ${a.status || ""} ${a.notes || ""} ${a.date || ""} ${a.timeFrom || ""} ${a.timeTo || ""}`,
+                        );
+                        return hay.includes(q);
+                    });
+                }, [sortedRelated, query]);
+
                 const apply = () => {
                     const updates = {};
                     if (category) updates.category = category;
@@ -5246,7 +5478,7 @@
                 return (
                     <div
                         className="modal-overlay"
-                        style={{ zIndex: 1100 }}
+                        style={{ zIndex: 990 }}
                         onClick={(e) => {
                             e.stopPropagation();
                             onClose && onClose();
@@ -5314,7 +5546,32 @@
 
                             <div className="optimizer-section">
                                 <div className="optimizer-section-title">
-                                    Preview
+                                    Related activities
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: "10px",
+                                        alignItems: "center",
+                                        margin: "10px 0 12px",
+                                    }}
+                                >
+                                    <input
+                                        className="form-input"
+                                        placeholder="Filter related..."
+                                        value={query}
+                                        onChange={(e) =>
+                                            setQuery(e.target.value)
+                                        }
+                                    />
+                                    {query && (
+                                        <button
+                                            className="btn btn-secondary btn-sm"
+                                            onClick={() => setQuery("")}
+                                        >
+                                            Clear
+                                        </button>
+                                    )}
                                 </div>
                                 <div
                                     style={{
@@ -5326,7 +5583,17 @@
                                         padding: "10px 12px",
                                     }}
                                 >
-                                    {(related || []).slice(0, 15).map((a) => (
+                                    {visibleRelated.length === 0 && (
+                                        <div
+                                            style={{
+                                                color: "var(--text-muted)",
+                                                padding: "6px 0",
+                                            }}
+                                        >
+                                            No matching activities.
+                                        </div>
+                                    )}
+                                    {(visibleRelated || []).map((a) => (
                                         <div
                                             key={a.id}
                                             style={{
@@ -5357,26 +5624,47 @@
                                             </div>
                                             <div
                                                 style={{
-                                                    color: "var(--text-secondary)",
+                                                    display: "flex",
+                                                    gap: "10px",
+                                                    alignItems: "center",
                                                     whiteSpace: "nowrap",
+                                                    flexShrink: 0,
                                                 }}
                                             >
-                                                {a.category} · {a.status}
+                                                <div
+                                                    style={{
+                                                        color: "var(--text-secondary)",
+                                                    }}
+                                                >
+                                                    {a.category} · {a.status}
+                                                </div>
+                                                {onEditActivity && (
+                                                    <button
+                                                        className="btn btn-sm btn-secondary"
+                                                        onClick={() =>
+                                                            onEditActivity(a)
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
-                                    {related.length > 15 && (
-                                        <div
-                                            style={{
-                                                paddingTop: "8px",
-                                                color: "var(--text-muted)",
-                                                fontSize: "12px",
-                                            }}
-                                        >
-                                            + {related.length - 15} more
-                                            activities…
-                                        </div>
-                                    )}
+                                    {query &&
+                                        visibleRelated.length !==
+                                            related.length && (
+                                            <div
+                                                style={{
+                                                    paddingTop: "8px",
+                                                    color: "var(--text-muted)",
+                                                    fontSize: "12px",
+                                                }}
+                                            >
+                                                Showing {visibleRelated.length}{" "}
+                                                of {related.length}.
+                                            </div>
+                                        )}
                                 </div>
                             </div>
 
@@ -5566,7 +5854,11 @@
                 };
 
                 return (
-                    <div className="modal-overlay" onClick={onClose}>
+                    <div
+                        className="modal-overlay"
+                        style={{ zIndex: 980 }}
+                        onClick={onClose}
+                    >
                         <div
                             className="modal optimizer-modal"
                             onClick={(e) => e.stopPropagation()}
@@ -5792,6 +6084,7 @@
                                 statuses={statuses}
                                 defaultCategory={bulkEditConfig.defaultCategory}
                                 defaultStatus={bulkEditConfig.defaultStatus}
+                                onEditActivity={onEdit}
                                 onApply={(ids, updates) =>
                                     onBulkUpdate && onBulkUpdate(ids, updates)
                                 }
