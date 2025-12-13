@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T22:08:32.706Z",
+  "lastUpdated": "2025-12-13T22:08:47.180Z",
   "activities": [
     {
       "date": "2025-12-14",
@@ -1191,6 +1191,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765663697947jr95do4uj"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "14:08",
+      "timeTo": "03:08",
+      "item": "test3",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765663712706g5rzmgxbd"
     }
   ],
   "categories": [
