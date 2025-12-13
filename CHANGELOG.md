@@ -2,6 +2,16 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.7.0] - 2025-12-13
+
+### Added
+- **Theme Support**: Added automatic theme detection and manual theme switching with persistence.
+- **Activities Optimizer - Category Consistency Bulk Edit**: Added a manual bulk-edit action for "Category consistency" issues to update all related activities (not just applying the suggested category).
+- **Activities Optimizer - Gaps Smart Create**: Added a "New" action for gap items that pre-fills Time From/To with the gap window and suggests the most frequent historical activity for that time period (supports adding multiple entries).
+
+### Changed
+- **Optimizer Flow**: After choosing "Edit activity" (or creating from gaps), the activity modal closes back to the still-open Optimizer dialog instead of exiting Optimizer.
+
 ## [v1.6.1] - 2025-12-13
 
 ### Added
