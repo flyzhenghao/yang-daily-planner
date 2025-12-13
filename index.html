@@ -2130,7 +2130,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo, useRef } = React;
-            const APP_VERSION = "v1.9.0";
+            const APP_VERSION = "v1.9.1";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -2287,6 +2287,7 @@
             };
 
             const OPTIMIZER_IGNORED_KEY = "yang_optimizer_ignored_issues";
+            const REMINDER_ENABLED_KEY = "yang_reminder_enabled";
 
             const minsToTimeStr = (mins) => {
                 if (mins == null || Number.isNaN(mins)) return "";
@@ -3619,6 +3620,16 @@
                 const [reportPhoneNumber, setReportPhoneNumber] = useState("");
                 const [showReportModal, setShowReportModal] = useState(false);
                 const [reportDate, setReportDate] = useState(getLocalDateStr());
+                const [reminderEnabled, setReminderEnabled] = useState(() => {
+                    const raw = getLS(REMINDER_ENABLED_KEY, true);
+                    if (raw === false || raw === 0) return false;
+                    const s = String(raw || "")
+                        .trim()
+                        .toLowerCase();
+                    if (s === "false" || s === "0" || s === "off" || s === "no")
+                        return false;
+                    return true;
+                });
                 const [reminderActivity, setReminderActivity] = useState(null);
                 const reminderActivityRef = useRef(null);
                 const reminderShownIds = useRef(new Set());
@@ -3653,6 +3664,10 @@
                 useEffect(() => {
                     if (!isLoading) setLS("yang_statuses", statuses);
                 }, [statuses, isLoading]);
+                useEffect(() => {
+                    setLS(REMINDER_ENABLED_KEY, reminderEnabled);
+                    if (!reminderEnabled) setReminderActivity(null);
+                }, [reminderEnabled]);
                 useEffect(() => {
                     reminderActivityRef.current = reminderActivity;
                 }, [reminderActivity]);
@@ -3704,6 +3719,7 @@
                 };
 
                 const maybeTriggerReminder = () => {
+                    if (!reminderEnabled) return;
                     if (reminderActivityRef.current) return;
                     const now = new Date();
                     const todayStr = getLocalDateStr(now);
@@ -3789,13 +3805,14 @@
 
                 useEffect(() => {
                     if (isLoading) return;
+                    if (!reminderEnabled) return;
                     const timer = setInterval(() => {
                         if (document.hidden) return;
                         maybeTriggerReminder();
                     }, 30000);
                     maybeTriggerReminder();
                     return () => clearInterval(timer);
-                }, [isLoading]);
+                }, [isLoading, reminderEnabled]);
 
                 const addActivity = (a) =>
                     setActivities([...activities, { ...a, id: generateId() }]);
@@ -4085,6 +4102,8 @@
                                     isSyncing={isSyncing}
                                     reportPhoneNumber={reportPhoneNumber}
                                     setReportPhoneNumber={setReportPhoneNumber}
+                                    reminderEnabled={reminderEnabled}
+                                    setReminderEnabled={setReminderEnabled}
                                 />
                             )}
                             {page === "profile" && (
@@ -5446,6 +5465,8 @@
                 isSyncing,
                 reportPhoneNumber,
                 setReportPhoneNumber,
+                reminderEnabled,
+                setReminderEnabled,
             }) {
                 const [savedGitHubToken, setSavedGitHubToken] =
                     useState(getGitHubToken());
@@ -5767,6 +5788,44 @@
                                     placeholder="+1234567890"
                                 />
                             </div>
+
+                            <div className="settings-divider" />
+
+                            <h3 className="settings-subtitle">
+                                Activity Reminders
+                            </h3>
+                            <p
+                                style={{
+                                    color: "var(--text-secondary)",
+                                    marginBottom: "12px",
+                                }}
+                            >
+                                Show an in-app popup when a <b>Planning</b>{" "}
+                                activity starts (today).
+                            </p>
+                            <label
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                    fontSize: "14px",
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={Boolean(reminderEnabled)}
+                                    onChange={(e) =>
+                                        setReminderEnabled &&
+                                        setReminderEnabled(e.target.checked)
+                                    }
+                                    style={{
+                                        width: "18px",
+                                        height: "18px",
+                                        accentColor: "var(--primary)",
+                                    }}
+                                />
+                                Enable planning reminders
+                            </label>
                         </div>
 
                         <div className="settings-section">

@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.1] - 2025-12-14
+
+### Added
+- **Activity reminders toggle (Settings)**: Added a switch in Settings → System to enable/disable the **Planning** start-time reminder popup (saved locally).
+
 ## [v1.9.0] - 2025-12-13
 
 ### Added
