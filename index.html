@@ -2129,8 +2129,8 @@
     <body>
         <div id="root"></div>
         <script type="text/babel">
-            const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.8.0";
+            const { useState, useEffect, useMemo, useRef } = React;
+            const APP_VERSION = "v1.9.0";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -2179,6 +2179,39 @@
                 if (!time) return null;
                 const [h, m] = time.split(":").map(Number);
                 return h * 60 + m;
+            };
+
+            const addMinutesToTime = (time, minutes) => {
+                if (!time && time !== "00:00") return "";
+                const [h, m] = String(time || "")
+                    .split(":")
+                    .map(Number);
+                if (Number.isNaN(h) || Number.isNaN(m)) return "";
+                const total = (((h * 60 + m + minutes) % 1440) + 1440) % 1440;
+                const hh = String(Math.floor(total / 60)).padStart(2, "0");
+                const mm = String(total % 60).padStart(2, "0");
+                return `${hh}:${mm}`;
+            };
+
+            const getEndDateForRange = (dateStr, timeFrom, timeTo) => {
+                const base = new Date(
+                    `${dateStr || getLocalDateStr()}T00:00:00`,
+                );
+                if (Number.isNaN(base.getTime())) return "";
+                const fromMins = timeStrToMins(timeFrom);
+                const toMins = timeStrToMins(timeTo);
+                if (fromMins != null && toMins != null && toMins < fromMins) {
+                    base.setDate(base.getDate() + 1);
+                }
+                return getLocalDateStr(base);
+            };
+
+            const getActivityStartDate = (activity) => {
+                if (!activity?.date) return null;
+                const time = activity.timeFrom || "00:00";
+                const d = new Date(`${activity.date}T${time}:00`);
+                if (Number.isNaN(d.getTime())) return null;
+                return d;
             };
 
             const formatDuration = (mins) => {
@@ -3586,6 +3619,12 @@
                 const [reportPhoneNumber, setReportPhoneNumber] = useState("");
                 const [showReportModal, setShowReportModal] = useState(false);
                 const [reportDate, setReportDate] = useState(getLocalDateStr());
+                const [reminderActivity, setReminderActivity] = useState(null);
+                const reminderActivityRef = useRef(null);
+                const reminderShownIds = useRef(new Set());
+                const reminderDayRef = useRef(getLocalDateStr());
+                const activitiesRef = useRef([]);
+                const statusesRef = useRef([]);
 
                 useEffect(() => {
                     setReportPhoneNumber(getLS("yang_report_phone", ""));
@@ -3614,13 +3653,26 @@
                 useEffect(() => {
                     if (!isLoading) setLS("yang_statuses", statuses);
                 }, [statuses, isLoading]);
+                useEffect(() => {
+                    reminderActivityRef.current = reminderActivity;
+                }, [reminderActivity]);
+                useEffect(() => {
+                    activitiesRef.current = activities;
+                }, [activities]);
+                useEffect(() => {
+                    statusesRef.current = statuses;
+                }, [statuses]);
 
-                const handleSaveToGitHub = async () => {
+                const handleSaveToGitHub = async (
+                    nextActivities = activities,
+                    nextCategories = categories,
+                    nextStatuses = statuses,
+                ) => {
                     setIsSaving(true);
                     const success = await saveDataToGitHub(
-                        activities,
-                        categories,
-                        statuses,
+                        nextActivities,
+                        nextCategories,
+                        nextStatuses,
                     );
                     setIsSaving(false);
                     if (success) alert("✅ Data saved to GitHub successfully!");
@@ -3650,6 +3702,100 @@
                     }
                     setIsSyncing(false);
                 };
+
+                const maybeTriggerReminder = () => {
+                    if (reminderActivityRef.current) return;
+                    const now = new Date();
+                    const todayStr = getLocalDateStr(now);
+                    if (reminderDayRef.current !== todayStr) {
+                        reminderShownIds.current = new Set();
+                        reminderDayRef.current = todayStr;
+                    }
+                    const nowMins = now.getHours() * 60 + now.getMinutes();
+                    const planningActs = (activitiesRef.current || []).filter(
+                        (a) =>
+                            a &&
+                            a.date === todayStr &&
+                            /^planning$/i.test(String(a.status || "")),
+                    );
+                    const candidate = planningActs
+                        .map((a) => ({
+                            activity: a,
+                            startMins: timeStrToMins(a.timeFrom),
+                        }))
+                        .filter((x) => x.startMins != null)
+                        .filter(
+                            (x) => !reminderShownIds.current.has(x.activity.id),
+                        )
+                        .sort((a, b) => a.startMins - b.startMins)
+                        .find(
+                            (x) =>
+                                nowMins >= x.startMins &&
+                                nowMins <= x.startMins + 10,
+                        );
+                    if (candidate) {
+                        setReminderActivity(candidate.activity);
+                        reminderShownIds.current.add(candidate.activity.id);
+                    }
+                };
+
+                const markPreviousAsFinished = (current) => {
+                    if (!current) return;
+                    const finishedStatusName =
+                        (statusesRef.current || []).find((s) =>
+                            /^finished$/i.test(String(s.name || "")),
+                        )?.name ||
+                        statusesRef.current?.[0]?.name ||
+                        "Finished";
+                    const currentStart = getActivityStartDate(current);
+                    if (!currentStart) return;
+
+                    let previous = null;
+                    for (const a of activitiesRef.current || []) {
+                        if (a.id === current.id) continue;
+                        const start = getActivityStartDate(a);
+                        if (!start || start >= currentStart) continue;
+                        if (!previous || start > previous.start) {
+                            previous = { a, start };
+                        }
+                    }
+                    if (previous && previous.a.status !== finishedStatusName) {
+                        const updatedActivities = (
+                            activitiesRef.current || []
+                        ).map((a) =>
+                            a.id === previous.a.id
+                                ? { ...a, status: finishedStatusName }
+                                : a,
+                        );
+                        setActivities(updatedActivities);
+                        handleSaveToGitHub(
+                            updatedActivities,
+                            categories,
+                            statusesRef.current,
+                        );
+                    }
+                };
+
+                const handleReminderConfirm = () => {
+                    if (reminderActivityRef.current) {
+                        markPreviousAsFinished(reminderActivityRef.current);
+                    }
+                    setReminderActivity(null);
+                };
+
+                const handleReminderDismiss = () => {
+                    setReminderActivity(null);
+                };
+
+                useEffect(() => {
+                    if (isLoading) return;
+                    const timer = setInterval(() => {
+                        if (document.hidden) return;
+                        maybeTriggerReminder();
+                    }, 30000);
+                    maybeTriggerReminder();
+                    return () => clearInterval(timer);
+                }, [isLoading]);
 
                 const addActivity = (a) =>
                     setActivities([...activities, { ...a, id: generateId() }]);
@@ -3972,6 +4118,13 @@
                                 message={confirmConfig.message}
                                 onConfirm={confirmConfig.onConfirm}
                                 onCancel={() => setConfirmConfig(null)}
+                            />
+                        )}
+                        {reminderActivity && (
+                            <ReminderPopup
+                                activity={reminderActivity}
+                                onConfirm={handleReminderConfirm}
+                                onDismiss={handleReminderDismiss}
                             />
                         )}
                         {showReportModal && (
@@ -4517,6 +4670,16 @@
                     setFilter({ ...filter, [field]: value });
                 };
 
+                const compareByDateTime = (a, b) => {
+                    const dc = String(a.date || "").localeCompare(
+                        String(b.date || ""),
+                    );
+                    if (dc !== 0) return dc;
+                    return String(a.timeFrom || "").localeCompare(
+                        String(b.timeFrom || ""),
+                    );
+                };
+
                 const filteredActivities = useMemo(() => {
                     return [...activities]
                         .filter((a) => {
@@ -4545,19 +4708,16 @@
                             );
                         })
                         .sort((a, b) => {
+                            const direction = sort.asc ? 1 : -1;
                             let res;
                             if (sort.by === "date") {
-                                res = new Date(b.date) - new Date(a.date);
-                                if (res === 0)
-                                    res = (b.timeFrom || "").localeCompare(
-                                        a.timeFrom || "",
-                                    );
+                                res = compareByDateTime(a, b);
                             } else {
-                                res = (a[sort.by] || "").localeCompare(
-                                    b[sort.by] || "",
+                                res = String(a[sort.by] || "").localeCompare(
+                                    String(b[sort.by] || ""),
                                 );
                             }
-                            return sort.asc ? res : -res;
+                            return res * direction;
                         });
                 }, [activities, filter, sort]);
 
@@ -5918,9 +6078,30 @@
                 );
                 const [suggestions, setSuggestions] = useState([]);
                 const [keepOpen, setKeepOpen] = useState(false);
+                const endsNextDay = useMemo(() => {
+                    const from = timeStrToMins(form.timeFrom);
+                    const to = timeStrToMins(form.timeTo);
+                    if (from == null || to == null) return false;
+                    return to < from;
+                }, [form.timeFrom, form.timeTo]);
+                const inferredEndDate = useMemo(
+                    () =>
+                        getEndDateForRange(
+                            form.date,
+                            form.timeFrom,
+                            form.timeTo,
+                        ),
+                    [form.date, form.timeFrom, form.timeTo],
+                );
 
                 const handleChange = (field, value) => {
-                    setForm({ ...form, [field]: value });
+                    setForm((prev) => {
+                        const next = { ...prev, [field]: value };
+                        if (field === "timeFrom" && value && !prev.timeTo) {
+                            next.timeTo = addMinutesToTime(value, 60);
+                        }
+                        return next;
+                    });
                     if (field === "item" && value.length > 2) {
                         const uniqueItems = [
                             ...new Set(
@@ -6066,6 +6247,34 @@
                                         }
                                     />
                                 </div>
+                            </div>
+                            <div
+                                style={{
+                                    marginTop: "-6px",
+                                    marginBottom: "12px",
+                                    color: endsNextDay
+                                        ? "var(--accent-red)"
+                                        : "var(--text-muted)",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                {form.timeFrom && form.timeTo ? (
+                                    endsNextDay ? (
+                                        <>
+                                            To time is treated as{" "}
+                                            <b>next day</b> ({inferredEndDate}).
+                                            This helps overnight activities like
+                                            Sleep.
+                                        </>
+                                    ) : (
+                                        <>End date: {inferredEndDate}</>
+                                    )
+                                ) : (
+                                    <>
+                                        Tip: after setting From, To auto-fills
+                                        +1 hour and supports overnight spans.
+                                    </>
+                                )}
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Status</label>
@@ -7048,6 +7257,57 @@
                                         placeholder="name@example.com"
                                     />
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function ReminderPopup({ activity, onConfirm, onDismiss }) {
+                if (!activity) return null;
+                return (
+                    <div className="modal-overlay">
+                        <div className="modal" style={{ maxWidth: "420px" }}>
+                            <h2 className="modal-title">
+                                ⏰ Activity Reminder
+                            </h2>
+                            <p style={{ marginBottom: "8px" }}>
+                                Planning item <b>{activity.item}</b> is
+                                scheduled to start now.
+                            </p>
+                            <div
+                                style={{
+                                    color: "var(--text-secondary)",
+                                    marginBottom: "10px",
+                                }}
+                            >
+                                {formatDate(activity.date)} ·{" "}
+                                {activity.timeFrom} - {activity.timeTo}
+                            </div>
+                            <p
+                                style={{
+                                    marginTop: 0,
+                                    color: "var(--text-muted)",
+                                    fontSize: "13px",
+                                }}
+                            >
+                                Confirm to close this reminder. The previous
+                                activity will be marked <b>Finished</b> by
+                                default.
+                            </p>
+                            <div className="modal-actions">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={onDismiss}
+                                >
+                                    Later
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={onConfirm}
+                                >
+                                    Confirm
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,15 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.0] - 2025-12-13
+
+### Added
+- **Planning reminders**: For activities in **Planning**, a popup now appears at the scheduled start time (today). Confirm closes the reminder and marks the previous activity as **Finished** by default.
+
+### Changed
+- **Activities ordering**: The Activities list now defaults to descending Date/Time sorting so the latest plans sit on top.
+- **Activity time inputs**: Filling **From** auto-fills **To** (+1h). Cross-day entries are supported; when the end time is earlier than the start, the end date is flagged as “next day” to avoid mistakes.
+
 ## [v1.8.0] - 2025-12-14
 
 ### Added
