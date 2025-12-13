@@ -8,9 +8,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
         <!-- TweakCN 实时预览功能 -->
+        <script src="tweakcn.config.js"></script>
         <script>
             // TweakCN 实时预览配置
-            window.TweakCN = window.TweakCN || {
+            window.TweakCN = window.TweakCN || window.TweakCNConfig || {
                 enable: true,
                 hotReload: true,
                 autoRefresh: true,
@@ -27,6 +28,10 @@
                     console.log("✅ TweakCN 实时预览已启用");
                     if (window.TweakCN && window.TweakCN.init) {
                         window.TweakCN.init();
+                    }
+                    // 触发 TweakCNReady 回调
+                    if (window.TweakCNReady && typeof window.TweakCNReady === 'function') {
+                        window.TweakCNReady(window.TweakCN);
                     }
                 };
                 script.onerror = function () {

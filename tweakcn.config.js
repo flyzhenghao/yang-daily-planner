@@ -87,6 +87,16 @@ window.TweakCNConfig = {
 window.TweakCNReady = function(tweakcn) {
   console.log('🎉 TweakCN 已准备就绪');
 
+  // 主题同步 - 监听 TweakCN 主题变化
+  if (tweakcn.on && typeof tweakcn.on === 'function') {
+    tweakcn.on('themeChange', function(theme) {
+      console.log('🎨 TweakCN 主题切换:', theme);
+      if (window.setTheme) {
+        window.setTheme(theme);
+      }
+    });
+  }
+
   // 自定义事件监听
   tweakcn.on('beforeRefresh', function() {
     console.log('🔄 准备刷新页面...');
