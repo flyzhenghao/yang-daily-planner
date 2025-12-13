@@ -1,6 +1,6 @@
 {
   "version": "v1.8.0",
-  "lastUpdated": "2025-12-13T21:29:39.426Z",
+  "lastUpdated": "2025-12-13T21:29:52.856Z",
   "activities": [
     {
       "date": "2025-12-13",
@@ -1111,6 +1111,16 @@
       "status": "Planning",
       "notes": "",
       "id": "17656613668365ggktkaou"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "18:00",
+      "timeTo": "18:30",
+      "item": "Cubing",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765661379425juy29m9r2"
     }
   ],
   "categories": [
