@@ -8,14 +8,52 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
         <!-- TweakCN 实时预览功能 -->
-        <script src="tweakcn.config.js"></script>
         <script>
-            // TweakCN 实时预览配置
-            window.TweakCN = window.TweakCN || window.TweakCNConfig || {
+            // TweakCN 配置 - 内联版本
+            window.TweakCNConfig = {
                 enable: true,
                 hotReload: true,
                 autoRefresh: true,
                 logLevel: "info",
+                preview: {
+                    fullPageReload: false,
+                    preserveScrollPosition: true,
+                    highlightChanges: true
+                },
+                compatibility: {
+                    react: true,
+                    babel: true,
+                    es6: true
+                }
+            };
+
+            // TweakCN 实时预览配置
+            window.TweakCN = window.TweakCN || window.TweakCNConfig;
+
+            // TweakCN Ready 回调 - 主题同步
+            window.TweakCNReady = function(tweakcn) {
+                console.log('🎉 TweakCN 已准备就绪');
+
+                // 监听 TweakCN 主题变化
+                if (tweakcn && tweakcn.on && typeof tweakcn.on === 'function') {
+                    tweakcn.on('themeChange', function(theme) {
+                        console.log('🎨 TweakCN 主题切换:', theme);
+                        if (window.setTheme) {
+                            window.setTheme(theme);
+                        }
+                    });
+                }
+
+                // 监听页面刷新事件
+                if (tweakcn && tweakcn.on) {
+                    tweakcn.on('beforeRefresh', function() {
+                        console.log('🔄 准备刷新页面...');
+                    });
+
+                    tweakcn.on('afterRefresh', function() {
+                        console.log('✅ 页面刷新完成');
+                    });
+                }
             };
 
             // 动态加载 TweakCN 脚本
