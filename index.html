@@ -4,80 +4,34 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Yang's Daily Planner</title>
+        <script>
+            (function () {
+                try {
+                    const savedTheme = localStorage.getItem("yang_theme");
+                    const systemTheme =
+                        window.matchMedia &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches
+                            ? "dark"
+                            : "light";
+                    const initialTheme = savedTheme || systemTheme;
+                    document.documentElement.setAttribute(
+                        "data-ydp-theme",
+                        initialTheme,
+                    );
+                    document.documentElement.classList.toggle(
+                        "dark",
+                        initialTheme === "dark",
+                    );
+                    document.documentElement.style.colorScheme = initialTheme;
+                } catch {}
+            })();
+        </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-        <!-- TweakCN 实时预览功能 -->
-        <script>
-            // TweakCN 配置 - 内联版本
-            window.TweakCNConfig = {
-                enable: true,
-                hotReload: true,
-                autoRefresh: true,
-                logLevel: "info",
-                preview: {
-                    fullPageReload: false,
-                    preserveScrollPosition: true,
-                    highlightChanges: true
-                },
-                compatibility: {
-                    react: true,
-                    babel: true,
-                    es6: true
-                }
-            };
-
-            // TweakCN 实时预览配置
-            window.TweakCN = window.TweakCN || window.TweakCNConfig;
-
-            // TweakCN Ready 回调 - 主题同步
-            window.TweakCNReady = function(tweakcn) {
-                console.log('🎉 TweakCN 已准备就绪');
-
-                // 监听 TweakCN 主题变化
-                if (tweakcn && tweakcn.on && typeof tweakcn.on === 'function') {
-                    tweakcn.on('themeChange', function(theme) {
-                        console.log('🎨 TweakCN 主题切换:', theme);
-                        if (window.setTheme) {
-                            window.setTheme(theme);
-                        }
-                    });
-                }
-
-                // 监听页面刷新事件
-                if (tweakcn && tweakcn.on) {
-                    tweakcn.on('beforeRefresh', function() {
-                        console.log('🔄 准备刷新页面...');
-                    });
-
-                    tweakcn.on('afterRefresh', function() {
-                        console.log('✅ 页面刷新完成');
-                    });
-                }
-            };
-
-            // 动态加载 TweakCN 脚本
-            (function () {
-                var script = document.createElement("script");
-                script.src =
-                    "https://cdn.jsdelivr.net/npm/@tweakcn/core@latest/dist/tweakcn.min.js";
-                script.async = true;
-                script.onload = function () {
-                    console.log("✅ TweakCN 实时预览已启用");
-                    if (window.TweakCN && window.TweakCN.init) {
-                        window.TweakCN.init();
-                    }
-                    // 触发 TweakCNReady 回调
-                    if (window.TweakCNReady && typeof window.TweakCNReady === 'function') {
-                        window.TweakCNReady(window.TweakCN);
-                    }
-                };
-                script.onerror = function () {
-                    console.warn("⚠️ TweakCN 加载失败，但应用仍可正常使用");
-                };
-                document.head.appendChild(script);
-            })();
-        </script>
+        <!-- TweakCN Live Preview (for tweakcn.com editor custom URL) -->
+        <script src="https://tweakcn.com/live-preview.min.js"></script>
         <link
             href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap"
             rel="stylesheet"
@@ -90,81 +44,77 @@
             }
 
             :root {
+                /* Shadcn/TweakCN theme tokens (required by tweakcn.com live preview) */
+                --background: #f8f9fe;
+                --foreground: #2d3436;
+                --card: #fff;
+                --card-foreground: #2d3436;
+                --popover: #fff;
+                --popover-foreground: #2d3436;
                 --primary: #6c5ce7;
-                --primary-light: #a29bfe;
+                --primary-foreground: #fff;
                 --secondary: #00cec9;
+                --secondary-foreground: #2d3436;
+                --muted: #f1f3f9;
+                --muted-foreground: #636e72;
+                --accent: #00cec9;
+                --accent-foreground: #2d3436;
+                --destructive: #e17055;
+                --border: #e8e8f0;
+                --input: #e8e8f0;
+                --ring: #a29bfe;
+                --radius: 12px;
+
+                /* App variables (derived from tokens) */
+                --primary-light: var(--ring);
+                --ydp-gradient-to: #5b4cd4;
                 --accent-pink: #fd79a8;
                 --accent-orange: #fdcb6e;
                 --accent-green: #00b894;
                 --accent-blue: #74b9ff;
                 --accent-red: #e17055;
-                --bg-main: #f8f9fe;
-                --bg-card: #fff;
-                --text-primary: #2d3436;
-                --text-secondary: #636e72;
-                --text-muted: #b2bec3;
-                --shadow-sm: 0 2px 8px rgba(108, 92, 231, 0.08);
-                --shadow-md: 0 4px 20px rgba(108, 92, 231, 0.12);
+                --bg-main: var(--background);
+                --bg-card: var(--card);
+                --text-primary: var(--foreground);
+                --text-secondary: var(--muted-foreground);
+                --text-muted: var(--muted-foreground);
+                --shadow-sm: 0 2px 8px
+                    color-mix(in oklab, var(--primary) 12%, transparent);
+                --shadow-md: 0 4px 20px
+                    color-mix(in oklab, var(--primary) 16%, transparent);
                 --radius-sm: 8px;
                 --radius-md: 12px;
                 --radius-lg: 20px;
                 --radius-xl: 28px;
             }
 
-            /* Dark theme support */
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --primary: #a29bfe;
-                    --primary-light: #6c5ce7;
-                    --secondary: #00cec9;
-                    --accent-pink: #fd79a8;
-                    --accent-orange: #fdcb6e;
-                    --accent-green: #00b894;
-                    --accent-blue: #74b9ff;
-                    --accent-red: #ff7675;
-                    --bg-main: #1e1e1e;
-                    --bg-card: #2d2d2d;
-                    --text-primary: #e4e4e7;
-                    --text-secondary: #a1a1aa;
-                    --text-muted: #71717a;
-                    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-                    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
-                }
-            }
-
-            /* Theme classes for manual override */
-            [data-theme="light"] {
-                --primary: #6c5ce7;
-                --primary-light: #a29bfe;
-                --secondary: #00cec9;
-                --accent-pink: #fd79a8;
-                --accent-orange: #fdcb6e;
-                --accent-green: #00b894;
-                --accent-blue: #74b9ff;
-                --accent-red: #e17055;
-                --bg-main: #f8f9fe;
-                --bg-card: #fff;
-                --text-primary: #2d3436;
-                --text-secondary: #636e72;
-                --text-muted: #b2bec3;
-                --shadow-sm: 0 2px 8px rgba(108, 92, 231, 0.08);
-                --shadow-md: 0 4px 20px rgba(108, 92, 231, 0.12);
-            }
-
-            [data-theme="dark"] {
+            /* Dark theme support (shadcn/TweakCN style) */
+            .dark {
+                --background: #1e1e1e;
+                --foreground: #e4e4e7;
+                --card: #2d2d2d;
+                --card-foreground: #e4e4e7;
+                --popover: #2d2d2d;
+                --popover-foreground: #e4e4e7;
                 --primary: #a29bfe;
-                --primary-light: #6c5ce7;
+                --primary-foreground: #1e1e1e;
                 --secondary: #00cec9;
+                --secondary-foreground: #e4e4e7;
+                --muted: #2d2d2d;
+                --muted-foreground: #a1a1aa;
+                --accent: #00cec9;
+                --accent-foreground: #e4e4e7;
+                --destructive: #ff7675;
+                --border: #3a3a3a;
+                --input: #3a3a3a;
+                --ring: #6c5ce7;
+                --radius: 12px;
+                --primary-light: var(--ring);
                 --accent-pink: #fd79a8;
                 --accent-orange: #fdcb6e;
                 --accent-green: #00b894;
                 --accent-blue: #74b9ff;
                 --accent-red: #ff7675;
-                --bg-main: #1e1e1e;
-                --bg-card: #2d2d2d;
-                --text-primary: #e4e4e7;
-                --text-secondary: #a1a1aa;
-                --text-muted: #71717a;
                 --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
                 --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
             }
@@ -190,7 +140,7 @@
                 background: linear-gradient(
                     180deg,
                     var(--primary) 0%,
-                    #5b4cd4 100%
+                    var(--ydp-gradient-to) 100%
                 );
                 padding: 24px;
                 display: flex;
@@ -358,21 +308,23 @@
                 background: linear-gradient(
                     135deg,
                     var(--primary) 0%,
-                    #5b4cd4 100%
+                    var(--ydp-gradient-to) 100%
                 );
                 color: #fff;
-                box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+                box-shadow: 0 4px 15px
+                    color-mix(in oklab, var(--primary) 40%, transparent);
             }
 
             .btn-primary:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+                box-shadow: 0 6px 20px
+                    color-mix(in oklab, var(--primary) 50%, transparent);
             }
 
             .btn-secondary {
-                background: #fff;
+                background: var(--bg-card);
                 color: var(--text-primary);
-                border: 2px solid #e8e8f0;
+                border: 2px solid var(--border);
             }
 
             .btn-secondary:hover {
@@ -495,7 +447,11 @@
             }
 
             .stat-card.study .stat-icon {
-                background: rgba(108, 92, 231, 0.1);
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 12%,
+                    var(--bg-card)
+                );
             }
 
             .stat-card.entertainment .stat-icon {
@@ -567,8 +523,8 @@
                 align-items: center;
                 gap: 12px;
                 padding: 16px;
-                background: #fafbff;
-                border: 1px solid #eef0ff;
+                background: var(--muted);
+                border: 1px solid var(--border);
                 border-radius: var(--radius-lg);
                 margin-bottom: 16px;
             }
@@ -578,12 +534,12 @@
                 flex: 1 1 180px;
                 min-width: 180px;
                 padding: 10px 14px;
-                border: 2px solid #e8e8f0;
+                border: 2px solid var(--border);
                 border-radius: var(--radius-md);
                 font-family: "Quicksand", sans-serif;
                 font-size: 14px;
                 color: var(--text-primary);
-                background: #fff;
+                background: var(--bg-card);
                 transition: all 0.2s ease;
                 outline: none;
             }
@@ -595,7 +551,8 @@
             .filter-bar input:focus,
             .filter-bar select:focus {
                 border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+                box-shadow: 0 0 0 4px
+                    color-mix(in oklab, var(--ring) 25%, transparent);
             }
 
             .filter-bar select {
@@ -621,8 +578,8 @@
                 gap: 12px;
                 padding: 12px 16px;
                 margin-bottom: 16px;
-                background: #fff;
-                border: 1px solid #eef0ff;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
                 border-radius: var(--radius-lg);
                 box-shadow: var(--shadow-sm);
             }
@@ -643,7 +600,11 @@
             }
 
             .category-study {
-                background: rgba(108, 92, 231, 0.1);
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 12%,
+                    var(--bg-card)
+                );
                 color: var(--primary);
             }
 
@@ -699,7 +660,11 @@
             }
 
             .status-partialfinished {
-                background: rgba(108, 92, 231, 0.15);
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 16%,
+                    var(--bg-card)
+                );
                 color: var(--primary);
             }
 
@@ -714,7 +679,7 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background: #fff;
+                background: var(--bg-card);
                 padding: 12px;
                 box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
                 z-index: 1000;
@@ -907,7 +872,11 @@
             }
 
             .action-btn.edit {
-                background: rgba(108, 92, 231, 0.1);
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 12%,
+                    var(--bg-card)
+                );
                 color: var(--primary);
             }
 
@@ -952,14 +921,14 @@
             }
 
             .modal {
-                background: #fff;
+                background: var(--bg-card);
                 border-radius: var(--radius-xl);
                 padding: 32px;
                 width: 100%;
                 max-width: 560px;
                 max-height: 90vh;
                 overflow-y: auto;
-                box-shadow: 0 8px 40px rgba(108, 92, 231, 0.16);
+                box-shadow: 0 8px 40px rgb(0 0 0 / 0.16);
                 animation: slideUp 0.3s ease;
             }
 
@@ -1002,10 +971,12 @@
             .form-textarea {
                 width: 100%;
                 padding: 12px 16px;
-                border: 2px solid #e8e8f0;
+                border: 2px solid var(--border);
                 border-radius: var(--radius-md);
                 font-family: "Quicksand", sans-serif;
                 font-size: 14px;
+                background: var(--bg-card);
+                color: var(--text-primary);
                 transition: all 0.2s ease;
                 outline: none;
             }
@@ -1014,7 +985,8 @@
             .form-select:focus,
             .form-textarea:focus {
                 border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+                box-shadow: 0 0 0 4px
+                    color-mix(in oklab, var(--ring) 25%, transparent);
             }
 
             .form-select {
@@ -1022,7 +994,7 @@
                 -moz-appearance: none;
                 appearance: none;
                 padding-right: 40px;
-                background-color: #fff;
+                background-color: var(--bg-card);
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
                 background-repeat: no-repeat;
                 background-position: right 12px center;
@@ -1046,7 +1018,7 @@
                 justify-content: flex-end;
                 margin-top: 28px;
                 padding-top: 20px;
-                border-top: 1px solid #e8e8f0;
+                border-top: 1px solid var(--border);
             }
 
             .optimizer-modal {
@@ -1065,8 +1037,8 @@
                 align-items: center;
                 gap: 6px;
                 padding: 6px 10px;
-                background: #fafbff;
-                border: 1px solid #eef0ff;
+                background: var(--muted);
+                border: 1px solid var(--border);
                 border-radius: 999px;
                 font-size: 12px;
                 color: var(--text-secondary);
@@ -1098,8 +1070,8 @@
                 align-items: flex-start;
                 padding: 14px 16px;
                 border-radius: var(--radius-lg);
-                background: #fafbff;
-                border: 1px solid #eef0ff;
+                background: var(--muted);
+                border: 1px solid var(--border);
             }
 
             .issue-badge {
@@ -1183,8 +1155,8 @@
                 width: 40px;
                 height: 40px;
                 border-radius: var(--radius-sm);
-                border: 2px solid #e8e8f0;
-                background: #fff;
+                border: 2px solid var(--border);
+                background: var(--bg-card);
                 cursor: pointer;
                 display: flex;
                 align-items: center;
@@ -1516,7 +1488,7 @@
                 background: linear-gradient(
                     135deg,
                     var(--primary) 0%,
-                    #5b4cd4 100%
+                    var(--ydp-gradient-to) 100%
                 );
                 border-radius: var(--radius-lg);
                 padding: 28px;
@@ -1578,12 +1550,17 @@
             }
 
             .health-suggestions .suggestion-item {
-                border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+                border-bottom: 1px solid
+                    color-mix(in oklab, var(--primary) 20%, var(--border));
                 padding: 10px 0;
             }
 
             .health-suggestions .suggestion-icon {
-                background: rgba(108, 92, 231, 0.12);
+                background: color-mix(
+                    in oklab,
+                    var(--primary) 12%,
+                    var(--bg-card)
+                );
             }
 
             .health-suggestions .suggestion-text {
@@ -1662,9 +1639,11 @@
                 flex: 1;
                 min-width: 120px;
                 padding: 10px 16px;
-                border: 2px solid #e8e8f0;
+                border: 2px solid var(--border);
                 border-radius: var(--radius-md);
                 font-family: "Quicksand", sans-serif;
+                background: var(--bg-card);
+                color: var(--text-primary);
                 outline: none;
             }
 
@@ -1837,7 +1816,7 @@
                 justify-content: flex-end;
                 gap: 8px;
                 padding-top: 12px;
-                border-top: 1px solid #e8e8f0;
+                border-top: 1px solid var(--border);
                 margin-top: 8px;
             }
 
@@ -1851,10 +1830,12 @@
 
             .date-picker-row input[type="date"] {
                 padding: 10px 16px;
-                border: 2px solid #e8e8f0;
+                border: 2px solid var(--border);
                 border-radius: var(--radius-md);
                 font-family: "Quicksand", sans-serif;
                 font-size: 14px;
+                background: var(--bg-card);
+                color: var(--text-primary);
                 outline: none;
                 cursor: pointer;
             }
@@ -1912,16 +1893,22 @@
                 }
             }
         </style>
+        <!-- Optional theme overrides (exported from TweakCN) -->
+        <link rel="stylesheet" href="UI%20change.css" />
         <script>
-            // Theme detection and switching
             (function () {
-                // Function to apply theme
                 function applyTheme(theme) {
-                    document.documentElement.setAttribute("data-theme", theme);
-                    console.log("🎨 Theme changed to:", theme);
+                    document.documentElement.setAttribute(
+                        "data-ydp-theme",
+                        theme,
+                    );
+                    document.documentElement.classList.toggle(
+                        "dark",
+                        theme === "dark",
+                    );
+                    document.documentElement.style.colorScheme = theme;
                 }
 
-                // Function to detect system theme preference
                 function detectSystemTheme() {
                     return window.matchMedia &&
                         window.matchMedia("(prefers-color-scheme: dark)")
@@ -1930,44 +1917,129 @@
                         : "light";
                 }
 
-                // Initialize theme on page load
-                const savedTheme = localStorage.getItem("yang_theme");
-                const systemTheme = detectSystemTheme();
-                const initialTheme = savedTheme || systemTheme;
-                applyTheme(initialTheme);
+                function normalizeTweakCNColor(rawValue) {
+                    const value = String(rawValue || "").trim();
+                    if (!value) return "";
 
-                // Listen for system theme changes
-                if (window.matchMedia) {
+                    if (
+                        /^(#|rgb\(|rgba\(|hsl\(|hsla\(|oklch\(|oklab\(|color\(|lab\(|lch\(|hwb\(|var\()/i.test(
+                            value,
+                        )
+                    ) {
+                        return value;
+                    }
+
+                    if (
+                        /^-?[\d.]+\s+-?[\d.]+%\s+-?[\d.]+%(\s*\/\s*-?[\d.]+%?)?$/.test(
+                            value,
+                        )
+                    ) {
+                        return `hsl(${value})`;
+                    }
+
+                    return value;
+                }
+
+                function buildVarBlock(selector, vars) {
+                    const lines = [];
+                    for (const [key, raw] of Object.entries(vars || {})) {
+                        if (!key || typeof key !== "string") continue;
+                        if (!key.startsWith("--")) continue;
+                        const value = normalizeTweakCNColor(raw);
+                        if (!value) continue;
+                        lines.push(`    ${key}: ${value};`);
+                    }
+                    if (!lines.length) return "";
+                    return `${selector} {\n${lines.join("\n")}\n}`;
+                }
+
+                function applyThemeVars(themeVars) {
+                    const styleId = "tweakcn-runtime-theme";
+                    let styleEl = document.getElementById(styleId);
+                    if (!styleEl) {
+                        styleEl = document.createElement("style");
+                        styleEl.id = styleId;
+                        document.head.appendChild(styleEl);
+                    }
+
+                    const css = [];
+                    if (
+                        themeVars &&
+                        typeof themeVars === "object" &&
+                        (themeVars.light || themeVars.dark)
+                    ) {
+                        if (
+                            themeVars.light &&
+                            typeof themeVars.light === "object"
+                        ) {
+                            css.push(buildVarBlock(":root", themeVars.light));
+                        }
+                        if (
+                            themeVars.dark &&
+                            typeof themeVars.dark === "object"
+                        ) {
+                            css.push(buildVarBlock(".dark", themeVars.dark));
+                        }
+                    } else if (themeVars && typeof themeVars === "object") {
+                        css.push(buildVarBlock(":root", themeVars));
+                    }
+
+                    styleEl.textContent = css.filter(Boolean).join("\n\n");
+                }
+
+                let savedTheme = null;
+                try {
+                    savedTheme = localStorage.getItem("yang_theme");
+                } catch {}
+
+                const systemTheme = detectSystemTheme();
+                applyTheme(savedTheme || systemTheme);
+
+                if (!savedTheme && window.matchMedia) {
                     window
                         .matchMedia("(prefers-color-scheme: dark)")
                         .addEventListener("change", (e) => {
-                            const newTheme = e.matches ? "dark" : "light";
-                            applyTheme(newTheme);
-                            localStorage.setItem("yang_theme", newTheme);
+                            applyTheme(e.matches ? "dark" : "light");
                         });
                 }
 
-                // Expose theme toggle function globally
                 window.toggleTheme = function () {
                     const currentTheme =
-                        document.documentElement.getAttribute("data-theme") ||
-                        "light";
-                    const newTheme =
-                        currentTheme === "light" ? "dark" : "light";
-                    applyTheme(newTheme);
-                    localStorage.setItem("yang_theme", newTheme);
-                    return newTheme;
+                        document.documentElement.classList.contains("dark")
+                            ? "dark"
+                            : "light";
+                    const nextTheme =
+                        currentTheme === "dark" ? "light" : "dark";
+                    applyTheme(nextTheme);
+                    try {
+                        localStorage.setItem("yang_theme", nextTheme);
+                    } catch {}
+                    return nextTheme;
                 };
 
-                // Expose setTheme function for external control (e.g., TweakCN)
+                // Optional: allow external controllers (e.g., TweakCN live preview) to push theme vars
                 window.setTheme = function (theme) {
                     if (theme === "light" || theme === "dark") {
                         applyTheme(theme);
-                        localStorage.setItem("yang_theme", theme);
+                        try {
+                            localStorage.setItem("yang_theme", theme);
+                        } catch {}
+                        return;
+                    }
+
+                    if (theme && typeof theme === "object") {
+                        const themeVars =
+                            theme.cssVars ||
+                            theme.cssVariables ||
+                            theme.variables ||
+                            theme.vars;
+                        applyThemeVars(themeVars);
                     }
                 };
 
-                console.log("✅ Theme system initialized");
+                // Backward-compatible no-ops (older integration hooks)
+                window.syncThemeFromTweakCN = function () {};
+                window.clearTweakCNThemeOverrides = function () {};
             })();
         </script>
     </head>
@@ -1976,7 +2048,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo } = React;
-            const APP_VERSION = "v1.7.2";
+            const APP_VERSION = "v1.7.3";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";

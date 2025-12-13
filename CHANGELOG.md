@@ -2,6 +2,24 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.7.3] - 2025-12-13
+
+### Added
+- **TweakCN Live Preview (for theme editor Custom URL)**: Integrated `https://tweakcn.com/live-preview.min.js` so the app can be loaded inside the TweakCN editor and preview theme changes in real time.
+- **Theme Code Import (exported CSS)**: Added support for loading TweakCN exported Theme Code via `UI change.css` (including `.dark` variables).
+- **Gradient Endpoint Token**: Added `--ydp-gradient-to` to control the second color used by app gradients (sidebar/button/cards).
+
+### Fixed
+- **Theme Switch Not Updating UI**: Removed the broken `@tweakcn/core` CDN load and refactored theme handling to avoid overriding `:root/.dark` tokens, so switching themes (e.g., amber/minimal) updates the UI.
+- **Dark Mode Compatibility**: Synced the `.dark` class with the app theme toggle so exported `.dark` variables apply correctly.
+
+### Changed
+- **Theme System**: Standardized on shadcn/TweakCN tokens (`:root` + `.dark`) and mapped app variables to them.
+- **Theme-driven Styling**: Replaced several hard-coded borders/backgrounds/shadows with theme tokens to reflect editor adjustments.
+
+### Docs
+- **LocalTunnel Workflow**: Documented why `http://localhost` cannot be used in the TweakCN editor and provided step-by-step tunnel setup + troubleshooting in `TWEAKCN_README.md`.
+
 ## [v1.7.2] - 2025-12-13
 
 ### Added
