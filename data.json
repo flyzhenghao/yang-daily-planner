@@ -1,6 +1,6 @@
 {
   "version": "v1.9.5",
-  "lastUpdated": "2025-12-14T09:35:29.311Z",
+  "lastUpdated": "2025-12-14T09:35:46.482Z",
   "activities": [
     {
       "date": "2025-12-14",
@@ -1011,6 +1011,16 @@
       "status": "Finished",
       "notes": "",
       "id": "1765704912092kkj0y7qxr"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "11:30",
+      "timeTo": "12:00",
+      "item": "Studying english",
+      "category": "Study",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704929311pi5eris6h"
     }
   ],
   "categories": [
