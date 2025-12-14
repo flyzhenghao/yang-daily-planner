@@ -1,6 +1,6 @@
 {
   "version": "v1.9.5",
-  "lastUpdated": "2025-12-14T20:34:19.428Z",
+  "lastUpdated": "2025-12-14T20:34:30.657Z",
   "activities": [
     {
       "date": "2025-12-14",
@@ -1261,6 +1261,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765744446272010e57d6p"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "20:00",
+      "timeTo": "20:30",
+      "item": "Reading books",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744459428orsv7hudh"
     }
   ],
   "categories": [
