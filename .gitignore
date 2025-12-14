@@ -38,3 +38,4 @@ build/
 chat/
 source/
 .claude-exports/
+.ydp/

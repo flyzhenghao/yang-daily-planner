@@ -2,6 +2,22 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.4] - 2025-12-14
+
+### Added
+- **Manual “hook” workflow for Codex CLI**: A single command (`node scripts/post-chat.mjs`) applies your end-of-chat release notes to `CHANGELOG.md`, bumps semantic versioning, updates `index.html`/`data.json`, then commits + pushes so GitHub Pages shows the new version.
+
+### Changed
+- **Local drafts ignored**: Added `.ydp/` to `.gitignore` so release-note drafts don’t get committed.
+
+## [v1.9.3] - 2025-12-14
+
+### Added
+- **Manual “hook” workflow for Codex CLI**: A single command (`node scripts/post-chat.mjs`) applies your end-of-chat release notes to `CHANGELOG.md`, bumps semantic versioning, updates `index.html`/`data.json`, then commits + pushes so GitHub Pages shows the new version.
+
+### Changed
+- **Local drafts ignored**: Added `.ydp/` to `.gitignore` so release-note drafts don’t get committed.
+
 ## [v1.9.2] - 2025-12-14
 
 ### Added
