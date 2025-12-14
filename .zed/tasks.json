@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Post-chat: Release (confirm)",
+    "command": "zsh",
+    "args": [
+      "-lc",
+      "cd \"$(git rev-parse --show-toplevel)\" && node scripts/post-chat.mjs"
+    ]
+  },
+  {
+    "label": "Post-chat: Release (--yes)",
+    "command": "zsh",
+    "args": [
+      "-lc",
+      "cd \"$(git rev-parse --show-toplevel)\" && node scripts/post-chat.mjs --yes"
+    ]
+  },
+  {
+    "label": "Post-chat: Dry run (no changes)",
+    "command": "zsh",
+    "args": [
+      "-lc",
+      "cd \"$(git rev-parse --show-toplevel)\" && node scripts/post-chat.mjs --dry-run --yes"
+    ]
+  }
+]
