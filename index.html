@@ -2130,7 +2130,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo, useRef } = React;
-            const APP_VERSION = "v1.9.1";
+            const APP_VERSION = "v1.9.2";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -2287,6 +2287,7 @@
             };
 
             const OPTIMIZER_IGNORED_KEY = "yang_optimizer_ignored_issues";
+            const OPTIMIZER_GAPS_ENABLED_KEY = "yang_optimizer_gaps_enabled";
             const REMINDER_ENABLED_KEY = "yang_reminder_enabled";
 
             const minsToTimeStr = (mins) => {
@@ -2667,6 +2668,7 @@
                 const cfg = {
                     gapMinMins: 30,
                     maxGapsPerDay: 5,
+                    enableGaps: true,
                     historyConfidence: 0.6,
                     minOtherCandidateCount: 3,
                     ...options,
@@ -3173,154 +3175,161 @@
                         }
                     }
 
-                    // Gaps (00:00–24:00), including carry-over from previous day
-                    const coverageIntervals = intervals.map((it) => ({
-                        start: it.start,
-                        end: it.end,
-                    }));
+                    if (cfg.enableGaps) {
+                        // Gaps (00:00–24:00), including carry-over from previous day
+                        const coverageIntervals = intervals.map((it) => ({
+                            start: it.start,
+                            end: it.end,
+                        }));
 
-                    const prevDateObj = new Date(date + "T00:00:00");
-                    if (!Number.isNaN(prevDateObj.getTime())) {
-                        prevDateObj.setDate(prevDateObj.getDate() - 1);
-                        const prevDate = getLocalDateStr(prevDateObj);
-                        const prevActs = (historyActivities || []).filter(
-                            (a) =>
-                                a.date === prevDate && a.timeFrom && a.timeTo,
-                        );
-                        for (const a of prevActs) {
-                            const startPrev = timeStrToMins(a.timeFrom);
-                            const endPrev = timeStrToMins(a.timeTo);
-                            if (startPrev == null || endPrev == null) continue;
-                            if (endPrev < startPrev && endPrev > 0) {
-                                coverageIntervals.push({
-                                    start: 0,
-                                    end: endPrev,
-                                });
+                        const prevDateObj = new Date(date + "T00:00:00");
+                        if (!Number.isNaN(prevDateObj.getTime())) {
+                            prevDateObj.setDate(prevDateObj.getDate() - 1);
+                            const prevDate = getLocalDateStr(prevDateObj);
+                            const prevActs = (historyActivities || []).filter(
+                                (a) =>
+                                    a.date === prevDate &&
+                                    a.timeFrom &&
+                                    a.timeTo,
+                            );
+                            for (const a of prevActs) {
+                                const startPrev = timeStrToMins(a.timeFrom);
+                                const endPrev = timeStrToMins(a.timeTo);
+                                if (startPrev == null || endPrev == null)
+                                    continue;
+                                if (endPrev < startPrev && endPrev > 0) {
+                                    coverageIntervals.push({
+                                        start: 0,
+                                        end: endPrev,
+                                    });
+                                }
                             }
                         }
-                    }
 
-                    const merged = [];
-                    for (const it of coverageIntervals) {
-                        const start = Math.max(0, Math.min(it.start, 1440));
-                        const end = Math.max(0, Math.min(it.end, 1440));
-                        if (end <= start) continue;
-                        const last = merged[merged.length - 1];
-                        if (!last || start > last.end) {
-                            merged.push({ start, end });
-                        } else {
-                            last.end = Math.max(last.end, end);
-                        }
-                    }
-
-                    const gaps = [];
-                    let cursor = 0;
-                    for (const block of merged) {
-                        if (block.start > cursor) {
-                            gaps.push({ start: cursor, end: block.start });
-                        }
-                        cursor = Math.max(cursor, block.end);
-                    }
-                    if (cursor < 1440) gaps.push({ start: cursor, end: 1440 });
-
-                    const bigGaps = gaps
-                        .map((g) => ({ ...g, duration: g.end - g.start }))
-                        .filter((g) => g.duration >= cfg.gapMinMins);
-
-                    if (bigGaps.length > 0) {
-                        const keep = [];
-                        for (const g of bigGaps) {
-                            if (g.start >= 22 * 60 || g.end <= 7 * 60) {
-                                keep.push(g);
+                        const merged = [];
+                        for (const it of coverageIntervals) {
+                            const start = Math.max(0, Math.min(it.start, 1440));
+                            const end = Math.max(0, Math.min(it.end, 1440));
+                            if (end <= start) continue;
+                            const last = merged[merged.length - 1];
+                            if (!last || start > last.end) {
+                                merged.push({ start, end });
+                            } else {
+                                last.end = Math.max(last.end, end);
                             }
                         }
-                        const ranked = [...bigGaps].sort(
-                            (a, b) => b.duration - a.duration,
-                        );
-                        for (const g of ranked) {
-                            if (keep.length >= cfg.maxGapsPerDay) break;
-                            if (
-                                !keep.some(
-                                    (k) =>
-                                        k.start === g.start && k.end === g.end,
-                                )
-                            ) {
-                                keep.push(g);
+
+                        const gaps = [];
+                        let cursor = 0;
+                        for (const block of merged) {
+                            if (block.start > cursor) {
+                                gaps.push({ start: cursor, end: block.start });
                             }
+                            cursor = Math.max(cursor, block.end);
                         }
-                        keep.sort((a, b) => a.start - b.start);
+                        if (cursor < 1440)
+                            gaps.push({ start: cursor, end: 1440 });
 
-                        for (const g of keep) {
-                            const from = minsToTimeStr(g.start);
-                            const to = minsToTimeStr(g.end);
-                            const suggestSleep =
-                                g.start >= 22 * 60 || g.end <= 7 * 60;
-                            const actions = [];
+                        const bigGaps = gaps
+                            .map((g) => ({ ...g, duration: g.end - g.start }))
+                            .filter((g) => g.duration >= cfg.gapMinMins);
 
-                            const historySuggestion =
-                                suggestActivityByTimeWindow(
-                                    g.start,
-                                    g.end,
-                                    historyActivities,
-                                );
-                            const suggestedItem =
-                                historySuggestion?.item ||
-                                (suggestSleep ? "Sleep" : "");
-                            const suggestedCategoryRaw =
-                                historySuggestion?.category || "";
-                            const suggestedCategory =
-                                suggestedCategoryRaw &&
-                                (categories || []).some(
-                                    (c) => c.name === suggestedCategoryRaw,
-                                )
-                                    ? suggestedCategoryRaw
-                                    : suggestSleep && sleepCategoryName
-                                      ? sleepCategoryName
-                                      : categories?.[0]?.name || "";
+                        if (bigGaps.length > 0) {
+                            const keep = [];
+                            for (const g of bigGaps) {
+                                if (g.start >= 22 * 60 || g.end <= 7 * 60) {
+                                    keep.push(g);
+                                }
+                            }
+                            const ranked = [...bigGaps].sort(
+                                (a, b) => b.duration - a.duration,
+                            );
+                            for (const g of ranked) {
+                                if (keep.length >= cfg.maxGapsPerDay) break;
+                                if (
+                                    !keep.some(
+                                        (k) =>
+                                            k.start === g.start &&
+                                            k.end === g.end,
+                                    )
+                                ) {
+                                    keep.push(g);
+                                }
+                            }
+                            keep.sort((a, b) => a.start - b.start);
 
-                            actions.push({
-                                kind: "addActivity",
-                                label: suggestedItem
-                                    ? `New "${suggestedItem}" ${from}–${to}`
-                                    : `New activity ${from}–${to}`,
-                                prefill: {
-                                    date,
-                                    timeFrom: from,
-                                    timeTo: to,
-                                    item: suggestedItem,
-                                    category: suggestedCategory,
-                                    ...(finishedStatusName
-                                        ? { status: finishedStatusName }
-                                        : {}),
-                                },
-                            });
-                            if (suggestSleep && sleepCategoryName) {
+                            for (const g of keep) {
+                                const from = minsToTimeStr(g.start);
+                                const to = minsToTimeStr(g.end);
+                                const suggestSleep =
+                                    g.start >= 22 * 60 || g.end <= 7 * 60;
+                                const actions = [];
+
+                                const historySuggestion =
+                                    suggestActivityByTimeWindow(
+                                        g.start,
+                                        g.end,
+                                        historyActivities,
+                                    );
+                                const suggestedItem =
+                                    historySuggestion?.item ||
+                                    (suggestSleep ? "Sleep" : "");
+                                const suggestedCategoryRaw =
+                                    historySuggestion?.category || "";
+                                const suggestedCategory =
+                                    suggestedCategoryRaw &&
+                                    (categories || []).some(
+                                        (c) => c.name === suggestedCategoryRaw,
+                                    )
+                                        ? suggestedCategoryRaw
+                                        : suggestSleep && sleepCategoryName
+                                          ? sleepCategoryName
+                                          : categories?.[0]?.name || "";
+
                                 actions.push({
                                     kind: "addActivity",
-                                    label: `Add "Sleep" ${from}–${to}`,
+                                    label: suggestedItem
+                                        ? `New "${suggestedItem}" ${from}–${to}`
+                                        : `New activity ${from}–${to}`,
                                     prefill: {
                                         date,
                                         timeFrom: from,
                                         timeTo: to,
-                                        item: "Sleep",
-                                        category: sleepCategoryName,
+                                        item: suggestedItem,
+                                        category: suggestedCategory,
                                         ...(finishedStatusName
                                             ? { status: finishedStatusName }
                                             : {}),
                                     },
                                 });
+                                if (suggestSleep && sleepCategoryName) {
+                                    actions.push({
+                                        kind: "addActivity",
+                                        label: `Add "Sleep" ${from}–${to}`,
+                                        prefill: {
+                                            date,
+                                            timeFrom: from,
+                                            timeTo: to,
+                                            item: "Sleep",
+                                            category: sleepCategoryName,
+                                            ...(finishedStatusName
+                                                ? { status: finishedStatusName }
+                                                : {}),
+                                        },
+                                    });
+                                }
+                                issues.push({
+                                    id: `gap-${date}-${g.start}-${g.end}`,
+                                    kind: "gap",
+                                    severity: "info",
+                                    title: `Gap ${from}–${to} (${Math.round(g.duration)}m)`,
+                                    meta: date,
+                                    details: suggestSleep
+                                        ? `Likely Sleep time. Consider adding Sleep for ${from}–${to}.`
+                                        : `Unlogged time. Consider adding an activity for ${from}–${to}.`,
+                                    actions,
+                                });
                             }
-                            issues.push({
-                                id: `gap-${date}-${g.start}-${g.end}`,
-                                kind: "gap",
-                                severity: "info",
-                                title: `Gap ${from}–${to} (${Math.round(g.duration)}m)`,
-                                meta: date,
-                                details: suggestSleep
-                                    ? `Likely Sleep time. Consider adding Sleep for ${from}–${to}.`
-                                    : `Unlogged time. Consider adding an activity for ${from}–${to}.`,
-                                actions,
-                            });
                         }
                     }
                 }
@@ -3963,7 +3972,7 @@
                 const handleConfirmSendReport = (date) => {
                     const text = generateDailySummary(date);
                     const url = `https://wa.me/${reportPhoneNumber.replace(/[^0-9]/g, "")}
-?text=${encodeURIComponent(text)}`;
+            ?text=${encodeURIComponent(text)}`;
                     window.open(url, "_blank");
                     setShowReportModal(false);
                 };
@@ -6712,12 +6721,27 @@
                 onCreateCategory,
                 onClose,
             }) {
-                const computeIssues = () => {
+                const [gapsEnabled, setGapsEnabled] = useState(() => {
+                    const raw = getLS(OPTIMIZER_GAPS_ENABLED_KEY, true);
+                    if (raw === false || raw === 0) return false;
+                    const s = String(raw || "")
+                        .trim()
+                        .toLowerCase();
+                    if (s === "false" || s === "0" || s === "off" || s === "no")
+                        return false;
+                    return true;
+                });
+
+                const computeIssues = (overrideOptions = {}) => {
                     const res = analyzeActivitiesOptimizer({
                         scopeActivities,
                         historyActivities,
                         categories,
                         statuses,
+                        options: {
+                            enableGaps: gapsEnabled,
+                            ...overrideOptions,
+                        },
                     });
                     return res.issues || [];
                 };
@@ -6769,6 +6793,12 @@
 
                 const rerun = () => {
                     setIssuesSnapshot(computeIssues());
+                };
+                const toggleGapsEnabled = (enabled) => {
+                    const next = Boolean(enabled);
+                    setGapsEnabled(next);
+                    setLS(OPTIMIZER_GAPS_ENABLED_KEY, next);
+                    setIssuesSnapshot(computeIssues({ enableGaps: next }));
                 };
                 const counts = useMemo(() => {
                     const out = { error: 0, warn: 0, info: 0 };
@@ -6899,6 +6929,32 @@
                                 </div>
                                 <div className="optimizer-chip">
                                     Ignored: <b>{ignoredIssueIds.length}</b>
+                                </div>
+                                <div className="optimizer-chip">
+                                    Gaps check:
+                                    <input
+                                        type="checkbox"
+                                        checked={Boolean(gapsEnabled)}
+                                        onChange={(e) =>
+                                            toggleGapsEnabled(e.target.checked)
+                                        }
+                                        style={{
+                                            width: "16px",
+                                            height: "16px",
+                                            accentColor: "var(--primary)",
+                                            cursor: "pointer",
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            fontWeight: 700,
+                                            color: gapsEnabled
+                                                ? "var(--accent-green)"
+                                                : "var(--text-muted)",
+                                        }}
+                                    >
+                                        {gapsEnabled ? "On" : "Off"}
+                                    </span>
                                 </div>
                             </div>
 

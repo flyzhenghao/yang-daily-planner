@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.2] - 2025-12-14
+
+### Added
+- **Activities Optimizer - Gaps toggle**: Added a Gaps check switch in the Optimizer. When off, gap detection is skipped and all gap-related items are hidden; when on, behavior stays the same (saved locally).
+
 ## [v1.9.1] - 2025-12-14
 
 ### Added
