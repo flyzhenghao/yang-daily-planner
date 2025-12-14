@@ -1,6 +1,6 @@
 {
   "version": "v1.9.5",
-  "lastUpdated": "2025-12-14T09:35:59.160Z",
+  "lastUpdated": "2025-12-14T09:36:09.523Z",
   "activities": [
     {
       "date": "2025-12-14",
@@ -1031,6 +1031,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765704946481tsfee0mia"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "13:30",
+      "timeTo": "14:00",
+      "item": "Eating lunch",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765704959159wq9vmm7pn"
     }
   ],
   "categories": [
