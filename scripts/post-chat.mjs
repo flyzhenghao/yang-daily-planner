@@ -103,6 +103,8 @@ const bumpSemver = (version, bump) => {
   return `${v.prefix || "v"}${v.major}.${v.minor}.${v.patch}`;
 };
 
+const escapeRegExp = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const extractDirectives = (notesMd) => {
   const bumpRe =
     /^\s*(?:<!--\s*)?bump\s*[:=]\s*(auto|patch|minor|major)\s*(?:-->\s*)?$/i;
@@ -139,6 +141,14 @@ const inferBumpFromEntry = (entryMd) => {
   return "patch";
 };
 
+const normalizeCommitMessage = (commitMessage, targetVersion) => {
+  const raw = String(commitMessage || "").trim();
+  if (!raw) return "";
+  const m = /v\d+\.\d+\.\d+/.exec(raw);
+  if (!m) return raw;
+  return raw.replace(/v\d+\.\d+\.\d+/, String(targetVersion || "").trim());
+};
+
 const updateAppVersionInIndexHtml = (content, nextVersion) => {
   const re = /const APP_VERSION = "v\d+\.\d+\.\d+";/;
   if (!re.test(content)) {
@@ -158,6 +168,7 @@ const getFirstMeaningfulLine = (md) => {
     const t = line.trim();
     if (!t) continue;
     if (t.startsWith("<!--")) continue;
+    if (t.startsWith("#")) continue;
     return t;
   }
   return "";
@@ -250,14 +261,24 @@ const main = async () => {
   if (!fs.existsSync(changelogPath))
     throw new Error(`Missing file: CHANGELOG.md`);
 
+  const committedIndexHtml = exec("git show HEAD:index.html");
+  const baseVersion = readAppVersionFromIndexHtml(committedIndexHtml);
+  const committedDataObj = JSON.parse(exec("git show HEAD:data.json"));
+  const baseDataVersion = String(committedDataObj.version || "").trim();
+  if (baseDataVersion && baseDataVersion !== baseVersion) {
+    throw new Error(
+      `Version mismatch in HEAD: index.html=${baseVersion} vs data.json=${baseDataVersion}`,
+    );
+  }
+
   const indexHtml = fs.readFileSync(indexHtmlPath, "utf8");
-  const currentVersion = readAppVersionFromIndexHtml(indexHtml);
+  const workingVersion = readAppVersionFromIndexHtml(indexHtml);
 
   const dataObj = JSON.parse(fs.readFileSync(dataJsonPath, "utf8"));
-  const dataVersion = String(dataObj.version || "").trim();
-  if (dataVersion && dataVersion !== currentVersion) {
+  const workingDataVersion = String(dataObj.version || "").trim();
+  if (workingDataVersion && workingDataVersion !== workingVersion) {
     throw new Error(
-      `Version mismatch: index.html=${currentVersion} vs data.json=${dataVersion}`,
+      `Version mismatch in working tree: index.html=${workingVersion} vs data.json=${workingDataVersion}`,
     );
   }
 
@@ -267,13 +288,25 @@ const main = async () => {
       : directives.bump && directives.bump !== "auto"
         ? directives.bump
         : inferBumpFromEntry(notesMd);
-  const nextVersion = bumpSemver(currentVersion, bumpType);
+
+  const plannedVersion = bumpSemver(baseVersion, bumpType);
+  const nextVersion =
+    workingVersion === baseVersion
+      ? plannedVersion
+      : workingVersion === plannedVersion
+        ? plannedVersion
+        : (() => {
+            throw new Error(
+              `Unexpected working version "${workingVersion}". Expected "${baseVersion}" (clean) or "${plannedVersion}" (resume).`,
+            );
+          })();
   const dateStr = getLocalDateStr();
   const lastUpdatedIso = new Date().toISOString();
 
   const statusBefore = exec("git status --short") || "(clean)";
   console.log(`Repo: ${repoRoot}`);
-  console.log(`Current: ${currentVersion}`);
+  console.log(`Base:    ${baseVersion}`);
+  console.log(`Working: ${workingVersion}`);
   console.log(`Next:    ${nextVersion} (${bumpType})`);
   console.log(`Notes:   ${args.notesFile}`);
   console.log(`\nWorking tree:\n${statusBefore}\n`);
@@ -291,21 +324,31 @@ const main = async () => {
     process.exit(0);
   }
 
-  const nextIndexHtml = updateAppVersionInIndexHtml(indexHtml, nextVersion);
-  fs.writeFileSync(indexHtmlPath, nextIndexHtml);
+  if (workingVersion !== nextVersion) {
+    const nextIndexHtml = updateAppVersionInIndexHtml(indexHtml, nextVersion);
+    fs.writeFileSync(indexHtmlPath, nextIndexHtml);
+  }
 
   dataObj.version = nextVersion;
   dataObj.lastUpdated = lastUpdatedIso;
   fs.writeFileSync(dataJsonPath, JSON.stringify(dataObj, null, 2) + "\n");
 
   const changelogMd = fs.readFileSync(changelogPath, "utf8");
-  const nextChangelog = prependChangelogEntry(
-    changelogMd,
-    nextVersion,
-    dateStr,
-    notesMd,
+  const entryRe = new RegExp(
+    `(^|\\n)## \\[${escapeRegExp(nextVersion)}\\] - `,
+    "m",
   );
-  fs.writeFileSync(changelogPath, nextChangelog);
+  if (!entryRe.test(changelogMd)) {
+    const nextChangelog = prependChangelogEntry(
+      changelogMd,
+      nextVersion,
+      dateStr,
+      notesMd,
+    );
+    fs.writeFileSync(changelogPath, nextChangelog);
+  } else {
+    console.log(`CHANGELOG already has ${nextVersion}; skipping prepend.`);
+  }
 
   exec("git add -A");
 
@@ -313,10 +356,11 @@ const main = async () => {
   console.log(`\nStaged:\n${statusAfterAdd}\n`);
 
   if (!args.noCommit) {
-    const msg =
-      directives.commit && directives.commit.trim()
-        ? directives.commit.trim()
-        : makeCommitMessage(nextVersion, notesMd);
+    const msgFromDirective = normalizeCommitMessage(
+      directives.commit,
+      nextVersion,
+    );
+    const msg = msgFromDirective || makeCommitMessage(nextVersion, notesMd);
     exec(`git commit -m ${JSON.stringify(msg)}`);
     console.log(`Committed: ${msg}`);
   }
