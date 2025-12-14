@@ -1,16 +1,136 @@
 {
   "version": "v1.9.5",
-  "lastUpdated": "2025-12-14T09:37:46.965Z",
+  "lastUpdated": "2025-12-14T20:27:22.849Z",
   "activities": [
+    {
+      "date": "2025-12-14",
+      "timeFrom": "21:00",
+      "timeTo": "21:20",
+      "item": "Cello",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765705045495n0d9l6qg3"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "20:20",
+      "timeTo": "21:00",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "176570503683921sg8a3sk"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "19:45",
+      "timeTo": "20:20",
+      "item": "Dinner",
+      "category": "Eating",
+      "status": "Finished",
+      "notes": "",
+      "id": "17657050256714181mtx37"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "18:30",
+      "timeTo": "19:45",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765705008186rtr9x1ssd"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "18:00",
+      "timeTo": "18:30",
+      "item": "Playing games",
+      "category": "Entertainment",
+      "status": "Finished",
+      "notes": "",
+      "id": "17657049959242h2vhix1g"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "17:00",
+      "timeTo": "18:00",
+      "item": "Watching netflix",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704984617t0k0djfe9"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "14:00",
+      "timeTo": "17:00",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704969523qs11ga82w"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "13:30",
+      "timeTo": "14:00",
+      "item": "Eating lunch",
+      "category": "Eating",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704959159wq9vmm7pn"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "12:30",
+      "timeTo": "13:30",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704946481tsfee0mia"
+    },
     {
       "date": "2025-12-14",
       "timeFrom": "12:00",
       "timeTo": "12:30",
       "item": "Playing games",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "17656608173722nit36t1s"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "11:30",
+      "timeTo": "12:00",
+      "item": "Studying english",
+      "category": "Study",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704929311pi5eris6h"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "11:00",
+      "timeTo": "11:30",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Finished",
+      "notes": "",
+      "id": "1765704912092kkj0y7qxr"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "10:30",
+      "timeTo": "11:00",
+      "item": "Eat breakfast",
+      "category": "Eating",
+      "status": "Finished",
+      "notes": "",
+      "id": "17657048949589fiez1s35"
     },
     {
       "date": "2025-12-13",
@@ -991,126 +1111,6 @@
       "notes": "",
       "status": "Finished",
       "id": "1765224163895pvwm8hm7y"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "10:30",
-      "timeTo": "11:00",
-      "item": "Eat breakfast",
-      "category": "Eating",
-      "status": "Finished",
-      "notes": "",
-      "id": "17657048949589fiez1s35"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "11:00",
-      "timeTo": "11:30",
-      "item": "Lying on bed (sick)",
-      "category": "Other",
-      "status": "Finished",
-      "notes": "",
-      "id": "1765704912092kkj0y7qxr"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "11:30",
-      "timeTo": "12:00",
-      "item": "Studying english",
-      "category": "Study",
-      "status": "Finished",
-      "notes": "",
-      "id": "1765704929311pi5eris6h"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "12:30",
-      "timeTo": "13:30",
-      "item": "Lying on bed (sick)",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765704946481tsfee0mia"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "13:30",
-      "timeTo": "14:00",
-      "item": "Eating lunch",
-      "category": "Eating",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765704959159wq9vmm7pn"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "14:00",
-      "timeTo": "17:00",
-      "item": "Lying on bed (sick)",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765704969523qs11ga82w"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "17:00",
-      "timeTo": "18:00",
-      "item": "Watching netflix",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765704984617t0k0djfe9"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "18:00",
-      "timeTo": "18:30",
-      "item": "Playing games",
-      "category": "Entertainment",
-      "status": "Planning",
-      "notes": "",
-      "id": "17657049959242h2vhix1g"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "18:30",
-      "timeTo": "19:45",
-      "item": "Lying on bed (sick)",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765705008186rtr9x1ssd"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "19:45",
-      "timeTo": "20:20",
-      "item": "Dinner",
-      "category": "Eating",
-      "status": "Finished",
-      "notes": "",
-      "id": "17657050256714181mtx37"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "20:20",
-      "timeTo": "21:00",
-      "item": "Lying on bed (sick)",
-      "category": "Other",
-      "status": "Finished",
-      "notes": "",
-      "id": "176570503683921sg8a3sk"
-    },
-    {
-      "date": "2025-12-14",
-      "timeFrom": "21:00",
-      "timeTo": "21:20",
-      "item": "Cello",
-      "category": "Other",
-      "status": "Finished",
-      "notes": "",
-      "id": "1765705045495n0d9l6qg3"
     }
   ],
   "categories": [
