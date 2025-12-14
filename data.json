@@ -1,6 +1,6 @@
 {
   "version": "v1.9.5",
-  "lastUpdated": "2025-12-14T09:35:46.482Z",
+  "lastUpdated": "2025-12-14T09:35:59.160Z",
   "activities": [
     {
       "date": "2025-12-14",
@@ -1021,6 +1021,16 @@
       "status": "Finished",
       "notes": "",
       "id": "1765704929311pi5eris6h"
+    },
+    {
+      "date": "2025-12-14",
+      "timeFrom": "12:30",
+      "timeTo": "13:30",
+      "item": "Lying on bed (sick)",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765704946481tsfee0mia"
     }
   ],
   "categories": [
