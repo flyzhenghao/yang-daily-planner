@@ -1,6 +1,6 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-15T21:16:25.001Z",
+  "lastUpdated": "2025-12-15T21:35:08.299Z",
   "activities": [
     {
       "date": "2025-12-15",
@@ -1288,7 +1288,7 @@
       "timeTo": "10:30",
       "item": "Study english",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765830495520kumyoobw7"
     },
@@ -1431,6 +1431,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765833372303n5jbt2y6m"
+    },
+    {
+      "date": "2025-12-16",
+      "timeFrom": "21:10",
+      "timeTo": "21:20",
+      "item": "Get ready for sleep",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765833385001aodsnqgba"
     }
   ],
   "categories": [
