@@ -2,6 +2,17 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.7] - 2025-12-15
+
+### Fixed
+- **Send Report (WhatsApp)**: Fixed the generated `wa.me` link (removed accidental whitespace/newline) to avoid the “404. This page doesn't exist.” redirect, and added phone-number validation.
+
+### Added
+- **Activities Optimizer toggles**: Added per-section on/off switches for **Category & Tagging** and **Time Conflicts** checks (saved locally). Turning them off skips the check and hides related items.
+
+### Changed
+- **Gaps check toggle location**: Moved the Gaps on/off switch from the top summary to the **Gaps** section header (next to the list).
+
 ## [v1.9.6] - 2025-12-15
 
 ### Fixed
