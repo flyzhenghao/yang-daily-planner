@@ -1,6 +1,6 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-15T21:13:05.593Z",
+  "lastUpdated": "2025-12-15T21:13:23.962Z",
   "activities": [
     {
       "date": "2025-12-15",
@@ -1291,6 +1291,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765830495520kumyoobw7"
+    },
+    {
+      "date": "2025-12-16",
+      "timeFrom": "10:30",
+      "timeTo": "11:00",
+      "item": "Study math",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "17658331855928q1oxbn3f"
     }
   ],
   "categories": [
