@@ -1,7 +1,177 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-15T00:14:26.963Z",
+  "lastUpdated": "2025-12-15T19:55:48.969Z",
   "activities": [
+    {
+      "date": "2025-12-15",
+      "timeFrom": "20:30",
+      "timeTo": "21:00",
+      "item": "Talking to friends",
+      "category": "Social",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744470657nt0dxq0g0"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "20:00",
+      "timeTo": "20:30",
+      "item": "Reading books",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744459428orsv7hudh"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "19:30",
+      "timeTo": "20:00",
+      "item": "Studying science",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744446272010e57d6p"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "18:30",
+      "timeTo": "19:30",
+      "item": "Watch badminton",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744438878m8jrn88y1"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "18:00",
+      "timeTo": "18:30",
+      "item": "Eating dinner",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744428699smj93m50l"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "17:00",
+      "timeTo": "18:00",
+      "item": "Watch badminton videos",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "17657444179323ioiahdg1"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "16:30",
+      "timeTo": "17:00",
+      "item": "Study english",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744404463e0uj3029e"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "16:00",
+      "timeTo": "16:30",
+      "item": "Talk to friends",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744393084xg1a9v9se"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "15:30",
+      "timeTo": "16:00",
+      "item": "Play games",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "17657443849595ktvb0slv"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "14:00",
+      "timeTo": "15:00",
+      "item": "Badminton",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744372230al4z78be0"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "13:20",
+      "timeTo": "13:40",
+      "item": "Get ready for badminton",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744359327tiknw3kzh"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "13:00",
+      "timeTo": "13:20",
+      "item": "Eating lunch",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744346478zgcck3ehz"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "12:25",
+      "timeTo": "12:55",
+      "item": "Play games",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744332740bhr2hz4gi"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "11:45",
+      "timeTo": "12:15",
+      "item": "Cello",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744174016uk3nvjxyb"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "11:00",
+      "timeTo": "23:35",
+      "item": "Get ready for cello",
+      "category": "Other",
+      "status": "Processing",
+      "notes": "",
+      "id": "176574413868904crw9gww"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "10:30",
+      "timeTo": "11:00",
+      "item": "Study math",
+      "category": "Study",
+      "status": "Processing",
+      "notes": "",
+      "id": "1765744121505yxgee21ef"
+    },
+    {
+      "date": "2025-12-15",
+      "timeFrom": "10:00",
+      "timeTo": "10:30",
+      "item": "Studying english",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765744042847dg1z2vi6n"
+    },
     {
       "date": "2025-12-14",
       "timeFrom": "21:00",
@@ -1111,176 +1281,6 @@
       "notes": "",
       "status": "Finished",
       "id": "1765224163895pvwm8hm7y"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "10:00",
-      "timeTo": "10:30",
-      "item": "Studying english",
-      "category": "Study",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744042847dg1z2vi6n"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "10:30",
-      "timeTo": "11:00",
-      "item": "Study math",
-      "category": "Study",
-      "status": "Processing",
-      "notes": "",
-      "id": "1765744121505yxgee21ef"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "11:00",
-      "timeTo": "23:35",
-      "item": "Get ready for cello",
-      "category": "Other",
-      "status": "Processing",
-      "notes": "",
-      "id": "176574413868904crw9gww"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "11:45",
-      "timeTo": "12:15",
-      "item": "Cello",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744174016uk3nvjxyb"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "12:25",
-      "timeTo": "12:55",
-      "item": "Play games",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744332740bhr2hz4gi"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "13:00",
-      "timeTo": "13:20",
-      "item": "Eating lunch",
-      "category": "Eating",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744346478zgcck3ehz"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "13:20",
-      "timeTo": "13:40",
-      "item": "Get ready for badminton",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744359327tiknw3kzh"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "14:00",
-      "timeTo": "15:00",
-      "item": "Badminton",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744372230al4z78be0"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "15:30",
-      "timeTo": "16:00",
-      "item": "Play games",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "17657443849595ktvb0slv"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "16:00",
-      "timeTo": "16:30",
-      "item": "Talk to friends",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744393084xg1a9v9se"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "16:30",
-      "timeTo": "17:00",
-      "item": "Study english",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744404463e0uj3029e"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "17:00",
-      "timeTo": "18:00",
-      "item": "Watch badminton videos",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "17657444179323ioiahdg1"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "18:00",
-      "timeTo": "18:30",
-      "item": "Eating dinner",
-      "category": "Eating",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744428699smj93m50l"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "18:30",
-      "timeTo": "19:30",
-      "item": "Watch badminton",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744438878m8jrn88y1"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "19:30",
-      "timeTo": "20:00",
-      "item": "Studying science",
-      "category": "Other",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744446272010e57d6p"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "20:00",
-      "timeTo": "20:30",
-      "item": "Reading books",
-      "category": "Study",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744459428orsv7hudh"
-    },
-    {
-      "date": "2025-12-15",
-      "timeFrom": "20:30",
-      "timeTo": "21:00",
-      "item": "Talking to friends",
-      "category": "Social",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765744470657nt0dxq0g0"
     }
   ],
   "categories": [
