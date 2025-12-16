@@ -1,7 +1,37 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-16T21:17:36.190Z",
+  "lastUpdated": "2025-12-16T21:17:49.736Z",
   "activities": [
+    {
+      "date": "2025-12-17",
+      "timeFrom": "23:30",
+      "timeTo": "23:50",
+      "item": "Get ready for cello",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "17659198341667h16i09uj"
+    },
+    {
+      "date": "2025-12-17",
+      "timeFrom": "23:00",
+      "timeTo": "23:30",
+      "item": "Talking to friends",
+      "category": "Social",
+      "status": "Planning",
+      "notes": "",
+      "id": "17659197294325tk9gd78c"
+    },
+    {
+      "date": "2025-12-17",
+      "timeFrom": "12:00",
+      "timeTo": "12:30",
+      "item": "Cello",
+      "category": "Other",
+      "status": "Planning",
+      "notes": "",
+      "id": "17659198541041wqfvv1j6"
+    },
     {
       "date": "2025-12-17",
       "timeFrom": "10:30",
@@ -1461,16 +1491,6 @@
       "notes": "",
       "status": "Finished",
       "id": "1765224163895pvwm8hm7y"
-    },
-    {
-      "date": "2025-12-17",
-      "timeFrom": "00:30",
-      "timeTo": "",
-      "item": "atest",
-      "category": "Study",
-      "status": "Planning",
-      "notes": "",
-      "id": "1765919828071abakgnj0i"
     }
   ],
   "categories": [
