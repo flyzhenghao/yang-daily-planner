@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v1.9.9] - 2025-12-17
+
+### Changed
+- **Save to GitHub UX**: Removed the success confirmation dialog after saving activities to GitHub. Now only displays error alerts when save fails, providing a smoother user experience without interrupting the workflow.
+
 ## [v1.9.8] - 2025-12-17
 
 ### Fixed
