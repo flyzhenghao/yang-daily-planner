@@ -1,6 +1,6 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-16T21:27:57.126Z",
+  "lastUpdated": "2025-12-16T21:28:06.359Z",
   "activities": [
     {
       "date": "2025-12-17",
@@ -1571,6 +1571,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765920467819p3fs33rhc"
+    },
+    {
+      "date": "2025-12-17",
+      "timeFrom": "17:00",
+      "timeTo": "17:30",
+      "item": "Studying science",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "176592047712668z9ljaqt"
     }
   ],
   "categories": [
