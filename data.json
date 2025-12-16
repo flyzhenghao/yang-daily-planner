@@ -1,6 +1,6 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-16T21:28:17.038Z",
+  "lastUpdated": "2025-12-16T21:31:33.181Z",
   "activities": [
     {
       "date": "2025-12-17",
@@ -58,7 +58,7 @@
       "timeTo": "10:30",
       "item": "Study english",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765919703420ojo5n9cfc"
     },
@@ -1591,6 +1591,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1765920486358gjzzz2nin"
+    },
+    {
+      "date": "2025-12-17",
+      "timeFrom": "17:50",
+      "timeTo": "18:30",
+      "item": "Eating dinner",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1765920497038ciipql94y"
     }
   ],
   "categories": [
