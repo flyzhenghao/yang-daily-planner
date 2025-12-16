@@ -2130,7 +2130,7 @@
         <div id="root"></div>
         <script type="text/babel">
             const { useState, useEffect, useMemo, useRef } = React;
-            const APP_VERSION = "v1.9.7";
+            const APP_VERSION = "v1.9.8";
             const GITHUB_OWNER = "flyzhenghao";
             const GITHUB_REPO = "yang-daily-planner";
             const GITHUB_FILE_PATH = "data.json";
@@ -3739,8 +3739,7 @@
                         nextStatuses,
                     );
                     setIsSaving(false);
-                    if (success) alert("✅ Data saved to GitHub successfully!");
-                    else {
+                    if (!success) {
                         const token = getGitHubToken();
                         alert(
                             token
