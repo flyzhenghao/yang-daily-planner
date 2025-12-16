@@ -1,6 +1,6 @@
 {
   "version": "v1.9.7",
-  "lastUpdated": "2025-12-16T21:14:45.497Z",
+  "lastUpdated": "2025-12-16T21:15:03.421Z",
   "activities": [
     {
       "date": "2025-12-16",
@@ -8,7 +8,7 @@
       "timeTo": "21:20",
       "item": "Get ready for sleep",
       "category": "Other",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833385001aodsnqgba"
     },
@@ -18,7 +18,7 @@
       "timeTo": "21:10",
       "item": "Talking to friends",
       "category": "Social",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833372303n5jbt2y6m"
     },
@@ -28,7 +28,7 @@
       "timeTo": "20:50",
       "item": "Reading books",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "176583336214730hocawxg"
     },
@@ -38,7 +38,7 @@
       "timeTo": "20:20",
       "item": "Cubing",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833352869plckm5a3i"
     },
@@ -48,7 +48,7 @@
       "timeTo": "19:20",
       "item": "Cello",
       "category": "Other",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833343969ew0dw2ylz"
     },
@@ -58,7 +58,7 @@
       "timeTo": "18:50",
       "item": "Eating dinner",
       "category": "Eating",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833333788mgntioj2l"
     },
@@ -68,7 +68,7 @@
       "timeTo": "18:20",
       "item": "Watching badminton videos",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "17658333230530m1up9h37"
     },
@@ -78,7 +78,7 @@
       "timeTo": "17:40",
       "item": "Studying english",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833310317zdx3rwa0y"
     },
@@ -88,7 +88,7 @@
       "timeTo": "17:00",
       "item": "Watching netflix",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833297793no6w2u1vb"
     },
@@ -98,7 +98,7 @@
       "timeTo": "16:00",
       "item": "Play games",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "17658332886162q8ym6744"
     },
@@ -108,7 +108,7 @@
       "timeTo": "15:00",
       "item": "Badminton",
       "category": "Exercise",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833277179p6rsn3lh7"
     },
@@ -118,7 +118,7 @@
       "timeTo": "12:50",
       "item": "Perparing for badminton",
       "category": "Other",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833226454mxlxhotig"
     },
@@ -128,7 +128,7 @@
       "timeTo": "12:30",
       "item": "Playing games",
       "category": "Entertainment",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1765833212675zxi5wkcq6"
     },
@@ -138,7 +138,7 @@
       "timeTo": "12:00",
       "item": "Talking to friends",
       "category": "Social",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "17658332039610hbcfx3b1"
     },
@@ -148,7 +148,7 @@
       "timeTo": "11:00",
       "item": "Study math",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "17658331855928q1oxbn3f"
     },
