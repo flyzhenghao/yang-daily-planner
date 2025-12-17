@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v2.0.2] - 2025-01-27
+
+### Fixed
+- **Add Activity Blank Page**: Fixed an issue where clicking "Add Activity" button on the Activities page resulted in a blank page. The `Modal` component was missing from `bundle.js`, causing `global.Modal` to be undefined. Added the Modal component definition to `bundle.js` before the App component.
+
 ## [v2.0.1] - 2025-01-27
 
 ### Fixed
