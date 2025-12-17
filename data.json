@@ -1,6 +1,6 @@
 {
   "version": "v2.0.2",
-  "lastUpdated": "2025-12-17T22:37:08.634Z",
+  "lastUpdated": "2025-12-17T22:37:18.393Z",
   "activities": [
     {
       "date": "2025-12-18",
@@ -1786,8 +1786,8 @@
       "date": "2025-12-18",
       "timeFrom": "18:30",
       "timeTo": "18:50",
-      "item": "Reading books",
-      "category": "Study",
+      "item": "Eating dinner",
+      "category": "Eating",
       "status": "Planning",
       "notes": "",
       "id": "1766011016664l5flcnhno"
