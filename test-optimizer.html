@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizer Test</title>
+</head>
+<body>
+    <h1>Optimizer Module Test</h1>
+    <div id="result"></div>
+
+    <script>
+        // Define utility functions that optimizer needs
+        window.normalizeTextForMatch = (text) => {
+            return String(text || "")
+                .trim()
+                .toLowerCase()
+                .replace(/[\u2014\u2013]/g, "-")
+                .replace(/[^a-z0-9\u4e00-\u9fff]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        };
+
+        window.isOtherCategoryName = (name) => {
+            const raw = String(name || "").trim();
+            if (!raw) return false;
+            if (/other/i.test(raw)) return true;
+            if (raw.includes("其他") || raw.includes("其它")) return true;
+            return false;
+        };
+
+        window.extractCategoryCandidate = (item) => {
+            const raw = String(item || "").trim();
+            if (!raw) return null;
+            const firstPart = raw.split(/\s*[-–—:|>]+\s*/)[0]?.trim();
+            if (!firstPart) return null;
+            const cleaned = firstPart.replace(/\s+/g, " ").trim();
+            if (cleaned.length < 2) return null;
+            return cleaned.length > 28 ? cleaned.slice(0, 28).trim() : cleaned;
+        };
+
+        window.timeStrToMins = (time) => {
+            if (!time) return null;
+            const [h, m] = time.split(":").map(Number);
+            return h * 60 + m;
+        };
+
+        window.minsToTimeStr = (mins) => {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        };
+
+        window.getLocalDateStr = (date = new Date()) => {
+            const d = new Date(date);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        };
+    </script>
+
+    <script src="js/optimizer.js"></script>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+
+        try {
+            // Test 1: Check if function is available
+            if (typeof window.analyzeActivitiesOptimizer === 'function') {
+                resultDiv.innerHTML += '<p style="color: green;">✓ analyzeActivitiesOptimizer function loaded</p>';
+            } else {
+                resultDiv.innerHTML += '<p style="color: red;">✗ analyzeActivitiesOptimizer function NOT found</p>';
+                throw new Error('Function not loaded');
+            }
+
+            // Test 2: Run a simple analysis
+            const testCategories = [
+                { id: 1, name: "Study", color: "#6C5CE7", icon: "📚" },
+                { id: 2, name: "Entertainment", color: "#FD79A8", icon: "🎮" },
+            ];
+
+            const testStatuses = [
+                { id: 1, name: "Finished", color: "#00B894" },
+            ];
+
+            const testActivities = [
+                { id: 1, date: "2025-12-17", timeFrom: "09:00", timeTo: "10:00", item: "Math homework", category: "Study" },
+                { id: 2, date: "2025-12-17", timeFrom: "14:00", timeTo: "15:00", item: "Gaming", category: "Entertainment" },
+            ];
+
+            const result = window.analyzeActivitiesOptimizer({
+                scopeActivities: testActivities,
+                historyActivities: testActivities,
+                categories: testCategories,
+                statuses: testStatuses,
+                options: {}
+            });
+
+            if (result && Array.isArray(result.issues)) {
+                resultDiv.innerHTML += '<p style="color: green;">✓ Function executed successfully</p>';
+                resultDiv.innerHTML += `<p>Found ${result.issues.length} issues</p>`;
+                resultDiv.innerHTML += '<pre>' + JSON.stringify(result.issues, null, 2) + '</pre>';
+            } else {
+                resultDiv.innerHTML += '<p style="color: red;">✗ Function returned unexpected result</p>';
+            }
+
+        } catch (error) {
+            resultDiv.innerHTML += `<p style="color: red;">✗ Error: ${error.message}</p>`;
+            resultDiv.innerHTML += `<pre>${error.stack}</pre>`;
+        }
+    </script>
+</body>
+</html>
