@@ -1,7 +1,27 @@
 {
   "version": "v2.0.2",
-  "lastUpdated": "2025-12-17T22:37:42.683Z",
+  "lastUpdated": "2025-12-17T22:38:36.877Z",
   "activities": [
+    {
+      "date": "2025-12-18",
+      "timeFrom": "18:30",
+      "timeTo": "18:50",
+      "item": "Eating dinner",
+      "category": "Eating",
+      "status": "Planning",
+      "notes": "",
+      "id": "1766011016664l5flcnhno"
+    },
+    {
+      "date": "2025-12-18",
+      "timeFrom": "17:50",
+      "timeTo": "18:30",
+      "item": "Talking to friends about playing badminton tommorow",
+      "category": "Social",
+      "status": "Planning",
+      "notes": "",
+      "id": "1766010990837bmhdjtpsv"
+    },
     {
       "date": "2025-12-18",
       "timeFrom": "17:20",
@@ -1771,26 +1791,6 @@
       "notes": "",
       "status": "Finished",
       "id": "1765224163895pvwm8hm7y"
-    },
-    {
-      "date": "2025-12-18",
-      "timeFrom": "17:50",
-      "timeTo": "18:30",
-      "item": "Talking to friends about playing badminton tommorow",
-      "category": "Social",
-      "status": "Planning",
-      "notes": "",
-      "id": "1766010990837bmhdjtpsv"
-    },
-    {
-      "date": "2025-12-18",
-      "timeFrom": "18:30",
-      "timeTo": "18:50",
-      "item": "Eating dinner",
-      "category": "Eating",
-      "status": "Planning",
-      "notes": "",
-      "id": "1766011016664l5flcnhno"
     }
   ],
   "categories": [
