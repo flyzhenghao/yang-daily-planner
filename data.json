@@ -1,6 +1,6 @@
 {
   "version": "v2.0.2",
-  "lastUpdated": "2025-12-17T22:39:09.911Z",
+  "lastUpdated": "2025-12-17T22:39:17.911Z",
   "activities": [
     {
       "date": "2025-12-18",
@@ -1821,6 +1821,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1766011136220lo4399pg2"
+    },
+    {
+      "date": "2025-12-18",
+      "timeFrom": "20:30",
+      "timeTo": "21:00",
+      "item": "Watching badminton videos",
+      "category": "Entertainment",
+      "status": "Planning",
+      "notes": "",
+      "id": "1766011149911gqvkqc96t"
     }
   ],
   "categories": [
