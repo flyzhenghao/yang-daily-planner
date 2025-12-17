@@ -1,6 +1,6 @@
 {
   "version": "v2.0.2",
-  "lastUpdated": "2025-12-17T22:35:17.611Z",
+  "lastUpdated": "2025-12-17T22:35:27.684Z",
   "activities": [
     {
       "date": "2025-12-17",
@@ -1751,6 +1751,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1766010897120avaw77pkh"
+    },
+    {
+      "date": "2025-12-18",
+      "timeFrom": "16:20",
+      "timeTo": "16:50",
+      "item": "Playing basketball",
+      "category": "Exercise",
+      "status": "Planning",
+      "notes": "",
+      "id": "1766010917610wbwws3zjo"
     }
   ],
   "categories": [
