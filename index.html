@@ -36,203 +36,34 @@
             href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
-        <!-- Optional theme overrides (exported from TweakCN) -->
-        <link rel="stylesheet" href="UI%20change.css" />
         <link rel="stylesheet" href="styles/main.css" />
-        <script>
-            (function () {
-                function applyTheme(theme) {
-                    document.documentElement.setAttribute(
-                        "data-ydp-theme",
-                        theme,
-                    );
-                    document.documentElement.classList.toggle(
-                        "dark",
-                        theme === "dark",
-                    );
-                    document.documentElement.style.colorScheme = theme;
-                }
-
-                function detectSystemTheme() {
-                    return window.matchMedia &&
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches
-                        ? "dark"
-                        : "light";
-                }
-
-                function normalizeTweakCNColor(rawValue) {
-                    const value = String(rawValue || "").trim();
-                    if (!value) return "";
-
-                    if (
-                        /^(#|rgb\(|rgba\(|hsl\(|hsla\(|oklch\(|oklab\(|color\(|lab\(|lch\(|hwb\(|var\()/i.test(
-                            value,
-                        )
-                    ) {
-                        return value;
-                    }
-
-                    if (
-                        /^-?[\d.]+\s+-?[\d.]+%\s+-?[\d.]+%(\s*\/\s*-?[\d.]+%?)?$/.test(
-                            value,
-                        )
-                    ) {
-                        return `hsl(${value})`;
-                    }
-
-                    return value;
-                }
-
-                function buildVarBlock(selector, vars) {
-                    const lines = [];
-                    for (const [key, raw] of Object.entries(vars || {})) {
-                        if (!key || typeof key !== "string") continue;
-                        if (!key.startsWith("--")) continue;
-                        const value = normalizeTweakCNColor(raw);
-                        if (!value) continue;
-                        lines.push(`    ${key}: ${value};`);
-                    }
-                    if (!lines.length) return "";
-                    return `${selector} {\n${lines.join("\n")}\n}`;
-                }
-
-                function applyThemeVars(themeVars) {
-                    const styleId = "tweakcn-runtime-theme";
-                    let styleEl = document.getElementById(styleId);
-                    if (!styleEl) {
-                        styleEl = document.createElement("style");
-                        styleEl.id = styleId;
-                        document.head.appendChild(styleEl);
-                    }
-
-                    const css = [];
-                    if (
-                        themeVars &&
-                        typeof themeVars === "object" &&
-                        (themeVars.light || themeVars.dark)
-                    ) {
-                        if (
-                            themeVars.light &&
-                            typeof themeVars.light === "object"
-                        ) {
-                            css.push(buildVarBlock(":root", themeVars.light));
-                        }
-                        if (
-                            themeVars.dark &&
-                            typeof themeVars.dark === "object"
-                        ) {
-                            css.push(buildVarBlock(".dark", themeVars.dark));
-                        }
-                    } else if (themeVars && typeof themeVars === "object") {
-                        css.push(buildVarBlock(":root", themeVars));
-                    }
-
-                    styleEl.textContent = css.filter(Boolean).join("\n\n");
-                }
-
-                let savedTheme = null;
-                try {
-                    savedTheme = localStorage.getItem("yang_theme");
-                } catch {}
-
-                const systemTheme = detectSystemTheme();
-                applyTheme(savedTheme || systemTheme);
-
-                if (!savedTheme && window.matchMedia) {
-                    window
-                        .matchMedia("(prefers-color-scheme: dark)")
-                        .addEventListener("change", (e) => {
-                            applyTheme(e.matches ? "dark" : "light");
-                        });
-                }
-
-                window.toggleTheme = function () {
-                    const currentTheme =
-                        document.documentElement.classList.contains("dark")
-                            ? "dark"
-                            : "light";
-                    const nextTheme =
-                        currentTheme === "dark" ? "light" : "dark";
-                    applyTheme(nextTheme);
-                    try {
-                        localStorage.setItem("yang_theme", nextTheme);
-                    } catch {}
-                    return nextTheme;
-                };
-
-                // Optional: allow external controllers (e.g., TweakCN live preview) to push theme vars
-                window.setTheme = function (theme) {
-                    if (theme === "light" || theme === "dark") {
-                        applyTheme(theme);
-                        try {
-                            localStorage.setItem("yang_theme", theme);
-                        } catch {}
-                        return;
-                    }
-
-                    if (theme && typeof theme === "object") {
-                        const themeVars =
-                            theme.cssVars ||
-                            theme.cssVariables ||
-                            theme.variables ||
-                            theme.vars;
-                        applyThemeVars(themeVars);
-                    }
-                };
-
-                // Backward-compatible no-ops (older integration hooks)
-                window.syncThemeFromTweakCN = function () {};
-                window.clearTweakCNThemeOverrides = function () {};
-            })();
-        </script>
+        <link rel="stylesheet" href="UI%20change.css" />
     </head>
 
     <body>
         <div id="root"></div>
         <script src="js/optimizer.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/utils/dateUtils.js"></script>
+        <script src="js/utils/formatUtils.js"></script>
+        <script src="js/utils/githubUtils.js"></script>
+        <script src="js/utils/storageUtils.js"></script>
+        <script src="js/utils/ui.js"></script>
         <script type="text/babel" src="js/components/charts.js"></script>
         <script type="text/babel" src="js/components/modals.js"></script>
+        <script type="text/babel" src="js/components/Modal.js"></script>
         <script type="text/babel" src="js/components/activities.js"></script>
         <script type="text/babel" src="js/components/calendar.js"></script>
         <script type="text/babel" src="js/components/pages.js"></script>
         <script type="text/babel" src="js/components/Dashboard.js"></script>
-        <script type="text/babel" src="js/utils/ui.js"></script>
         <script type="text/babel" src="js/components/App.js"></script>
         <script type="text/babel">
-            const { useState, useEffect, useMemo, useRef } = React;
-            const APP_VERSION = "v2.0.0";
-            const GITHUB_OWNER = "flyzhenghao";
-            const GITHUB_REPO = "yang-daily-planner";
-            const GITHUB_FILE_PATH = "data.json";
-            const GITHUB_BRANCH = "main";
-            const GITHUB_TOKEN_KEY = "yang_github_token";
-
-            const defaultCategories = [
-                { id: 1, name: "Study", color: "#6C5CE7", icon: "📚" },
-                { id: 2, name: "Entertainment", color: "#FD79A8", icon: "🎮" },
-                { id: 3, name: "Social", color: "#FDCB6E", icon: "👥" },
-                { id: 4, name: "Exercise", color: "#00B894", icon: "🏃" },
-                { id: 5, name: "Sleep", color: "#74B9FF", icon: "😴" },
-                { id: 6, name: "Other", color: "#636E72", icon: "📌" },
-            ];
-            const defaultStatuses = [
-                { id: 1, name: "Planning", color: "#74B9FF" },
-                { id: 2, name: "Processing", color: "#FDCB6E" },
-                { id: 3, name: "Finished", color: "#00B894" },
-                { id: 4, name: "Partial Finished", color: "#6C5CE7" },
-                { id: 5, name: "Abandoned", color: "#B2BEC3" },
-            ];
-            const PROFILE_KEY = "yang_profile";
-            const defaultProfile = {
-                name: "Yang",
-                school: "",
-                grade: "Year 9",
-                email: "",
-                avatarDataUrl: "",
-            };
-
-            ReactDOM.render(<App />, document.getElementById("root"));
+            ReactDOM.render(
+                <React.StrictMode>
+                    <App />
+                </React.StrictMode>,
+                document.getElementById("root"),
+            );
         </script>
     </body>
 </html>
