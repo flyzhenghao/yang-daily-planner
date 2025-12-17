@@ -1,6 +1,6 @@
 {
   "version": "v2.0.2",
-  "lastUpdated": "2025-12-17T22:33:35.568Z",
+  "lastUpdated": "2025-12-17T22:33:46.517Z",
   "activities": [
     {
       "date": "2025-12-17",
@@ -1668,7 +1668,7 @@
       "timeTo": "11:30",
       "item": "Studying math",
       "category": "Study",
-      "status": "Planning",
+      "status": "Finished",
       "notes": "",
       "id": "1766010801124tbvi9m5lw"
     },
@@ -1681,6 +1681,16 @@
       "status": "Planning",
       "notes": "",
       "id": "1766010809344wu9m1cg8o"
+    },
+    {
+      "date": "2025-12-18",
+      "timeFrom": "12:00",
+      "timeTo": "12:30",
+      "item": "Playing games",
+      "category": "Study",
+      "status": "Planning",
+      "notes": "",
+      "id": "17660108155683q8xnu8p8"
     }
   ],
   "categories": [
