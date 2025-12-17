@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v2.0.1] - 2025-01-27
+
+### Fixed
+- **Bundle.js Syntax Error**: Fixed a syntax error in `bundle.js` where a backslash line continuation character inside a template literal was causing a parsing error. The page was showing blank due to this error. Changed the code to use parentheses for proper expression continuation across lines.
+
 ## [v2.0.0] - 2025-12-17
 
 ### Added
