@@ -13,6 +13,7 @@
     onBulkDelete,
     onBulkUpdate,
     onCreateCategory,
+    onOptimize,
     condensed,
   }) {
     const [filter, setFilter] = useState({
@@ -119,6 +120,9 @@
                 onClick={() => onAdd && onAdd()}
               >
                 ✨ Add Activity
+              </button>
+              <button className="btn" onClick={onOptimize}>
+                🤖 Optimize
               </button>
             </div>
           </div>
