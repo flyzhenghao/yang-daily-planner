@@ -27,7 +27,6 @@
       asc: false,
     });
     const [selectedIds, setSelectedIds] = useState([]);
-    const [showOptimizer, setShowOptimizer] = useState(false);
 
     const handleFilterChange = (field, value) => {
       setFilter({ ...filter, [field]: value });
@@ -115,12 +114,6 @@
                 flexWrap: "wrap",
               }}
             >
-              <button
-                className="btn btn-secondary"
-                onClick={() => setShowOptimizer(true)}
-              >
-                🧠 Optimize
-              </button>
               <button
                 className="btn btn-primary"
                 onClick={() => onAdd && onAdd()}
@@ -217,19 +210,6 @@
             selectedIds={selectedIds}
           />
         </div>
-        {showOptimizer && (
-          <global.OptimizerModal
-            scopeActivities={filteredActivities}
-            historyActivities={activities}
-            categories={categories}
-            statuses={statuses}
-            onBulkUpdate={onBulkUpdate}
-            onAdd={onAdd}
-            onEdit={onEdit}
-            onCreateCategory={onCreateCategory}
-            onClose={() => setShowOptimizer(false)}
-          />
-        )}
       </div>
     );
   }

@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  global.APP_VERSION = "v2.0.2";
+  global.APP_VERSION = "v2.0.3";
   global.GITHUB_OWNER = "flyzhenghao";
   global.GITHUB_REPO = "yang-daily-planner";
   global.GITHUB_FILE_PATH = "data.json";
@@ -314,630 +314,6 @@
   global.extractCategoryCandidate = extractCategoryCandidate;
   global.loadDataFromGitHub = loadDataFromGitHub;
   global.saveDataToGitHub = saveDataToGitHub;
-})(window);
-(function (global) {
-  "use strict";
-
-  const { useState, useMemo } = React;
-
-  function PieChart({ data, totalLabel, onHover, hoveredCategory }) {
-    const total = data.reduce((s, i) => s + i.value, 0);
-    if (total === 0)
-      return (
-        <div className="empty-state" style={{ padding: "40px 20px" }}>
-          <div className="empty-icon">📊</div>
-          <p>No data</p>
-        </div>
-      );
-    let parts = [],
-      angle = 0;
-    data.forEach((i) => {
-      const a = (i.value / total) * 360;
-      parts.push(`${i.color} ${angle}deg ${angle + a}deg`);
-      angle += a;
-    });
-    return (
-      <div className="pie-chart-container">
-        <div
-          className="pie-chart"
-          style={{
-            background: `conic-gradient(${parts.join(", ")})`,
-          }}
-        >
-          <div className="pie-chart-inner">
-            <div className="pie-chart-total">{Math.round(total / 60)}h</div>
-            <div className="pie-chart-label">{totalLabel || "Total"}</div>
-          </div>
-        </div>
-        <div className="pie-legend">
-          {data.map((i, idx) => (
-            <div
-              key={idx}
-              className={`legend-item ${hoveredCategory === i.name ? "hovered" : ""}`}
-              onMouseEnter={(e) => onHover(i.name, e)}
-              onMouseLeave={() => onHover(null)}
-            >
-              <div
-                className="legend-color"
-                style={{ background: i.color }}
-              ></div>
-              <span>
-                {i.icon} {i.name}
-              </span>
-              <span className="legend-value">{Math.round(i.value)}m</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  function BarChart({ data }) {
-    const max = Math.max(...data.map((d) => d.value), 1);
-    if (data.length === 0)
-      return (
-        <div className="empty-state" style={{ padding: "40px 20px" }}>
-          <div className="empty-icon">📊</div>
-          <p>No data</p>
-        </div>
-      );
-    return (
-      <div className="bar-chart-container">
-        {data.map((i, idx) => (
-          <div key={idx} className="bar-chart-item">
-            <div className="bar-label">{i.name}</div>
-            <div className="bar-track">
-              <div
-                className="bar-fill"
-                style={{
-                  width: `${Math.max((i.value / max) * 100, i.value > 0 ? 10 : 0)}%`,
-                  background: i.color,
-                }}
-              >
-                {i.value > 0 && <span className="bar-value">{i.value}</span>}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  function Tooltip({ activities, category, position }) {
-    if (!activities || activities.length === 0) return null;
-
-    const sortedActivities = [...activities].sort((a, b) => {
-      return (
-        global.calcDuration(b.timeFrom, b.timeTo) -
-        global.calcDuration(a.timeFrom, a.timeTo)
-      );
-    });
-
-    return (
-      <div
-        className="tooltip"
-        style={{
-          left: position.x,
-          top: position.y,
-        }}
-      >
-        <h4>{category}</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Duration</th>
-              <th>Activity</th>
-              <th>Date</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedActivities.map((a) => (
-              <tr key={a.id}>
-                <td>
-                  {global.formatDuration(
-                    global.calcDuration(a.timeFrom, a.timeTo),
-                  )}
-                </td>
-                <td>{a.item}</td>
-                <td>{a.date}</td>
-                <td>
-                  {a.timeFrom} - {a.timeTo}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  global.PieChart = PieChart;
-  global.BarChart = BarChart;
-  global.Tooltip = Tooltip;
-})(window);
-(function (global) {
-  "use strict";
-
-  const { useState } = React;
-
-  function ReminderPopup({ activity, onConfirm, onDismiss }) {
-    if (!activity) return null;
-    return (
-      <div className="modal-overlay">
-        <div className="modal" style={{ maxWidth: "420px" }}>
-          <h2 className="modal-title">⏰ Activity Reminder</h2>
-          <p style={{ marginBottom: "8px" }}>
-            Planning item <b>{activity.item}</b> is scheduled to start now.
-          </p>
-          <div
-            style={{
-              color: "var(--text-secondary)",
-              marginBottom: "10px",
-            }}
-          >
-            {global.formatDate(activity.date)} · {activity.timeFrom} -{" "}
-            {activity.timeTo}
-          </div>
-          <p
-            style={{
-              marginTop: 0,
-              color: "var(--text-muted)",
-              fontSize: "13px",
-            }}
-          >
-            Confirm to close this reminder. The previous activity will be marked{" "}
-            <b>Finished</b> by default.
-          </p>
-          <div className="modal-actions">
-            <button className="btn btn-secondary" onClick={onDismiss}>
-              Later
-            </button>
-            <button className="btn btn-primary" onClick={onConfirm}>
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function ConfirmModal({ title, message, onConfirm, onCancel }) {
-    return (
-      <div className="modal-overlay">
-        <div className="modal" style={{ maxWidth: "400px" }}>
-          <h2 className="modal-title">{title}</h2>
-          <p>{message}</p>
-          <div className="modal-actions">
-            <button className="btn btn-secondary" onClick={onCancel}>
-              Cancel
-            </button>
-            <button className="btn btn-danger" onClick={onConfirm}>
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function ReportModal({ onConfirm, onCancel }) {
-    const [date, setDate] = useState(global.getLocalDateStr());
-
-    const handleConfirm = () => {
-      onConfirm(date);
-    };
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal" style={{ maxWidth: "400px" }}>
-          <h2 className="modal-title">Select Report Date</h2>
-          <div className="form-group">
-            <input
-              type="date"
-              className="form-input"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
-          <div className="modal-actions">
-            <button className="btn btn-secondary" onClick={onCancel}>
-              Cancel
-            </button>
-            <button className="btn btn-primary" onClick={handleConfirm}>
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  global.ReminderPopup = ReminderPopup;
-  global.ConfirmModal = ConfirmModal;
-  global.ReportModal = ReportModal;
-})(window);
-(function (global) {
-  "use strict";
-
-  const { useState, useMemo } = React;
-
-  function Activities({
-    activities,
-    categories,
-    statuses,
-    onAdd,
-    onEdit,
-    onDelete,
-    onBulkDelete,
-    onBulkUpdate,
-    onCreateCategory,
-    condensed,
-  }) {
-    const [filter, setFilter] = useState({
-      text: "",
-      category: "all",
-      status: "all",
-      startDate: "",
-      endDate: "",
-    });
-    const [sort, setSort] = useState({
-      by: "date",
-      asc: false,
-    });
-    const [selectedIds, setSelectedIds] = useState([]);
-    const [showOptimizer, setShowOptimizer] = useState(false);
-
-    const handleFilterChange = (field, value) => {
-      setFilter({ ...filter, [field]: value });
-    };
-
-    const compareByDateTime = (a, b) => {
-      const dc = String(a.date || "").localeCompare(String(b.date || ""));
-      if (dc !== 0) return dc;
-      return String(a.timeFrom || "").localeCompare(String(b.timeFrom || ""));
-    };
-
-    const filteredActivities = useMemo(() => {
-      return [...activities]
-        .filter((a) => {
-          const txt = filter.text.toLowerCase();
-          const matchesText =
-            !txt ||
-            a.item.toLowerCase().includes(txt) ||
-            (a.notes && a.notes.toLowerCase().includes(txt));
-          const matchesCategory =
-            filter.category === "all" || a.category === filter.category;
-          const matchesStatus =
-            filter.status === "all" || a.status === filter.status;
-          const matchesStartDate =
-            !filter.startDate || a.date >= filter.startDate;
-          const matchesEndDate = !filter.endDate || a.date <= filter.endDate;
-          return (
-            matchesText &&
-            matchesCategory &&
-            matchesStatus &&
-            matchesStartDate &&
-            matchesEndDate
-          );
-        })
-        .sort((a, b) => {
-          const direction = sort.asc ? 1 : -1;
-          let res;
-          if (sort.by === "date") {
-            res = compareByDateTime(a, b);
-          } else {
-            res = String(a[sort.by] || "").localeCompare(
-              String(b[sort.by] || ""),
-            );
-          }
-          return res * direction;
-        });
-    }, [activities, filter, sort]);
-
-    const handleSelect = (id) => {
-      if (Array.isArray(id)) {
-        setSelectedIds(id);
-      } else {
-        setSelectedIds((prev) =>
-          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
-        );
-      }
-    };
-
-    if (condensed) {
-      return (
-        <ActivityList
-          activities={activities}
-          categories={categories}
-          statuses={statuses}
-          onEdit={onEdit}
-          condensed
-        />
-      );
-    }
-
-    return (
-      <div className="animate-fade-in">
-        {!condensed && (
-          <div className="page-header">
-            <div>
-              <h1 className="page-title">Activities</h1>
-              <p className="page-subtitle">
-                You have {activities.length} logged activities in total.
-              </p>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                className="btn btn-secondary"
-                onClick={() => setShowOptimizer(true)}
-              >
-                🧠 Optimize
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => onAdd && onAdd()}
-              >
-                ✨ Add Activity
-              </button>
-            </div>
-          </div>
-        )}
-        <div className="card">
-          <div className="filter-bar">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={filter.text}
-              onChange={(e) => handleFilterChange("text", e.target.value)}
-            />
-            <select
-              value={filter.category}
-              onChange={(e) => handleFilterChange("category", e.target.value)}
-            >
-              <option value="all">All Categories</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.icon} {c.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={filter.status}
-              onChange={(e) => handleFilterChange("status", e.target.value)}
-            >
-              <option value="all">All Statuses</option>
-              {statuses.map((s) => (
-                <option key={s.id} value={s.name}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-            <input
-              type="date"
-              value={filter.startDate}
-              onChange={(e) => handleFilterChange("startDate", e.target.value)}
-            />
-            <input
-              type="date"
-              value={filter.endDate}
-              onChange={(e) => handleFilterChange("endDate", e.target.value)}
-            />
-          </div>
-
-          {selectedIds.length > 0 && (
-            <div className="bulk-actions">
-              <span>
-                <b>{selectedIds.length}</b> selected
-              </span>
-              <button
-                className="btn btn-sm btn-danger"
-                onClick={() => {
-                  onBulkDelete(selectedIds, () => setSelectedIds([]));
-                }}
-              >
-                Delete
-              </button>
-              <select
-                className="form-select"
-                style={{ width: "auto" }}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    onBulkUpdate(selectedIds, {
-                      status: e.target.value,
-                    });
-                    setSelectedIds([]);
-                  }
-                }}
-              >
-                <option value="">Update Status</option>
-                {statuses.map((s) => (
-                  <option key={s.id} value={s.name}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <ActivityList
-            activities={filteredActivities}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            categories={categories}
-            statuses={statuses}
-            onSelect={handleSelect}
-            selectedIds={selectedIds}
-          />
-        </div>
-        {showOptimizer && (
-          <global.OptimizerModal
-            scopeActivities={filteredActivities}
-            historyActivities={activities}
-            categories={categories}
-            statuses={statuses}
-            onBulkUpdate={onBulkUpdate}
-            onAdd={onAdd}
-            onEdit={onEdit}
-            onCreateCategory={onCreateCategory}
-            onClose={() => setShowOptimizer(false)}
-          />
-        )}
-      </div>
-    );
-  }
-
-  function ActivityList({
-    activities,
-    onEdit,
-    onDelete,
-    categories,
-    statuses,
-    condensed = false,
-    onSelect,
-    selectedIds = [],
-  }) {
-    const allSelected =
-      !condensed &&
-      selectedIds.length === activities.length &&
-      activities.length > 0;
-
-    const handleSelectAll = (e) => {
-      if (e.target.checked) {
-        onSelect(activities.map((a) => a.id));
-      } else {
-        onSelect([]);
-      }
-    };
-
-    if (activities.length === 0 && !condensed) {
-      return (
-        <div className="empty-state">
-          <div className="empty-icon">🤷</div>
-          <h3 className="empty-title">No activities found.</h3>
-          <p>Try adjusting your filters.</p>
-        </div>
-      );
-    }
-
-    return (
-      <table className="activity-table">
-        {!condensed && (
-          <thead>
-            <tr>
-              <th style={{ width: "40px" }}>
-                <input
-                  type="checkbox"
-                  checked={allSelected}
-                  onChange={handleSelectAll}
-                />
-              </th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Activity</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Duration</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-        )}
-        <tbody>
-          {activities.map((a) => (
-            <ActivityRow
-              key={a.id}
-              activity={a}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              categories={categories}
-              statuses={statuses}
-              condensed={condensed}
-              onSelect={onSelect}
-              isSelected={!condensed && selectedIds.includes(a.id)}
-            />
-          ))}
-        </tbody>
-      </table>
-    );
-  }
-
-  function ActivityRow({
-    activity: a,
-    onEdit,
-    onDelete,
-    categories,
-    statuses,
-    condensed,
-    onSelect,
-    isSelected,
-  }) {
-    const category = categories.find((c) => c.name === a.category);
-    const status = statuses.find((s) => s.name === a.status);
-    return (
-      <tr onClick={() => onEdit && onEdit(a)}>
-        {!condensed && (
-          <td data-label="Select" onClick={(e) => e.stopPropagation()}>
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={() => onSelect && onSelect(a.id)}
-            />
-          </td>
-        )}
-        {!condensed && <td data-label="Date">{global.formatDate(a.date)}</td>}
-        <td data-label="Time">
-          {a.timeFrom} - {a.timeTo}
-        </td>
-        <td data-label="Activity">{a.item}</td>
-        <td data-label="Category">
-          <span
-            className={`category-badge category-${a.category?.toLowerCase()}`}
-          >
-            {category?.icon} {a.category}
-          </span>
-        </td>
-        {!condensed && (
-          <td data-label="Status">
-            <span
-              className={`status-badge status-${a.status?.replace(/ /g, "").toLowerCase()}`}
-            >
-              {a.status}
-            </span>
-          </td>
-        )}
-        <td data-label="Duration">
-          <span className="duration-badge">
-            {global.formatDuration(global.calcDuration(a.timeFrom, a.timeTo))}
-          </span>
-        </td>
-        {!condensed && (
-          <td data-label="Actions" onClick={(e) => e.stopPropagation()}>
-            <div className="action-btns">
-              <button className="action-btn edit" onClick={() => onEdit(a)}>
-                ✏️
-              </button>
-              <button
-                className="action-btn delete"
-                onClick={() => onDelete(a.id)}
-              >
-                🗑️
-              </button>
-            </div>
-          </td>
-        )}
-      </tr>
-    );
-  }
-
-  global.Activities = Activities;
-  global.ActivityList = ActivityList;
-  global.ActivityRow = ActivityRow;
 })(window);
 (function (global) {
   "use strict";
@@ -2396,6 +1772,248 @@
   }
   global.Dashboard = Dashboard;
 })(window);
+(function (global) {
+  "use strict";
+
+  const { useState, useMemo } = React;
+
+  function PieChart({ data, totalLabel, onHover, hoveredCategory }) {
+    const total = data.reduce((s, i) => s + i.value, 0);
+    if (total === 0)
+      return (
+        <div className="empty-state" style={{ padding: "40px 20px" }}>
+          <div className="empty-icon">📊</div>
+          <p>No data</p>
+        </div>
+      );
+    let parts = [],
+      angle = 0;
+    data.forEach((i) => {
+      const a = (i.value / total) * 360;
+      parts.push(`${i.color} ${angle}deg ${angle + a}deg`);
+      angle += a;
+    });
+    return (
+      <div className="pie-chart-container">
+        <div
+          className="pie-chart"
+          style={{
+            background: `conic-gradient(${parts.join(", ")})`,
+          }}
+        >
+          <div className="pie-chart-inner">
+            <div className="pie-chart-total">{Math.round(total / 60)}h</div>
+            <div className="pie-chart-label">{totalLabel || "Total"}</div>
+          </div>
+        </div>
+        <div className="pie-legend">
+          {data.map((i, idx) => (
+            <div
+              key={idx}
+              className={`legend-item ${hoveredCategory === i.name ? "hovered" : ""}`}
+              onMouseEnter={(e) => onHover(i.name, e)}
+              onMouseLeave={() => onHover(null)}
+            >
+              <div
+                className="legend-color"
+                style={{ background: i.color }}
+              ></div>
+              <span>
+                {i.icon} {i.name}
+              </span>
+              <span className="legend-value">{Math.round(i.value)}m</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  function BarChart({ data }) {
+    const max = Math.max(...data.map((d) => d.value), 1);
+    if (data.length === 0)
+      return (
+        <div className="empty-state" style={{ padding: "40px 20px" }}>
+          <div className="empty-icon">📊</div>
+          <p>No data</p>
+        </div>
+      );
+    return (
+      <div className="bar-chart-container">
+        {data.map((i, idx) => (
+          <div key={idx} className="bar-chart-item">
+            <div className="bar-label">{i.name}</div>
+            <div className="bar-track">
+              <div
+                className="bar-fill"
+                style={{
+                  width: `${Math.max((i.value / max) * 100, i.value > 0 ? 10 : 0)}%`,
+                  background: i.color,
+                }}
+              >
+                {i.value > 0 && <span className="bar-value">{i.value}</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  function Tooltip({ activities, category, position }) {
+    if (!activities || activities.length === 0) return null;
+
+    const sortedActivities = [...activities].sort((a, b) => {
+      return (
+        global.calcDuration(b.timeFrom, b.timeTo) -
+        global.calcDuration(a.timeFrom, a.timeTo)
+      );
+    });
+
+    return (
+      <div
+        className="tooltip"
+        style={{
+          left: position.x,
+          top: position.y,
+        }}
+      >
+        <h4>{category}</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Duration</th>
+              <th>Activity</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedActivities.map((a) => (
+              <tr key={a.id}>
+                <td>
+                  {global.formatDuration(
+                    global.calcDuration(a.timeFrom, a.timeTo),
+                  )}
+                </td>
+                <td>{a.item}</td>
+                <td>{a.date}</td>
+                <td>
+                  {a.timeFrom} - {a.timeTo}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  global.PieChart = PieChart;
+  global.BarChart = BarChart;
+  global.Tooltip = Tooltip;
+})(window);
+(function (global) {
+  "use strict";
+
+  const { useState } = React;
+
+  function ReminderPopup({ activity, onConfirm, onDismiss }) {
+    if (!activity) return null;
+    return (
+      <div className="modal-overlay">
+        <div className="modal" style={{ maxWidth: "420px" }}>
+          <h2 className="modal-title">⏰ Activity Reminder</h2>
+          <p style={{ marginBottom: "8px" }}>
+            Planning item <b>{activity.item}</b> is scheduled to start now.
+          </p>
+          <div
+            style={{
+              color: "var(--text-secondary)",
+              marginBottom: "10px",
+            }}
+          >
+            {global.formatDate(activity.date)} · {activity.timeFrom} -{" "}
+            {activity.timeTo}
+          </div>
+          <p
+            style={{
+              marginTop: 0,
+              color: "var(--text-muted)",
+              fontSize: "13px",
+            }}
+          >
+            Confirm to close this reminder. The previous activity will be marked{" "}
+            <b>Finished</b> by default.
+          </p>
+          <div className="modal-actions">
+            <button className="btn btn-secondary" onClick={onDismiss}>
+              Later
+            </button>
+            <button className="btn btn-primary" onClick={onConfirm}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function ConfirmModal({ title, message, onConfirm, onCancel }) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal" style={{ maxWidth: "400px" }}>
+          <h2 className="modal-title">{title}</h2>
+          <p>{message}</p>
+          <div className="modal-actions">
+            <button className="btn btn-secondary" onClick={onCancel}>
+              Cancel
+            </button>
+            <button className="btn btn-danger" onClick={onConfirm}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function ReportModal({ onConfirm, onCancel }) {
+    const [date, setDate] = useState(global.getLocalDateStr());
+
+    const handleConfirm = () => {
+      onConfirm(date);
+    };
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal" style={{ maxWidth: "400px" }}>
+          <h2 className="modal-title">Select Report Date</h2>
+          <div className="form-group">
+            <input
+              type="date"
+              className="form-input"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+          <div className="modal-actions">
+            <button className="btn btn-secondary" onClick={onCancel}>
+              Cancel
+            </button>
+            <button className="btn btn-primary" onClick={handleConfirm}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  global.ReminderPopup = ReminderPopup;
+  global.ConfirmModal = ConfirmModal;
+  global.ReportModal = ReportModal;
+})(window);
 (function(global) {
     'use strict';
 
@@ -2679,6 +2297,368 @@
 
     global.Modal = Modal;
 
+})(window);
+(function (global) {
+  "use strict";
+
+  const { useState, useMemo } = React;
+
+  function Activities({
+    activities,
+    categories,
+    statuses,
+    onAdd,
+    onEdit,
+    onDelete,
+    onBulkDelete,
+    onBulkUpdate,
+    onCreateCategory,
+    condensed,
+  }) {
+    const [filter, setFilter] = useState({
+      text: "",
+      category: "all",
+      status: "all",
+      startDate: "",
+      endDate: "",
+    });
+    const [sort, setSort] = useState({
+      by: "date",
+      asc: false,
+    });
+    const [selectedIds, setSelectedIds] = useState([]);
+
+    const handleFilterChange = (field, value) => {
+      setFilter({ ...filter, [field]: value });
+    };
+
+    const compareByDateTime = (a, b) => {
+      const dc = String(a.date || "").localeCompare(String(b.date || ""));
+      if (dc !== 0) return dc;
+      return String(a.timeFrom || "").localeCompare(String(b.timeFrom || ""));
+    };
+
+    const filteredActivities = useMemo(() => {
+      return [...activities]
+        .filter((a) => {
+          const txt = filter.text.toLowerCase();
+          const matchesText =
+            !txt ||
+            a.item.toLowerCase().includes(txt) ||
+            (a.notes && a.notes.toLowerCase().includes(txt));
+          const matchesCategory =
+            filter.category === "all" || a.category === filter.category;
+          const matchesStatus =
+            filter.status === "all" || a.status === filter.status;
+          const matchesStartDate =
+            !filter.startDate || a.date >= filter.startDate;
+          const matchesEndDate = !filter.endDate || a.date <= filter.endDate;
+          return (
+            matchesText &&
+            matchesCategory &&
+            matchesStatus &&
+            matchesStartDate &&
+            matchesEndDate
+          );
+        })
+        .sort((a, b) => {
+          const direction = sort.asc ? 1 : -1;
+          let res;
+          if (sort.by === "date") {
+            res = compareByDateTime(a, b);
+          } else {
+            res = String(a[sort.by] || "").localeCompare(
+              String(b[sort.by] || ""),
+            );
+          }
+          return res * direction;
+        });
+    }, [activities, filter, sort]);
+
+    const handleSelect = (id) => {
+      if (Array.isArray(id)) {
+        setSelectedIds(id);
+      } else {
+        setSelectedIds((prev) =>
+          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+      }
+    };
+
+    if (condensed) {
+      return (
+        <ActivityList
+          activities={activities}
+          categories={categories}
+          statuses={statuses}
+          onEdit={onEdit}
+          condensed
+        />
+      );
+    }
+
+    return (
+      <div className="animate-fade-in">
+        {!condensed && (
+          <div className="page-header">
+            <div>
+              <h1 className="page-title">Activities</h1>
+              <p className="page-subtitle">
+                You have {activities.length} logged activities in total.
+              </p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                onClick={() => onAdd && onAdd()}
+              >
+                ✨ Add Activity
+              </button>
+            </div>
+          </div>
+        )}
+        <div className="card">
+          <div className="filter-bar">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={filter.text}
+              onChange={(e) => handleFilterChange("text", e.target.value)}
+            />
+            <select
+              value={filter.category}
+              onChange={(e) => handleFilterChange("category", e.target.value)}
+            >
+              <option value="all">All Categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.icon} {c.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={filter.status}
+              onChange={(e) => handleFilterChange("status", e.target.value)}
+            >
+              <option value="all">All Statuses</option>
+              {statuses.map((s) => (
+                <option key={s.id} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={filter.startDate}
+              onChange={(e) => handleFilterChange("startDate", e.target.value)}
+            />
+            <input
+              type="date"
+              value={filter.endDate}
+              onChange={(e) => handleFilterChange("endDate", e.target.value)}
+            />
+          </div>
+
+          {selectedIds.length > 0 && (
+            <div className="bulk-actions">
+              <span>
+                <b>{selectedIds.length}</b> selected
+              </span>
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => {
+                  onBulkDelete(selectedIds, () => setSelectedIds([]));
+                }}
+              >
+                Delete
+              </button>
+              <select
+                className="form-select"
+                style={{ width: "auto" }}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    onBulkUpdate(selectedIds, {
+                      status: e.target.value,
+                    });
+                    setSelectedIds([]);
+                  }
+                }}
+              >
+                <option value="">Update Status</option>
+                {statuses.map((s) => (
+                  <option key={s.id} value={s.name}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <ActivityList
+            activities={filteredActivities}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            categories={categories}
+            statuses={statuses}
+            onSelect={handleSelect}
+            selectedIds={selectedIds}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  function ActivityList({
+    activities,
+    onEdit,
+    onDelete,
+    categories,
+    statuses,
+    condensed = false,
+    onSelect,
+    selectedIds = [],
+  }) {
+    const allSelected =
+      !condensed &&
+      selectedIds.length === activities.length &&
+      activities.length > 0;
+
+    const handleSelectAll = (e) => {
+      if (e.target.checked) {
+        onSelect(activities.map((a) => a.id));
+      } else {
+        onSelect([]);
+      }
+    };
+
+    if (activities.length === 0 && !condensed) {
+      return (
+        <div className="empty-state">
+          <div className="empty-icon">🤷</div>
+          <h3 className="empty-title">No activities found.</h3>
+          <p>Try adjusting your filters.</p>
+        </div>
+      );
+    }
+
+    return (
+      <table className="activity-table">
+        {!condensed && (
+          <thead>
+            <tr>
+              <th style={{ width: "40px" }}>
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Activity</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Duration</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {activities.map((a) => (
+            <ActivityRow
+              key={a.id}
+              activity={a}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              categories={categories}
+              statuses={statuses}
+              condensed={condensed}
+              onSelect={onSelect}
+              isSelected={!condensed && selectedIds.includes(a.id)}
+            />
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
+  function ActivityRow({
+    activity: a,
+    onEdit,
+    onDelete,
+    categories,
+    statuses,
+    condensed,
+    onSelect,
+    isSelected,
+  }) {
+    const category = categories.find((c) => c.name === a.category);
+    const status = statuses.find((s) => s.name === a.status);
+    return (
+      <tr onClick={() => onEdit && onEdit(a)}>
+        {!condensed && (
+          <td data-label="Select" onClick={(e) => e.stopPropagation()}>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={() => onSelect && onSelect(a.id)}
+            />
+          </td>
+        )}
+        {!condensed && <td data-label="Date">{global.formatDate(a.date)}</td>}
+        <td data-label="Time">
+          {a.timeFrom} - {a.timeTo}
+        </td>
+        <td data-label="Activity">{a.item}</td>
+        <td data-label="Category">
+          <span
+            className={`category-badge category-${a.category?.toLowerCase()}`}
+          >
+            {category?.icon} {a.category}
+          </span>
+        </td>
+        {!condensed && (
+          <td data-label="Status">
+            <span
+              className={`status-badge status-${a.status?.replace(/ /g, "").toLowerCase()}`}
+            >
+              {a.status}
+            </span>
+          </td>
+        )}
+        <td data-label="Duration">
+          <span className="duration-badge">
+            {global.formatDuration(global.calcDuration(a.timeFrom, a.timeTo))}
+          </span>
+        </td>
+        {!condensed && (
+          <td data-label="Actions" onClick={(e) => e.stopPropagation()}>
+            <div className="action-btns">
+              <button className="action-btn edit" onClick={() => onEdit(a)}>
+                ✏️
+              </button>
+              <button
+                className="action-btn delete"
+                onClick={() => onDelete(a.id)}
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        )}
+      </tr>
+    );
+  }
+
+  global.Activities = Activities;
+  global.ActivityList = ActivityList;
+  global.ActivityRow = ActivityRow;
 })(window);
 (function(global) {
     'use strict';
