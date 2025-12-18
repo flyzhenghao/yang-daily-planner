@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  global.APP_VERSION = "v2.0.3";
+  global.APP_VERSION = "v2.0.4";
   global.GITHUB_OWNER = "flyzhenghao";
   global.GITHUB_REPO = "yang-daily-planner";
   global.GITHUB_FILE_PATH = "data.json";

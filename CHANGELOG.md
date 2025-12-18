@@ -2,6 +2,11 @@
 
 All notable changes to Yang's Daily Planner will be documented in this file.
 
+## [v2.0.4] - 2025-12-18
+
+### Fixed
+- **Optimize Button Missing**: Restored the missing optimizer module files and functionality. The Optimize button in the Activities page was not working due to missing optimizer.js and optimizer/ directory. Restored all optimizer files from git history and added proper script inclusion in index.html.
+
 ## [v2.0.2] - 2025-01-27
 
 ### Fixed
